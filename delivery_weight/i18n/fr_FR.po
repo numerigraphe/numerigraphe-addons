@@ -1,0 +1,39 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* delivery_weight
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.1\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2009-07-15 15:00:52+0000\n"
+"PO-Revision-Date: 2009-07-15 15:00:52+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: delivery_weight
+#: model:ir.module.module,shortdesc:delivery_weight.module_meta_information
+msgid "Estimate the gross weight of a delivery"
+msgstr "Estime le poids brut de la livraison"
+
+#. module: delivery_weight
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr ""
+
+#. module: delivery_weight
+#: view:stock.picking:0
+msgid "Estimate"
+msgstr "Estimer"
+
+#. module: delivery_weight
+#: model:ir.module.module,description:delivery_weight.module_meta_information
+msgid "Adds a button to the picking form to estimate the total weight of a delivery using the unit gross weights of the products.\n"
+"This module automatically makes an estimate when pickings are created from sales orders."
+msgstr "Ajoute un bouton au formulaire de colisage pour estimer le poids total brut d'une livraison en fonction des poids unitaires des produits.\n"
+"Ce module fait automatiquement une estimation lorsque le colisage est crée à partir d'une commande de vente."
+

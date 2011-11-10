@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- Add the partner categories -->
+		<record model="ir.ui.view" id="view_order_form">
+			<field name="name">sale_partner_category.order.form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<page string="Other data" position="inside">
+					<separator colspan="4" string="The Customer is in the following Categories" />
+					<field name="partner_category_ids" colspan="4" nolabel="1" />
+				</page>
+			</field>
+		</record>
+	</data>
+</openerp>
+

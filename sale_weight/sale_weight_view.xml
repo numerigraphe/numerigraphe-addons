@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- add the total weight to the order form -->
+		<record model="ir.ui.view" id="sale_weight_form">
+			<field name="name">sale_weight.view_form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<button name="button_dummy" position="after">
+					<field name="total_weight_net" />
+				</button>
+			</field>
+		</record>
+
+		<!-- add the total weight to the order list -->
+		<record model="ir.ui.view" id="sale_weight_tree">
+			<field name="name">sale_weight.view.tree</field>
+			<field name="type">tree</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				<field name="state" position="after">
+					<field name="total_weight_net" />
+				</field>
+			</field>
+		</record>
+
+		<!-- add the net weight to the order line subform -->
+		<record model="ir.ui.view" id="sale_weight_line_form">
+			<field name="name">sale_weight.view_line_form</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<field name="product_packaging" position="after">
+					<field name="weight_net" readonly="1" />
+				</field>
+			</field>
+		</record>
+
+		<!-- add the weight to the order line list subform -->
+		<record model="ir.ui.view" id="sale_weight_line_tree">
+			<field name="name">sale_weight.view_line_tree</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<field name="price_subtotal" position="after">
+					<field name="weight_net" readonly="1" />
+				</field>
+			</field>
+		</record>
+		
+	</data>
+</openerp>
