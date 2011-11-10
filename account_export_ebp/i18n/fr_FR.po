@@ -1,0 +1,261 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* account_export_ebp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.1\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2009-07-30 14:03:38+0000\n"
+"PO-Revision-Date: 2009-07-30 14:03:38+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,end_form,exported_lines:0
+msgid "Number of lines exported"
+msgstr "Nombre de lignes exportées"
+
+#. module: account_export_ebp
+#: field:account.move,exported_ebp:0
+msgid "Transfered to EBP"
+msgstr "Transféré vers EBP"
+
+#. module: account_export_ebp
+#: help:account.move,exported_ebp:0
+msgid "Indicates whether the move has already been exported to EBP or not. It is changed automatically."
+msgstr "Indique si l'écriture a été transférée dans EBP ou pas. Information mise à jour automatiquement."
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "''This wizard should only be used on accounting moves''"
+msgstr "\"Cet assistant ne doit être utilisé que sur les écritures comptables\""
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,end_form,exported_moves:0
+msgid "Number of moves exported"
+msgstr "Nombre d'écritures exportées"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,end_form,ignored_moves:0
+msgid "Number of moves ignored"
+msgstr "Nombre d'écritures ignorées"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Wrong Object"
+msgstr "Objet incorrect"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Move name \"%s\" is too long to be exported to EBP."
+msgstr "Le nom d'écriture \"%s\" est trop long pour être exporté vers EBP."
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Account code \"%s\" is too long to be exported to EBP."
+msgstr "Le code de compte \"%s\" est trop long pour être exporté vers EBP"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Path does not exist"
+msgstr "Le chemin n'existe pas"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,end_form,exported_accounts:0
+msgid "Number of accounts exported"
+msgstr "Nombre de comptes exportés"
+
+#. module: account_export_ebp
+#: model:ir.actions.wizard,name:account_export_ebp.account_export_ebp
+msgid "Export to EBP"
+msgstr "Transférer vers EBP"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,init,ignore_exported:0
+msgid "Ignore moves already exported"
+msgstr "Ignorer les écritures déjà transférées"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "''The path \"%s\" does not exist in the server's file system hierarchy.''"
+msgstr "''Le chemin \"%s\" n'existe pas dans la hiérarchie du système de fichier du serveur.''"
+
+#. module: account_export_ebp
+#: view:res.company:0
+msgid "EBP Accounting Software"
+msgstr "EBP Comptabilité"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Account code too long"
+msgstr "Code de compte trop long"
+
+#. module: account_export_ebp
+#: help:account.fiscalyear,ebp_nb:0
+msgid "This value should reflect the number of the fiscal year as used by the EBP accounting software. This should be set to the number of fiscal years recorded in EBP accounting before this one - So for the first year the number is 0, for the second year the number is 1 and so on. This is used for exporting accounting moves to EBP."
+msgstr "Cette valeur doit refléter le numéro d'exercice utilisé dans EBP Comptabilité. Indiquez le nombre d'exercice enregistrés dans EBP avant celui-ci : ainsi pour le premier exercice indiquez 0 ; pour le second indiquez 1 etc. Cette information est utilisée lors de l'exportation des écritures vers EBP."
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,init,ignore_draft:0
+msgid "Ignore draft moves"
+msgstr "Ignorer les écritures en brouillon"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Journal code too long"
+msgstr "Code de journal trop long"
+
+#. module: account_export_ebp
+#: view:res.company:0
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: account_export_ebp
+#: help:account.export.ebp,init,fiscalyear_id:0
+msgid "Only the moves in this fiscal will be exported"
+msgstr "Seules les écritures de cet exercice seront exportées"
+
+#. module: account_export_ebp
+#: wizard_view:account.export.ebp,end_form:0
+msgid "export_ebp_end"
+msgstr "export_ebp_end"
+
+#. module: account_export_ebp
+#: help:account.export.ebp,init,ignore_exported:0
+msgid "Check this box unless you want to re-export moves to EBP"
+msgstr "Cochez cette case sauf si vous désirez re-transférer des écritures vers EBP"
+
+#. module: account_export_ebp
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "XML non valide pour l'architecture de la vue !"
+
+#. module: account_export_ebp
+#: field:account.fiscalyear,ebp_nb:0
+msgid "EBP Fiscal Year Number"
+msgstr "Numéro d'exercice EBP"
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Journal code \"%s\" is too long to be exported to EBP."
+msgstr "Le code du journal \"%s\" est trop long pour être exporté vers EBP."
+
+#. module: account_export_ebp
+#: wizard_view:account.export.ebp,init:0
+msgid "export_ebp"
+msgstr "export_ebp"
+
+#. module: account_export_ebp
+#: help:res.company,ebp_folder:0
+msgid "This is the path to the company's folder in the EBP accounting software, as seen from the server's file system.\n"
+"On a typical setup, the accountant would host EBP's software on his computer and share the EBP folders (usually in C:\Documents and Settings\All Users\Documents\EBP\Partage\Dossiers\<YOUR_COMPANY>).\n"
+"This share would then be mounted (by means of SMB, or NFS for example) into the server's file system hierarchy.\n"
+"This is used for exporting accounting moves to EBP."
+msgstr "Le chemin du dossier de la Société dans EBP Comptabilité, tel qu'il est vu dans le système de fichiers du server.\n"
+"Habituellement le comptable héberge les logiciels EBP sur son ordinateur, et partage les dossiers EBP (généralement C:\Documents and Settings\All Users\Documents\EBP\Partage\Dossiers\<VOTRE_SOCIETE>).\n"
+"Ce partage réseau est alors monté (au moyen de SMB ou NFS par exemple) dans la hierarchie du système de fichiers du serveur.\n"
+"Ce paramètre sert lors de l'exportation des écritures comptables vers EBP."
+
+#. module: account_export_ebp
+#: model:ir.module.module,shortdesc:account_export_ebp.module_meta_information
+msgid "Export accounting moves to EBP's accounting software"
+msgstr "Exporter les écritures comptables vers EBP Comptabilité."
+
+#. module: account_export_ebp
+#: help:account.export.ebp,init,partner_accounts:0
+msgid "When this is checked, the partner's special code will be appended to the receivable and payable accounts' numbers in the exported files on every move line where a partner has been specified. By default it has no effect, but can by customized by OpenERP developers."
+msgstr "Si cette case est cochée, les codes spécifiques des partenaires seront accolés aux numéros des comptes payables et recevables dans les fichiers exportés pour chaque ligne d'écriture où un partenaire est précisé. Par défaut cela n'aura aucun effet, les développeurs OpenERP peuvent le personnaliser."
+
+#. module: account_export_ebp
+#: wizard_view:account.export.ebp,end_form:0
+msgid "Moves exported to EBP"
+msgstr "écritures exportées vers EBP"
+
+#. module: account_export_ebp
+#: wizard_view:account.export.ebp,end_form:0
+msgid "You may need to close and reopen the folder for EBP to detect the new data files."
+msgstr "Il vous faudra peut-être fermer et rouvrir le dossier pour qu'EBP détecte les nouveaux fichiers de données."
+
+#. module: account_export_ebp
+#: wizard_button:account.export.ebp,end_form,end:0
+msgid "OK"
+msgstr "Ok"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,init,partner_accounts:0
+msgid "Append partners' codes to accounts"
+msgstr "Accoler le code des partenaire aux comptes"
+
+#. module: account_export_ebp
+#: wizard_field:account.export.ebp,init,fiscalyear_id:0
+msgid "Fiscal year"
+msgstr "Exercice"
+
+#. module: account_export_ebp
+#: field:res.company,ebp_folder:0
+msgid "EBP folder"
+msgstr "Dossier EBP"
+
+#. module: account_export_ebp
+#: wizard_button:account.export.ebp,init,export:0
+msgid "Export"
+msgstr "Continuer"
+
+#. module: account_export_ebp
+#: wizard_button:account.export.ebp,init,end:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: account_export_ebp
+#: help:account.export.ebp,init,ignore_draft:0
+msgid "Please be aware that draft moves do not not have a move number attached to them. As a consequence, they might not be imported correctly into EBP accounting software"
+msgstr "Veuillez noter que les écritures en brouillon ne sont pas numérotées. Par conséquent elles peuvent ne pas être importées correctement dans EBP Comptabilité."
+
+#. module: account_export_ebp
+#: model:ir.module.module,description:account_export_ebp.module_meta_information
+msgid "This module lets you export accounting moves and accounts to flat text files readable by \"EBP Comptabilité\", an accounting software package widely spread in France.\n"
+"The files are in the text format for EBP's software, version 3 and above.\n"
+"\n"
+"The export feature is in the form of a wizard related to accounting moves, so that the person exporting the data can select which moves to export.\n"
+"\n"
+"Three pieces of configuration need to be set:\n"
+"- the company for each fiscal year\n"
+"- the path to folder for each company in EBP's software\n"
+"- the number of each fiscal year in these folders\n"
+"If those are properly set, the files should be imported automatically as simulation moves by the EBP software next time the folder is opened.\n"
+"\n"
+"Please note that the files will be generated in the server's file system hierarchy, which may demand some sort of remote access (CIFS mount points for example) if the machine hosting EBP's software is not the same.  \n"
+""
+msgstr "Ce module permet d'exporter les écritures comptables vers des fichiers plats lisibles par EBP Comptabilité, un logiciel de Comptabilité très répandu en France.\n"
+"Les fichiers sont au format text pour EBP Comptabilité, version 3 et suivantes.\n"
+"\n"
+"L'exportation se présente sous la forme d'un assistant associé aux écritures comptables, afin que la personne qui exporte les données puisse choisir quelles écritures exporter.\n"
+"\n"
+"Trois paramètres doivent être définis :\n"
+"- la société pour chaque exercice enregistré\n"
+"- le chemin du dossier de chaque Société dans EBP\n"
+"- le numéro d'exercice dans ces dossiers\n"
+"S'ils sont correctement définis, les fichiers devraient être importés automatiquement comme écritures de simulation dans EBP à la prochaine ouverture du dossier.\n"
+"\n"
+"Veuillez noter que les fichiers seront générés dans l'arborescence du système de fichier du serveur, ce qui peut exiger un accès à distance (par exemple un montage CIFS) si ce n'est pas cette machine qui héberge le logiciel EBP."
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/wizard/wizard_ebp.py:0
+#, python-format
+msgid "Move name too long"
+msgstr "Nom d'écriture trop long"
+
