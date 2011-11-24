@@ -18,22 +18,21 @@
 #
 ##############################################################################
 
-{
-    'name' : "Manage references at the partner's",
-    'version' : '0.1',
-    'author' : u'Numérigraphe SARL',
-    'category' : 'Custom',
-    'depends' : ['base',],
-    'description': '''This module Lets you enter the customer and supplier references attributed by the partners in their information systems.
-These references may be different for each company managed in the OpenERP database.''',
-    'demo_xml' : [],
-    'init_xml' : [],
-    'update_xml' : [
-        'partner_view.xml',
-        'security/ir.model.access.csv',
-    ],
-    'active': False,
-    'installable': True
-}
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+from osv import osv, fields
 
+class partner(osv.osv):
+    _inherit = 'res.partner'
+    _columns = {
+        'partner_supplier_ref': fields.property(None, method=True, type='char',
+            string='Our Supplier Ref.', size=128,
+            help="The reference attributed by the partner to the current "
+                 "company as a supplier of theirs.",
+            readonly=""),
+        'partner_customer_ref': fields.property(None, method=True, type='char',
+            string='Our Customer Ref.', size=128,
+            help="The reference attributed by the partner to the current "
+                 "company as a customer of theirs."),
+    }
+partner()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Add the partner refs to the partner form -->
+        <record model="ir.ui.view" id="view_partner_ref_inherit">
+            <field name="name">partner_ref.partner.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="/form/group/group[2]" position="attributes">
+                        <attribute name="col">4</attribute>
+                    </xpath>
+                    <xpath expr="/form/group/group[2]/field[@name='customer']" position="after">
+                        <field name="partner_supplier_ref" />
+                    </xpath>
+                    <xpath expr="/form/group/group[2]/field[@name='supplier']" position="after">
+                        <field name="partner_customer_ref" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>
