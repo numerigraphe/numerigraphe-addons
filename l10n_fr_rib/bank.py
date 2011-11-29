@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2011 OpenERP SA (<http://openerp.com>).
+#    Copyright (C) 2011 Numérigraphe SARL.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -54,23 +54,6 @@ class res_partner_bank(osv.osv):
                 return False
         return True
 
-    def search(self, cr, uid, args, offset=0, limit=None, order=None,
-               context=None, count=False):
-        """Search on type == rib"""
-        res = super(res_partner_bank, self).search(cr, uid, args, offset,
-           limit=limit, order=order, context=context, count=count)
-        if filter(lambda x:x[0] == 'acc_number' , args):
-            #get the value of the search
-            rib_value = filter(lambda x:x[0] == 'acc_number' , args)[0][2]
-            #get the other arguments of the search
-            args1 = filter(lambda x:x[0] != 'acc_number' , args)
-            #add the new criterion
-            args1 += [('rib', 'ilike', rib_value)]
-            #append the results to the older search
-            res += super(res_partner_bank, self).search(cr, uid, args1, offset,
-                limit, order, context=context, count=count)
-        return res
-
     def onchange_bank_id(self, cr, uid, ids, bank_id, context=None):
         """Change the bank code"""
         result = super(res_partner_bank, self).onchange_bank_id(cr, uid, ids, bank_id,
@@ -78,7 +61,7 @@ class res_partner_bank(osv.osv):
         if bank_id:
             bank = self.pool.get('res.bank').browse(cr, uid, bank_id, 
                                                     context=context)
-            result['bank_code'] = bank.code
+            result['bank_code'] = bank.rib_code
         return {'value': result}
 
     _columns = {
@@ -91,8 +74,6 @@ class res_partner_bank(osv.osv):
     
     def _construct_constraint_msg(self, cr, uid, ids, context=None):
         """Quote the data in the warning message"""
-        if self._check_key(cr, uid, ids):
-            return
         # Only process the first id
         if type(ids) not in (int, long):
             id = ids[0]
@@ -117,17 +98,16 @@ class res_bank(osv.osv):
 
     def name_search(self, cr, user, name, args=None, operator='ilike',
                     context=None, limit=80):
-        """Search by bank code"""
-        if args is None:
-            args = []
-        ids = []
-        if name:
-            ids = self.search(cr, user, [('name', operator, name)] + args,
+        """Search by bank code in addition to the standard search"""
+        # Get the standard results
+        results = super(res_bank, self).name_search(cr, user,
+             name, args=args ,operator=operator, context=context, limit=limit)
+        # Get additional results using the RIB code
+        ids = self.search(cr, user, [('rib_code', operator, name)],
                               limit=limit, context=context)
-        if not ids:
-            ids = self.search(cr, user, [('code', operator, name)] + args,
-                              limit=limit, context=context)
-        return self.name_get(cr, user, ids, context)
+        # Merge the results
+        results = list(set(results + self.name_get(cr, user, ids, context)))
+        return results
         
     _columns = {
         'rib_code': fields.char('RIB Bank Code', size=64),
