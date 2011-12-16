@@ -27,10 +27,10 @@ class partner(osv.osv):
     _inherit = 'res.partner'
 
     
-    def _get_ref_nb(self, cr, uid, ids, field_name, arg, context):
+    def _get_ref_nb(self, cr, uid, ids, field_name, arg, context=None):
         """ This function just returns an empty string as the EBP account number.
         It may be overridden in another module to make it more useful.""" 
-        return map (lambda x: (x,''),  ids)
+        return dict(map(lambda x: (x, ''),  ids))
 
     _columns = {
         # Account number suffix

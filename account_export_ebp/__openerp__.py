@@ -20,7 +20,7 @@
 
 {
     'name' : "Export accounting moves to EBP's accounting software",
-    'version' : '0.5',
+    'version' : '1.0',
     'author' : u'Numérigraphe SARL',
     'website': 'http://numerigraphe.com',
     'category': 'Generic Modules/Accounting',
@@ -37,7 +37,7 @@ If those are properly set, the files should be imported automatically as simulat
 
 Please note that the files will be generated in the server's file system hierarchy, which may demand some sort of remote access (CIFS mount points for example) if the machine hosting EBP's software is not the same.  
 ''',
-    'depends' : ['base', 'account'],
+    'depends' : ['account_accountant'],
     'init_xml' : [
     ],
     'update_xml' : [

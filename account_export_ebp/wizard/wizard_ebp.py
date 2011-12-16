@@ -302,7 +302,7 @@ def _export(self, cr, uid, data, context):
                     line['date_maturity'][5:7],
                     line['date_maturity'][2:4]) or '',
                 # Currency
-                fiscalyear.company_id.currency_id.code.replace(',', ''),
+                fiscalyear.company_id.currency_id.name.replace(',', ''),
             ]))
             moves_file.write('\r\n')
         exported_move_ids.append(move.id)
