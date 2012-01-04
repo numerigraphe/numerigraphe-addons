@@ -8,7 +8,7 @@
 			<field name="inherit_id" ref="base.view_partner_form" />
 			<field name="arch" type="xml">
 				<field name="title" position="after">
-					<field name="ape_id" context="{'short_category_name': True}"/>
+					<field name="ape_id" context="{'partner_category_display': 'short'}" domain="[('parent_id', 'child_of', 'NACE')]"/>
 				</field>
 			</field>
 		</record>
