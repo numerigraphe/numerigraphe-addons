@@ -33,3 +33,5 @@ class stock_picking(osv.osv):
                 self.write(cr, uid, picking.id, {'weight': weight, })
         return True
 stock_picking()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
