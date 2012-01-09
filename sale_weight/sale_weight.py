@@ -23,7 +23,7 @@
 from osv import osv, fields
 class sale_order(osv.osv):
     """Add the total net weight to the object "Sale Order"."""
-    
+
     _inherit = "sale.order"
 
     def _total_weight_net(self, cr, uid, ids, field_name, arg, context=None):
@@ -60,20 +60,25 @@ class sale_order(osv.osv):
     }
 sale_order()
 
-# Record the net weight of the order line
 class sale_order_line(osv.osv):
     """Add the net weight to the object "Sale Order Line"."""
+    
     _inherit = 'sale.order.line'
 
     def _weight_net(self, cr, uid, ids, field_name, arg, context=None):
         """Compute the net weight of the given Sale Order Lines."""
         result = {}
+        uom_obj = self.pool.get('product.uom')
         for line in self.browse(cr, uid, ids, context=context):
             result[line.id] = 0.0
-
-            if line.product_id:
-                result[line.id] += (line.product_id.weight_net
-                     * line.product_uom_qty / line.product_uom.factor)
+            if line.product_id and line.product_id.weight > 0.00:
+                qty = line.product_uom_qty
+                # Convert the qty to the right unit of measure
+                if line.product_uom.id <> line.product_id.uom_id.id:
+                    qty = uom_obj._compute_qty(cr, uid, line.product_uom.id,
+                                               line.product_uom_qty,
+                                               line.product_id.uom_id.id)
+                result[line.id] += qty
         return result
 
     _columns = {

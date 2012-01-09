@@ -20,7 +20,7 @@
 
 {
     'name' : 'Total net weight of an order',
-    'version' : '0.1',
+    'version' : '1.0',
     'author' : u'Numérigraphe SARL',
     'website': 'http://numerigraphe.com',
     'category': 'Generic Modules/Sales & Purchases',
