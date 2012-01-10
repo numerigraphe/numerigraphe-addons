@@ -27,45 +27,9 @@ class account_invoice(osv.osv):
 
     _inherit = 'account.invoice'
 
-    def _get_partner_categories(self, cr, uid, ids, field_name, args,
-        context={}):
-        """"Find the partner categories for the specified invoices"""
-        categories_by_invoice = {}
-        invoices = self.browse(cr, uid, ids, context=context)
-        for invoice in invoices:
-            categories_by_invoice[invoice.id] = (
-                 invoice.partner_id and
-                 [category.id for category in invoice.partner_id.category_id]
-             ) or []
-        return categories_by_invoice
-
-    def _partner_categories_search(self, cr, uid, obj, name, args, context={}):
-        """"Find invoices for partners in the specified categories"""
-        #XXX do we really have to return all the partners'ids? This can be big!
-            
-        for arg in args:
-            if arg[0] == 'partner_category_ids':
-                operator = arg[1]
-                search_term = arg[2]
-        if operator and search_term:
-            cat_obj = self.pool.get('res.partner.category')
-            category_ids = cat_obj.search(cr, uid,
-                [('name', operator, search_term)], context=context
-            )
-            children_ids = cat_obj.search(cr, uid,
-                [('parent_id', 'child_of', category_ids)], context=context
-            )
-            partner_ids = self.pool.get('res.partner').search(cr, uid,
-                [('category_id', 'in', children_ids)], context=context
-            )
-        else:
-            partner_ids = []
-        return [('partner_id', 'in', partner_ids)]
-
     _columns = {
-        'partner_category_ids': fields.function(_get_partner_categories,
-             fnct_search=_partner_categories_search, method=True, readonly=True,
-             type='many2many', relation='res.partner.category', select=True,
+        'partner_category_ids':  fields.related('partner_id', 'category_id',
+             type='many2many', relation='res.partner.category',
              string='Partner Categories'),
     }
 account_invoice()
