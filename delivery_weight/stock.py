@@ -19,19 +19,24 @@
 ##############################################################################
 
 from osv import fields, osv
+import decimal_precision as dp
 
-# Add a method to estimate the weight
 class stock_picking(osv.osv):
+    """Add the real weight"""
     _inherit = 'stock.picking'
-
-    def estimate_weight(self, cr, uid, ids, *args):
-        pickings = self.browse(cr, uid, ids)
-        for picking in pickings:
-            weight = 0.0
-            for move in picking.move_lines:
-                weight += move.product_id.weight * move.product_qty / move.product_uom.factor  
-                self.write(cr, uid, picking.id, {'weight': weight, })
+    
+    def action_confirm(self, cr, uid, ids, context=None):
+        """Estimate the real gross weight from the computed weight."""
+        super(stock_picking, self).action_confirm(cr, uid, ids, context=context)
+        for picking in self.browse(cr, uid, ids, context=context):
+            self.write(cr, uid, picking.id, {'weight_real': picking.weight},
+                       context=context)
         return True
+    
+    _columns = {
+        'weight_real': fields.float('Real Weight',
+                               digits_compute=dp.get_precision('Stock Weight'))
+    }
 stock_picking()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

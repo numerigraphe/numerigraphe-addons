@@ -10,8 +10,8 @@
 			<field name="arch" type="xml">
 				<field name="weight" position="replace">
 					<group col="4" colspan="2">
-						<field name="weight" />
-						<button name="estimate_weight" string="Estimate" type="object" />
+						<field name="weight_real" />
+						<field name="weight" string="Theorical weight"/>
 					</group>
 				</field>
 			</field>

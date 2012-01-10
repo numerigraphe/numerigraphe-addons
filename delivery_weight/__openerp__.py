@@ -19,16 +19,15 @@
 ##############################################################################
 
 {
-    'name' : 'Estimate the gross weight of a delivery',
-    'version' : '0.1',
+    'name' : 'Effective gross weight of a delivery',
+    'version' : '1.0',
     'author' : u'Numerigraphe',
     'category': 'Generic Modules/Sales & Purchases',
-    'depends': ['sale', 'delivery', ],
+    'depends': ['stock', 'delivery', ],
     'init_xml': [],
     'demo_xml': [],
     'update_xml': ['stock_view.xml'],
-    'description': """Adds a button to the picking form to estimate the total weight of a delivery using the unit gross weights of the products.
-This module automatically makes an estimate when pickings are created from sales orders.""",
+    'description': """Adds a new field to the packings to let users key in the effective weight of deliveries.""",
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
