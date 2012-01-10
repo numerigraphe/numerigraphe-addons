@@ -8,10 +8,23 @@
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<page string="Other data" position="inside">
+				<field name="note" position="after">
 					<separator colspan="4" string="The Customer is in the following Categories" />
 					<field name="partner_category_ids" colspan="4" nolabel="1" />
-				</page>
+				</field>
+			</field>
+		</record>
+		
+		<!-- Add the category to the search view -->
+        <record id="sale_search" model="ir.ui.view">
+            <field name="name">sale_partner_category.order.list.select</field>
+            <field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_sales_order_filter" />
+            <field name="type">search</field>
+			<field name="arch" type="xml">
+				<field name="partner_id" position="after">
+					<field name="partner_category_ids" operator="child_of"/>
+				</field>
 			</field>
 		</record>
 	</data>

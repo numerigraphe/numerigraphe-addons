@@ -20,7 +20,7 @@
 
 {
     'name': 'Search sales by partner category',
-    'version': '0.1',
+    'version': '1.0',
     'author' : u'Numérigraphe SARL',
     'website': 'http://numerigraphe.com',
     'category': 'Sale',
