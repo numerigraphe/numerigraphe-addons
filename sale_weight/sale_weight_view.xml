@@ -8,9 +8,9 @@
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<button name="button_dummy" position="after">
+				<field name="amount_untaxed" position="before">
 					<field name="total_weight_net" />
-				</button>
+				</field>
 			</field>
 		</record>
 
