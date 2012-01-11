@@ -1,0 +1,75 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* stock_available_for_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 5.0.16\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2011-10-28 16:10:05+0000\n"
+"PO-Revision-Date: 2011-10-28 16:10:05+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_available_for_sale
+#: view:product.product:0
+msgid "Expected Stock Variations"
+msgstr "Variations de stock attendues"
+
+#. module: stock_available_for_sale
+#: constraint:ir.ui.view:0
+msgid "Invalid XML for View Architecture!"
+msgstr "Invalid XML for View Architecture!"
+
+#. module: stock_available_for_sale
+#: model:ir.module.module,description:stock_available_for_sale.module_meta_information
+msgid "This module computes the quantities available for sale for a product in a given context.\n"
+"This is computed in real time as the virtual stock minus the sum of the quantities in Quotations (draft Sale Orders)."
+msgstr "This module computes the quantities available for sale for a product in a given context.\n"
+"This is computed in real time as the virtual stock minus the sum of the quantities in Quotations (draft Sale Orders)."
+
+#. module: stock_available_for_sale
+#: field:product.product,quoted_qty:0
+msgid "Quoted"
+msgstr "En devis"
+
+#. module: stock_available_for_sale
+#: help:product.product,available_for_sale:0
+msgid "Stock for this Product that has not yet been included in any Quotation (Draft Sale Order) (Computed as: Virtual Stock - Quoted).\n"
+"In a context with a single Shop, this includes the Quotation processed at this Shop.\n"
+"In a context with a single Warehouse, this includes Quotation processed in any Shop using this Warehouse.\n"
+"In a context with a single Stock Location, this includes Quotation processed at any shop using any Warehouse using this Location, or any of its children, as it's Stock Location.\n"
+"Otherwise, this includes every Quotation."
+msgstr "Stock de ce produit pour lequel aucun devis (commande de vente en brouillon) n'a été établi (calculé comme : stock virtuel - devis).\n"
+"Dans un contexte concernant un magasin, cela comprend tous les devis traités dans ce magasin.\n"
+"Dans un contexte concernant un entrepôt, cela comprend les devis traités dans les magasins utilisant cet entrepôt.\n"
+"Dans un contexte concernant un emplacement de stock, cela comprend les devis traités dans les magasins utilisant les entrepôts dont cet emplacement, ou un de ses enfants, est l'emplacement de stock.\n"
+"Sinon, cela comprend tous les devis."
+
+#. module: stock_available_for_sale
+#: model:ir.module.module,shortdesc:stock_available_for_sale.module_meta_information
+msgid "Compute the stock available for sale"
+msgstr "Calcule le stock disponible à la vente"
+
+#. module: stock_available_for_sale
+#: help:product.product,quoted_qty:0
+msgid "Total quantity of this Product that have been included in Quotations (Draft Sale Orders).\n"
+"In a context with a single Shop, this includes the Quotation processed at this Shop.\n"
+"In a context with a single Warehouse, this includes Quotation processed in any Shop using this Warehouse.\n"
+"In a context with a single Stock Location, this includes Quotation processed at any shop using any Warehouse using this Location, or any of its children, as it's Stock Location.\n"
+"Otherwise, this includes every Quotation."
+msgstr "Quantité totale de ce produit pour laquelle un devis (commande de vente en brouillon) a été établi.\n"
+"Dans un contexte concernant un magasin, cela comprend tous les devis traités dans ce magasin.\n"
+"Dans un contexte concernant un entrepôt, cela comprend les devis traités dans les magasins utilisant cet entrepôt.\n"
+"Dans un contexte concernant un emplacement de stock, cela comprend les devis traités dans les magasins utilisant les entrepôts dont cet emplacement, ou un de ses enfants, est l'emplacement de stock.\n"
+"Sinon, cela comprend tous les devis."
+
+#. module: stock_available_for_sale
+#: field:product.product,available_for_sale:0
+msgid "Available for Sale"
+msgstr "Disponible à la vente"
+
