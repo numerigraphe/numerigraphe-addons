@@ -23,12 +23,12 @@ from osv import osv, fields
 class partner(osv.osv):
     _inherit = 'res.partner'
     _columns = {
-        'partner_supplier_ref': fields.property(None, method=True, type='char',
+        'property_supplier_ref': fields.property(None, method=True, type='char',
             string='Our Supplier Ref.', size=128,
             help="The reference attributed by the partner to the current "
                  "company as a supplier of theirs.",
             readonly=""),
-        'partner_customer_ref': fields.property(None, method=True, type='char',
+        'property_customer_ref': fields.property(None, method=True, type='char',
             string='Our Customer Ref.', size=128,
             help="The reference attributed by the partner to the current "
                  "company as a customer of theirs."),

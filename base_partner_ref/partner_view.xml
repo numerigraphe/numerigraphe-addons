@@ -12,10 +12,10 @@
                         <attribute name="col">4</attribute>
                     </xpath>
                     <xpath expr="/form/group/group[2]/field[@name='customer']" position="after">
-                        <field name="partner_supplier_ref" />
+                        <field name="property_supplier_ref" />
                     </xpath>
                     <xpath expr="/form/group/group[2]/field[@name='supplier']" position="after">
-                        <field name="partner_customer_ref" />
+                        <field name="property_customer_ref" />
                     </xpath>
                 </data>
             </field>
