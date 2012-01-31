@@ -9,8 +9,9 @@
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/notebook/page/field[@name='name']" position="after">
-                        <field name="locked" select="2"/>
+                    <xpath expr="//separator[@string='Traceability']" position="replace">
+                        <separator string="Quality Control and traceability" colspan="4"/>
+                        <field name="locked" colspan="4"/>
                     </xpath>
                 </data>
             </field>

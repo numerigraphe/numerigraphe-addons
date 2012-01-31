@@ -63,7 +63,7 @@ class stock_production_lot(osv.osv):
     def create(self, cr, uid, values, context=None):
         """Lock the lot if the product category requires it"""
         product = self.pool.get("product.product").browse(cr, uid,
-                                                          values['stock_production_lot'],
+                                                          values['product_id'],
                                                           context=context)
         values['locked'] = product.product_tmpl_id.categ_id.need_quality
         return super(stock_production_lot, self).create(cr, uid, values, context=context)
@@ -84,9 +84,9 @@ class stock_move(osv.osv):
             return True
         message = ""
         for move in self.browse(cr, uid, ids, context=context):
-            if move.prodlot_id and move.prodlot_id.locked:
+            if move.prodlot_id and move.prodlot_id.locked and move.state == 'done':
                 message += _(" - Lot %s: %s.\n") % (
-                    move.prodlot_id.name, move.product.name)
+                    move.prodlot_id.name, move.product_id.name)
         if message:
             raise osv.except_osv(_('Production Lot Locked'),
                                  _('One or more lots are awaiting quality control and cannot be moved:\n%s' % message))
@@ -94,9 +94,8 @@ class stock_move(osv.osv):
     
     _constraints = [
                     (_check_prodlot,
-                     "One or more lots are awaiting quality control and cannot be moved."),
+                     "One or more lots are awaiting quality control and cannot be moved.", ['prodlot_id']),
                    ]
-
 stock_move()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
