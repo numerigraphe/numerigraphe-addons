@@ -89,7 +89,7 @@ class stock_move(osv.osv):
                     move.prodlot_id.name, move.product_id.name)
         if message:
             raise osv.except_osv(_('Production Lot Locked'),
-                                 _('One or more lots are awaiting quality control and cannot be moved:\n%s' % message))
+                                 _('One or more lots are awaiting quality control and cannot be moved:\n%s') % message)
         return True
     
     _constraints = [
