@@ -18,7 +18,24 @@
 #
 ##############################################################################
 
-
-import wizard
+{
+    'name' : 'Lock production lots',
+    'version' : '1.0',
+    'author' : u'Sylëam, Numérigraphe',
+    'category': 'Custom',
+    'description': "This module lets users lock a production lot, forbidding any new stock move from being confirmed. Based on custom module by Sylëam.",
+    'depends' : [
+                 'stock',
+                ],
+    'init_xml' : [
+                 ],
+    'update_xml' : [
+                    'stock_view.xml',
+                    'product_view.xml',
+                   ],
+    'active': False,
+    'installable': True,
+    'license' : 'GPL-3',
+}
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
