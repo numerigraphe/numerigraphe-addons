@@ -26,7 +26,7 @@ class stock_production_lot(osv.osv):
     _inherit = 'stock.production.lot'
 
     _columns = {
-        'locked': fields.boolean('Validation Wait', help="No move can be created if checked"),
+        'locked': fields.boolean('Awaiting Quality Control', help="Checking this indicates that this Production Lot is locked until Quality Control is made, and no Stock Move can be created."),
     }
 
     _defaults = {
@@ -35,12 +35,12 @@ class stock_production_lot(osv.osv):
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
         """
-        Inherit this methode to do like active field, we want select only the unlocked lot
+        Inherit this method to do like active field, we want select only the unlocked lot.
         In the context the value locked_test can be let search the unlocked and the locked lot
         """
         if context is None:
             context = {}
-        # make a copy of args because it is a list, we dont want the modification of args be returned
+        # make a copy of args because it is a list, we don't want to return changes
         if args:
             new_args = list(args)
         else:
@@ -59,7 +59,6 @@ class stock_production_lot(osv.osv):
 
     def unlock(self, cr, uid, id, context=None):
         self.write(cr, uid, [id], {'locked': False}, context=context)
-
 stock_production_lot()
 
 class stock_move(osv.osv):
@@ -78,33 +77,17 @@ class stock_move(osv.osv):
         message = ""
         for move in self.browse(cr, uid, ids, context=context):
             if move.prodlot_id and move.prodlot_id.locked:
-                message += _('the move (%d, %s) has got a locked production lot (%d, %s)\n') % (move.id, move.name, move.prodlot_id.id, move.prodlot_id.name)
+                message += _(" - Lot %s: %s.\n") % (
+                    move.prodlot_id.name, move.product.name)
         if message:
-            raise osv.except_osv(_('Forbiden move'), _('You can\'t move the locked production lot\n\n') + message)
+            raise osv.except_osv(_('Production Lot Locked'),
+                                 _('One or more lots are awaiting quality control and cannot be moved:\n%s' % message))
         return True
-
-    def create(self, cr, uid, values, context=None):
-        """
-        Check if the lot can be move
-        """
-        id = super(stock_move, self).create(cr, uid, values, context=context)
-        self._check_prodlot(cr, uid, [id], context=context)
-        return id
-
-    def write(self, cr, uid, ids, values, context=None):
-        """
-        Inherit this method to check if the lot can be move
-        """
-        product_product_obj = self.pool.get('product.product')
-        product_uom_obj = self.pool.get('product.uom')
-        if not isinstance(ids, list):
-            ids = [ids]
-        for id in ids:
-            vals = values.copy()
-            if not super(stock_move, self).write(cr, uid, [id], vals, context=context):
-                return False
-        self._check_prodlot(cr, uid, ids, context=context)
-        return True
+    
+    _constraints = [
+                    (_check_prodlot,
+                     "One or more lots are awaiting quality control and cannot be moved."),
+                   ]
 
 stock_move()
 

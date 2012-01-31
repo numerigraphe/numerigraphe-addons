@@ -27,7 +27,7 @@ class product_category(osv.osv):
     _inherit = 'product.category'
 
     _columns = {
-        'need_quality': fields.boolean('Need Quality', help="If checked, the product linked send to quality service"),
+        'need_quality': fields.boolean('Quality Control', help="If checked, new production lots will be locked by default, allowing quality control to take place."),
     }
 
     _defaults = {
