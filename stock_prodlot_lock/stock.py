@@ -59,6 +59,14 @@ class stock_production_lot(osv.osv):
 
     def unlock(self, cr, uid, id, context=None):
         self.write(cr, uid, [id], {'locked': False}, context=context)
+        
+    def create(self, cr, uid, values, context=None):
+        """Lock the lot if the product category requires it"""
+        product = self.pool.get("product.product").browse(cr, uid,
+                                                          values['stock_production_lot'],
+                                                          context=context)
+        values['locked'] = product.product_tmpl_id.categ_id.need_quality
+        return super(stock_production_lot, self).create(cr, uid, values, context=context)
 stock_production_lot()
 
 class stock_move(osv.osv):
