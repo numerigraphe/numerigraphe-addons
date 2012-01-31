@@ -16,5 +16,18 @@
                 </data>
             </field>
         </record>
+        
+        <record model="ir.ui.view" id="search_product_lot_filter">
+            <field name="name">Production Lots Filter</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//filter[@name='available']" position="after">
+                        <filter icon="terp-check" name="locked" string="Locked" domain="[('locked', '&gt;', 0)]" help="Locked Product Lots" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
     </data>
 </openerp>
