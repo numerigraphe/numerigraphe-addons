@@ -84,7 +84,7 @@ class stock_move(osv.osv):
             return True
         message = ""
         for move in self.browse(cr, uid, ids, context=context):
-            if move.prodlot_id and move.prodlot_id.locked and move.state == 'done':
+            if move.prodlot_id and move.prodlot_id.locked and move.location_id.usage != 'supplier' and move.state == 'done':
                 message += _(" - Lot %s: %s.\n") % (
                     move.prodlot_id.name, move.product_id.name)
         if message:
