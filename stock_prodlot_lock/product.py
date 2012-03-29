@@ -62,4 +62,19 @@ class product_category(osv.osv):
         return super(product_category, self).write(cr, uid, ids, values, context=context)
 product_category()
 
+class product_template(osv.osv):
+    
+    _inherit = 'product.template'
+    
+    _columns = {
+        'state': fields.selection([('',''),
+            ('draft', 'In Development'),
+            ('first', 'First in Use'),
+            ('sellable','Normal'),
+            ('end','End of Lifecycle'),
+            ('obsolete','Obsolete')], 'Status', help="Tells the user if he can use the product or not.")
+    }
+    
+product_template()
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
