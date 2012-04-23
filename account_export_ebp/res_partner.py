@@ -25,19 +25,12 @@ from osv import osv, fields
 
 class partner(osv.osv):
     _inherit = 'res.partner'
-
     
-    def _get_ref_nb(self, cr, uid, ids, field_name, arg, context=None):
-        """ This function just returns an empty string as the EBP account number.
-        It may be overridden in another module to make it more useful.""" 
-        return dict(map(lambda x: (x, ''),  ids))
-
     _columns = {
-        # Account number suffix
-        'ref_nb': fields.function(_get_ref_nb, type="char",
-              string='EBP Account Suffix', method=True, size=64,
-              help="This field makes the second part of the Partner's Account in EBP"),
-    }
+        # Partner's account number in EBP
+        'ref_nb': fields.char("Partner's Account suffix in EBP", size=64,
+            help="When exporting Entries to EBP, this suffix will be appended "
+                 "to the Account Number to make it a Partner Account.",),    }
 
 partner()
 
