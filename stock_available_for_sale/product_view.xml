@@ -2,17 +2,18 @@
 <openerp>
 	<data>
 		<!-- Add the quantity available for sale in the product form -->
-        <record id="view_product_form_available_for_sale" model="ir.ui.view">
-            <field name="name">product.form.available_for_sale</field>
-            <field name="model">product.product</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="stock.view_normal_stock_property_form"/>
-            <field name="arch" type="xml">
-            	<data>
-                    <xpath expr="/form/notebook/page/group/field[@name='virtual_available']" position="after">
-                        <newline/>
-                        <field name="available_for_sale"/>
-                    </xpath>
+		<record id="view_product_form_available_for_sale" model="ir.ui.view">
+			<field name="name">product.form.available_for_sale</field>
+			<field name="model">product.product</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_normal_stock_property_form" />
+			<field name="arch" type="xml">
+				<data>
+					<xpath expr="/form/notebook/page/group/field[@name='virtual_available']"
+						position="after">
+						<newline />
+						<field name="available_for_sale" />
+					</xpath>
                     <xpath expr="/form/notebook/page/group[@name='lot']" position="after">
                     	<!-- this should be refactored if our patch is accepted upstream: https://code.launchpad.net/~numerigraphe/openobject-addons/trunk-stock-view-variations -->
 	                    <group colspan="2" col="2" name="stock_variations" groups="base.group_extended">
@@ -22,28 +23,27 @@
 	                        <field name="quoted_qty"/>
 	                    </group>
                     </xpath>
-                </data>
-            </field>
-        </record>
-        
+				</data>
+			</field>
+		</record>
+
 		<!-- Add the quantity available for sale in the product list -->
-        <record id="view_product_tree_available_for_sale" model="ir.ui.view">
-            <field name="name">product.tree.available_for_sale</field>
-            <field name="model">product.product</field>
-            <field name="type">tree</field>
-            <field name="inherit_id" ref="product.product_product_tree_view"/>
-            <field name="arch" type="xml">
-    			<!-- in v6+ we could make the lines unavailable for sale orange
-	        		<xpath expr="/tree" position="attributes">
-	                	<attribute name="editable">red:virtual_available&lt;0;orange:available_for_sale&lt;0;blue:state in ['draft', 'end', 'obsolete']</attribute>
-	                </xpath>
-                -->
-            	<data>
-                    <xpath expr="/tree/field[@name='virtual_available']" position="after">
-                        <field name="available_for_sale"/>
-                    </xpath>
-                </data>
-            </field>
-        </record>
+		<record id="view_product_tree_available_for_sale" model="ir.ui.view">
+			<field name="name">product.tree.available_for_sale</field>
+			<field name="model">product.product</field>
+			<field name="type">tree</field>
+			<field name="inherit_id" ref="product.product_product_tree_view" />
+			<field name="arch" type="xml">
+				<data>
+					<xpath expr="/tree" position="attributes">
+						<attribute name="colors">orange:available_for_sale&lt;0 and virtual_available&gt;=0;red:virtual_available&lt;0;blue:state in ['draft', 'end', 'obsolete']</attribute>
+					</xpath>
+					<xpath expr="/tree/field[@name='virtual_available']"
+						position="after">
+						<field name="available_for_sale" />
+					</xpath>
+				</data>
+			</field>
+		</record>
 	</data>
 </openerp>
