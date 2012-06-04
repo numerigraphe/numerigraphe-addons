@@ -31,6 +31,11 @@ msgid "Locked"
 msgstr "Bloqué"
 
 #. module: stock_prodlot_lock
+#: selection:product.template,state:0
+msgid "First in Use"
+msgstr "Première utilisation"
+
+#. module: stock_prodlot_lock
 #: code:addons/stock_prodlot_lock/stock.py:88
 #, python-format
 msgid " - Lot %s: %s.\n"
