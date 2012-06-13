@@ -21,6 +21,18 @@
 from osv import osv, fields
 from tools.translate import _
 
+class stock_location(osv.osv):
+    _inherit = 'stock.location'
+
+    _columns = {
+        'receipt': fields.boolean('Receipt Location', help="Checking this indicates if this location is receipt type."),
+    }
+
+    _defaults = {
+         'receipt': lambda *a: False,
+    }
+stock_location()
+
 class stock_production_lot(osv.osv):
 
     _inherit = 'stock.production.lot'
@@ -90,7 +102,8 @@ class stock_move(osv.osv):
         for move in self.browse(cr, uid, ids, context=context):
             if (move.prodlot_id and move.prodlot_id.locked
                 and move.location_id.usage not in ['supplier', 'inventory','production']
-                and move.location_dest_id != 'inventory'
+                and move.location_dest_id.usage != 'inventory'
+                and not(move.location_dest_id.usage == 'internal' and move.location_dest_id.receipt == True)
                 and move.state == 'done' ):
                 message += _(" - Lot %s: %s.\n") % (
                     move.prodlot_id.name, move.product_id.name)
