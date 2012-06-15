@@ -21,6 +21,18 @@
 from osv import osv, fields
 from tools.translate import _
 
+class stock_location(osv.osv):
+    _inherit = 'stock.location'
+
+    _columns = {
+        'receipt': fields.boolean('Receipt Location', help="Checking this indicates if this location is receipt type."),
+    }
+
+    _defaults = {
+         'receipt': lambda *a: False,
+    }
+stock_location()
+
 class stock_production_lot(osv.osv):
 
     _inherit = 'stock.production.lot'
@@ -65,10 +77,11 @@ class stock_production_lot(osv.osv):
         product_obj = self.pool.get("product.product")
         product = product_obj.browse(cr, uid, values['product_id'], context=context)
         new_values = values.copy()
-        if product.product_tmpl_id.state == 'first':
-            new_values['locked'] = True
-        else:
-            new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
+        if 'locked' not in new_values:
+            if product.product_tmpl_id.state == 'first':
+                new_values['locked'] = True
+            else:
+                new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
         return super(stock_production_lot, self).create(cr, uid, new_values, context=context)
 stock_production_lot()
 
@@ -88,8 +101,9 @@ class stock_move(osv.osv):
         message = ""
         for move in self.browse(cr, uid, ids, context=context):
             if (move.prodlot_id and move.prodlot_id.locked
-                and move.location_id.usage not in ['supplier', 'inventory']
-                and move.location_dest_id != 'inventory'
+                and move.location_id.usage not in ['supplier', 'inventory','production']
+                and move.location_dest_id.usage != 'inventory'
+                and not(move.location_dest_id.usage == 'internal' and move.location_dest_id.receipt == True)
                 and move.state == 'done' ):
                 message += _(" - Lot %s: %s.\n") % (
                     move.prodlot_id.name, move.product_id.name)
