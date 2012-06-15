@@ -20,9 +20,9 @@
 
 {
     'name' : 'Copy Translations to English',
-    'version' : '0.1',
+    'version' : '1.0',
     'author' : u'Numérigraphe',
-    'category' : 'Custom',
+    'category' : 'Translation',
     'depends' : [],
     'description': """\
 This module lets you copy all the translations of a language to English.
@@ -37,7 +37,9 @@ this module adds a wizard in Administration > Translations to let you copy
 all the strings in one language to the English translations.""",
     'demo_xml' : [],
     'init_xml' : [],
-    'update_xml' : ['copy_translations_wizard.xml'],
+    'update_xml' : [
+                    'wizard/copy_translations.xml',
+                    ],
     'active': False,
     'installable': True,
     'license' : 'GPL-3',

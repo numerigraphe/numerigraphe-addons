@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="action_wizard_copy_translation" model="ir.actions.act_window">
+            <field name="name">Copy Translations to English</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.translation.copy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_wizard_copy_translation" id="menu_wizard_copy_translations" parent="base.menu_translation"/>
+    </data>
+</openerp>
