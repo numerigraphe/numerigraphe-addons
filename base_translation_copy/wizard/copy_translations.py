@@ -98,6 +98,13 @@ class wizard_copy_translations(osv.osv_memory):
         logger.notifyChannel(self._name, netsvc.LOG_INFO, "Done")
         return self.write(cr, uid, ids, {'state':'done'}, context=context)
 
+    def run(self, cr, uid, lang, delete_bogus=False, context=None):
+        """Run the wizard on a given language - useful as a cron task"""
+        id = self.create(cr, uid, {'lang':lang, 'delete_bogus': delete_bogus},
+                         context=context)
+        self.act_copy(cr, uid, [id], context=context)
+        return True
+    
     _name = "wizard.translation.copy"
     _columns = {
             'lang': fields.selection(_get_languages, 'Language', required=True,

@@ -39,6 +39,7 @@ all the strings in one language to the English translations.""",
     'init_xml' : [],
     'update_xml' : [
                     'wizard/copy_translations.xml',
+                    'base_translation_copy_data.xml',
                     ],
     'active': False,
     'installable': True,
