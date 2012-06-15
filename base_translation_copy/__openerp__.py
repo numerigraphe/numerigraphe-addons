@@ -38,7 +38,7 @@ all the strings in one language to the English translations.""",
     'demo_xml' : [],
     'init_xml' : [],
     'update_xml' : [
-                    'wizard/copy_translations.xml',
+                    'wizard/copy_translations_view.xml',
                     'base_translation_copy_data.xml',
                     ],
     'active': False,

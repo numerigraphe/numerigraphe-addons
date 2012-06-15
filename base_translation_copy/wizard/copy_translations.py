@@ -25,32 +25,34 @@ import netsvc
 from osv import fields, osv
 from tools.translate import _
 
-class BogusTranslation(Exception):
-    """Exception class for bogus translation entries"""
-    pass
-
 class wizard_copy_translations(osv.osv_memory):
+    """Wizard to copy the translations from a language to en_US
+    
+    When object model fields are translatable, only the English version is
+    stored in the database table.
+    The translations into other languages are stored as
+    ir_translation object resources.
+    This method will copy a translation to the English version in every
+    object."""
 
     def _get_languages(self, cr, uid, context):
+        """Find which languages are maintained in the database"""
         lang_obj = pooler.get_pool(cr.dbname).get('res.lang')
         ids = lang_obj.search(cr, uid, ['&', ('active', '=', True), ('code', '<>', 'en_US'), ('translatable', '=', True), ])
         langs = lang_obj.browse(cr, uid, ids)
         return [(lang.code, lang.name) for lang in langs]
     
     def act_destroy(self, *args):
+        """Close the wizard window"""
         return {'type':'ir.actions.act_window_close' }
 
     def act_copy(self, cr, uid, ids, context=None):
-        """
-        Copy the translations from a language to en_US.
-        
-        When object model fields are translatable, only the English version is
-        stored in the database table.
-        The translations into other languages are stored as
-        ir_translation object resources.
-        This method will copy a translation to the English version in every
-        object."""
-        
+        """Copy the translations from a language to en_US"""
+    
+        class BogusTranslation(Exception):
+            """Exception class for bogus translation entries"""
+            pass
+
         logger = netsvc.Logger()
         wizard = self.browse(cr, uid, ids)[0]
         trans_obj = pooler.get_pool(cr.dbname).get('ir.translation')
@@ -90,7 +92,7 @@ class wizard_copy_translations(osv.osv_memory):
                                  context=None)
             except BogusTranslation as error:
                 # Useless translation detected
-                logger.notifyChannel(self._name, netsvc.LOG_DEBUG, 
+                logger.notifyChannel(self._name, netsvc.LOG_DEBUG,
                                      "Bogus translation with id %d: %s" % tuple(error.args))
                 if wizard.delete_bogus:
                     trans_obj.unlink(cr, uid, error.args[0], context=None)
