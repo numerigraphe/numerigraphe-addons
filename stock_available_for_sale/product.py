@@ -19,7 +19,7 @@
 ##############################################################################
 
 from osv import osv, fields
-
+import decimal_precision as dp
 
 class product_product(osv.osv):
     """Add the computation for the stock available for sale"""
@@ -47,13 +47,13 @@ class product_product(osv.osv):
             date_str = ''
             date_args = ()
             if from_date and to_date:
-                date_str = "AND COALESCE(sale_order_line.requested_date, sale_order_line.date_order) >= %s AND COALESCE(sale_order_line.requested_date, sale_order_line.date_order) <= %s "
+                date_str = "AND COALESCE(sale_order.requested_date, sale_order.date_order) >= %s AND COALESCE(sale_order.requested_date, sale_order.date_order) <= %s "
                 date_args = (from_date, to_date)
             elif from_date:
-                date_str = "AND COALESCE(sale_order_line.requested_date, sale_order_line.date_order) >= %s "
+                date_str = "AND COALESCE(sale_order.requested_date, sale_order.date_order) >= %s "
                 date_args = (from_date,)
             elif to_date:
-                date_str = "AND COALESCE(sale_order_line.requested_date, sale_order_line.date_order) <= %s "
+                date_str = "AND COALESCE(sale_order.requested_date, sale_order.date_order) <= %s "
                 date_args = (to_date,)
 
             # Limit the search to some shops according to the context
@@ -67,7 +67,7 @@ class product_product(osv.osv):
                 else:
                     location_ids = context['location']
                 # Add the children locations
-                if context.get('compute_child',True):
+                if context.get('compute_child', True):
                     child_location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids)])
                     location_ids = child_location_ids or location_ids
                 # Get the corresponding Shops
@@ -76,8 +76,8 @@ class product_product(osv.osv):
                                 "SELECT id "
                                 "FROM stock_warehouse "
                                 "WHERE lot_stock_id IN %s)",
-                            (tuple(location_ids),) )
-                res_location=cr.fetchone()
+                            (tuple(location_ids),))
+                res_location = cr.fetchone()
                 if res_location:
                     shop_ids.append(res_location)
                 else:
@@ -90,7 +90,7 @@ class product_product(osv.osv):
                            "FROM sale_shop "
                            "WHERE warehouse_id = %s",
                            (int(context['warehouse']),))
-                res_wh=cr.fetchone()
+                res_wh = cr.fetchone()
                 if res_wh:
                     shop_ids.append(res_wh)
                 else:
@@ -101,10 +101,8 @@ class product_product(osv.osv):
                 shop_ids.append(context['shop'])
             # Build the SQL to restrict to the selected shops
             shop_str = ''
-            shop_from = ''
             shop_args = ()
             if shop_ids:
-                shop_from = "INNER JOIN sale_order ON (sale_order_line.order_id = sale_order.id)" 
                 shop_str = 'AND sale_order.shop_id IN %s'
                 shop_args = (tuple(shop_ids),)
             
@@ -112,7 +110,7 @@ class product_product(osv.osv):
             cr.execute(
                 "SELECT sum(product_uom_qty), product_id, product_uom "
                 "FROM sale_order_line "
-                      + shop_from + 
+                "    INNER JOIN sale_order ON (sale_order_line.order_id = sale_order.id)" 
                 "WHERE product_id in %s "
                 "      AND sale_order_line.state = 'draft' "
                        + date_str + shop_str + 
@@ -157,8 +155,9 @@ class product_product(osv.osv):
         return res
 
     _columns = {
-        'available_for_sale': fields.function(_product_available, method=True,
-            multi='qty_available_for_sale', type='float', digits=(14, 4),
+        'available_for_sale': fields.function(
+            _product_available, method=True, multi='qty_available_for_sale',
+            type='float', digits_compute=dp.get_precision('Product UoM'),
             string='Available for Sale',
             help="Stock for this Product that has not yet been included in any "
                  "Quotation (Draft Sale Order) (Computed as: Virtual Stock - "
@@ -172,8 +171,9 @@ class product_product(osv.osv):
                  "this Location, or any of its children, as it's Stock "
                  "Location.\n"
                  "Otherwise, this includes every Quotation."),
-        'quoted_qty': fields.function(_product_available, method=True,
-            multi='qty_available_for_sale', type='float', digits=(14, 4),
+        'quoted_qty': fields.function(
+            _product_available, method=True, multi='qty_available_for_sale',
+            type='float', digits_compute=dp.get_precision('Product UoM'),
             string='Quoted',
             help="Total quantity of this Product that have been included in "
                  "Quotations (Draft Sale Orders).\n"
