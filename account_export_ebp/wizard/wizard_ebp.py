@@ -20,6 +20,7 @@
 
 import os
 import codecs
+import smbc
 
 import wizard
 import pooler
@@ -136,20 +137,27 @@ def _export(self, cr, uid, data, context):
     logger.notifyChannel("ebp", netsvc.LOG_DEBUG, "Form data: %s" %
         data['form'])
 
+    # Stream writer to convert Unicode to Windows Latin-1
+    win_writer = codecs.getwriter('cp1252')
+
     # Read the EBP year number name from the selected fiscal year
     fiscalyear = pool.get('account.fiscalyear').browse(cr, uid,
         data['form']['fiscalyear_id'], context)
-
-    # Construct the path where files will be stored 
-    path = os.sep.join([fiscalyear.company_id.ebp_folder or '',
-        'Compta.%s' % fiscalyear.ebp_nb])
+    company = fiscalyear.company_id
+    
+    # Construct the URI where files will be stored
+    path = '%s/Compta.%s' % (company.ebp_uri, fiscalyear.ebp_nb)
     # Sanity checks
     if data['model'] != 'account.move':
         raise wizard.except_wizard(_('Wrong Object'),
             _('''This wizard should only be used on accounting moves'''))
-    if not os.path.exists(path):
-        raise wizard.except_wizard(_('Path does not exist'),
-           _('''The path "%s" does not exist in the server's file system hierarchy.''') % path)
+
+    # Connect to the network share
+    win_share = smbc.Context(
+        auth_fn=lambda server, share, workgroup, username, password: 
+            (fiscalyear.company_id.ebp_domain,
+             fiscalyear.company_id.ebp_username,
+             fiscalyear.company_id.ebp_password))
 
     # dictionary to store accounts while we loop through move lines
     accounts_data = {}
@@ -157,7 +165,9 @@ def _export(self, cr, uid, data, context):
     l = 0
     moves = pool.get('account.move').browse(cr, uid, data['ids'], context)
     # The move summaries will be written to a CSV file encoded in win-latin-1
-    moves_file = codecs.open(os.sep.join([path, 'ECRITURES.TXT']), 'w', 'cp1252')
+    # XXX we should report errors more cleanly to the users here
+    moves_file = win_writer(win_share.creat('%s/ECRITURES.TXT' % path))
+    
     exported_move_ids = []
     ignored_move_ids = []
     for move in moves:
@@ -319,8 +329,7 @@ def _export(self, cr, uid, data, context):
         (l, len(exported_move_ids), path, len(ignored_move_ids)))
 
     # Write the accounts to a CSV file encoded in windows latin-1
-    accounts_file = codecs.open(os.sep.join([path, 'COMPTES.TXT']), 'w',
-        'cp1252')
+    accounts_file = win_writer(win_share.creat('%s/COMPTES.TXT' % path))
     for account_nb, account in accounts_data.iteritems():
         accounts_file.write(','.join([
             account_nb.replace(',', ''), # Account number
