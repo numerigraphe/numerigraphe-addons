@@ -26,11 +26,14 @@ class res_company(osv.osv):
     """Add parameters to export accounting moves to EBP's software"""
     _inherit = 'res.company'
     _columns = {
-        'ebp_folder': fields.char('EBP folder', size = 256,
-            help = """This is the path to the company's folder in the EBP accounting software, as seen from the server's file system.
-On a typical setup, the accountant would host EBP's software on his computer and share the EBP folders (usually in C:\Documents and Settings\All Users\Documents\EBP\Partage\Dossiers\<YOUR_COMPANY>).
-This share would then be mounted (by means of SMB, or NFS for example) into the server's file system hierarchy.  
-This is used for exporting accounting moves to EBP."""),
+        'ebp_uri': fields.char('EBP Share URI', size=256,
+            help="The URI of the network share containing the company's EBP folder. Format: smb://SERVER/SHARE/DIR"),
+        'ebp_domain': fields.char('EBP User Domain', size=256,
+            help="The domain of the user to access the company's EBP folder."),
+        'ebp_username': fields.char('EBP User Name', size=256,
+            help="The name of the user to access the company's EBP folder."),
+        'ebp_password': fields.char('EBP User Password', size=256,
+            help="The password of the user to access the company's EBP folder."),
     }
 res_company()
 

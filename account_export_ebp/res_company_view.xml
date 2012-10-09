@@ -9,7 +9,10 @@
 			<field name="arch" type="xml">
 				<page string="Configuration" position="inside">
 					<separator string="EBP Accounting Software" colspan="4" />
-					<field name="ebp_folder" />
+					<field name="ebp_uri" />
+					<field name="ebp_domain" />
+					<field name="ebp_username" />
+					<field name="ebp_password" password="True" />
 					<newline />
 				</page>
 			</field>
