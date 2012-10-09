@@ -64,6 +64,12 @@ msgid "Account code \"%s\" is too long to be exported to EBP."
 msgstr "Le code de compte \"%s\" est trop long pour être exporté vers EBP"
 
 #. module: account_export_ebp
+#: code:addons/account_export_ebp/account.py:65
+#, python-format
+msgid "You cannot delete exported moves: %s!"
+msgstr "Impossible de supprimer une écriture transferée vers EBP: %s!"
+
+#. module: account_export_ebp
 #: field:res.company,ebp_username:0
 msgid "EBP User Name"
 msgstr "Nom d'utilisateur EBP"
@@ -133,6 +139,12 @@ msgstr "Code de compte trop long"
 #: help:account.fiscalyear,ebp_nb:0
 msgid "This value should reflect the number of the fiscal year as used by the EBP accounting software. This should be set to the number of fiscal years recorded in EBP accounting before this one - So for the first year the number is 0, for the second year the number is 1 and so on. This is used for exporting accounting moves to EBP."
 msgstr "Cette valeur doit refléter le numéro d'exercice utilisé dans EBP Comptabilité. Indiquez le nombre d'exercice enregistrés dans EBP avant celui-ci : ainsi pour le premier exercice indiquez 0 ; pour le second indiquez 1 etc. Cette information est utilisée lors de l'exportation des écritures vers EBP."
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/account.py:55
+#, python-format
+msgid "You cannot modify exported moves: %s!"
+msgstr "Impossible de modifier une écriture transferée vers EBP : %s!"
 
 #. module: account_export_ebp
 #: wizard_field:account.export.ebp,init,ignore_draft:0
@@ -257,6 +269,13 @@ msgstr "Objet incorrect"
 #: model:ir.module.module,shortdesc:account_export_ebp.module_meta_information
 msgid "Export accounting moves to EBP's accounting software"
 msgstr "Exporter les écritures comptables vers EBP Comptabilité."
+
+#. module: account_export_ebp
+#: code:addons/account_export_ebp/account.py:54
+#: code:addons/account_export_ebp/account.py:64
+#, python-format
+msgid "Exported move!"
+msgstr "Écriture transférée !"
 
 #. module: account_export_ebp
 #: wizard_view:account.export.ebp,end_form:0

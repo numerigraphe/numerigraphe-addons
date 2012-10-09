@@ -29,6 +29,8 @@ The files are in the text format for EBP's software, version 3 and above.
 
 The export feature is in the form of a wizard related to accounting moves, so that the person exporting the data can select which moves to export.
 
+The exported moves cannot be changed or deleted, but the export can be reverted by unchecking the "exported" box.
+
 Three pieces of configuration need to be set:
 - the company for each fiscal year
 - the URI, user name and password of to access the EBP folders as Windows network shares
