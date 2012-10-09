@@ -19,6 +19,7 @@
 ##############################################################################
 
 from osv import fields, osv
+from tools.translate import _
 
 class account_fiscalyear(osv.osv):
     _inherit = "account.fiscalyear"
@@ -37,14 +38,31 @@ account_fiscalyear()
 class account_move(osv.osv):
     _inherit = "account.move"
     _columns = {
-        'exported_ebp': fields.boolean('Transfered to EBP',
-        readonly=True,
-        select=1,
-        help="""Indicates whether the move has already been exported to EBP or not. It is changed automatically."""),
+        'exported_ebp': fields.boolean('Transfered to EBP', select=1,
+            help="""Indicates whether the move has already been exported to EBP or not. It is changed automatically."""),
     }
     _defaults = {
         'exported_ebp': lambda * a:False,
     }
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        """Refuse to change changes exported Moves"""
+        if 'exported_ebp' not in vals:
+            exported_move_ids = self.search(cr, uid, [('exported_ebp', '=', True), ('id', 'in', ids)])
+            if exported_move_ids:
+                exported_moves = self.browse(cr, uid, exported_move_ids, context=context)
+                raise osv.except_osv(_('Exported move!'),
+                                     _('You cannot modify exported moves: %s!')
+                                        % ', '.join([m.name for m in exported_moves]))
+        return super(osv.osv, self).write(cr, uid, ids, vals, context=context)
+     
+    def unlink(self, cr, uid, ids, context=None, check=True):
+        """Refuse to delete exported Moves"""
+        exported_move_ids = self.search(cr, uid, [('exported_ebp', '=', True), ('id', 'in', ids)])
+        if exported_move_ids:
+            exported_moves = self.browse(cr, uid, exported_move_ids, context=context)
+            raise osv.except_osv(_('Exported move!'),
+                                 _('You cannot delete exported moves: %s!')
+                                     % ', '.join([m.name for m in exported_moves]))
+        return super(account_move, self).unlink(cr, uid, ids, context)
 account_move()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -9,7 +9,7 @@
 			<field name="inherit_id" ref="account.view_account_fiscalyear_form" />
 			<field name="arch" type="xml">
 				<field name="end_journal_period_id" position="after">
-                    <field name="company_id" select="2"/>
+					<field name="company_id" select="2" />
 					<field name="ebp_nb" />
 				</field>
 			</field>
@@ -23,7 +23,7 @@
 			<field name="inherit_id" ref="account.view_move_tree" />
 			<field name="arch" type="xml">
 				<field name="to_check" position="before">
-					<field name="exported_ebp" />
+					<field name="exported_ebp"/>
 				</field>
 			</field>
 		</record>
@@ -34,7 +34,7 @@
 			<field name="inherit_id" ref="account.view_move_form" />
 			<field name="arch" type="xml">
 				<field name="to_check" position="before">
-					<field name="exported_ebp" />
+					<field name="exported_ebp"/>
 				</field>
 			</field>
 		</record>
