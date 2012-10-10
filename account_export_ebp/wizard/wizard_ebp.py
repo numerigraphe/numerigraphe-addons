@@ -134,7 +134,7 @@ def _export(self, cr, uid, data, context):
 
     logger = netsvc.Logger()
     pool = pooler.get_pool(cr.dbname)
-    logger.notifyChannel("ebp", netsvc.LOG_DEBUG, "Form data: %s" %
+    logger.notifyChannel("ebp", netsvc.LOG_DEBUG, "Form data: %s" % 
         data['form'])
 
     # Stream writer to convert Unicode to Windows Latin-1
@@ -145,14 +145,17 @@ def _export(self, cr, uid, data, context):
         data['form']['fiscalyear_id'], context)
     company = fiscalyear.company_id
     
-    # Construct the URI where files will be stored
-    path = '%s/Compta.%s' % (company.ebp_uri, fiscalyear.ebp_nb)
     # Sanity checks
     if data['model'] != 'account.move':
         raise wizard.except_wizard(_('Wrong Object'),
             _('''This wizard should only be used on accounting moves'''))
 
     # Connect to the network share
+    path = '%s/Compta.%s' % (company.ebp_uri, fiscalyear.ebp_nb)
+    logger.notifyChannel("ebp", netsvc.LOG_DEBUG, "Connecting to %s as user %s, domain %s" % 
+        (path,
+         fiscalyear.company_id.ebp_username,
+         fiscalyear.company_id.ebp_domain))
     win_share = smbc.Context(
         auth_fn=lambda server, share, workgroup, username, password: 
             (fiscalyear.company_id.ebp_domain,
@@ -174,7 +177,7 @@ def _export(self, cr, uid, data, context):
         # Ignore draft moves unless the user asked for them
         ignore_draft = (data['form']['ignore_draft'] and move.state == 'draft')
         # Ignore moves in other fiscal years
-        ignore_year = (move.period_id.fiscalyear_id.id !=
+        ignore_year = (move.period_id.fiscalyear_id.id != 
                        data['form']['fiscalyear_id'])
         # Ignore moves already exported
         ignore_exported = (data['form']['ignore_exported']
@@ -182,7 +185,7 @@ def _export(self, cr, uid, data, context):
         # Skip to next move if this one should be ignored
         if ignore_draft or ignore_year or ignore_exported:
             logger.notifyChannel("ebp", netsvc.LOG_DEBUG,
-                "Ignoring move %d - draft: %s, wrong year: %s, exported: %s" %
+                "Ignoring move %d - draft: %s, wrong year: %s, exported: %s" % 
                 (move.id, ignore_draft, ignore_year, ignore_exported))
             ignored_move_ids.append(move.id)
             continue
@@ -212,18 +215,18 @@ def _export(self, cr, uid, data, context):
             # so as not to export wrong data with catastrophic consequence
             if len(move.journal_id.code) > 4:
                 raise wizard.except_wizard(_('Journal code too long'),
-                    _('Journal code "%s" is too long to be exported to EBP.') %
+                    _('Journal code "%s" is too long to be exported to EBP.') % 
                         move.journal_id.code)
             # The docs from EBP state that account codes may be up to 
             # 15 characters but "EBP Comptabilité" v13 will refuse anything
             # longer than 10 characters
             if len(account_nb) > 10:
                 raise wizard.except_wizard(_('Account code too long'),
-                    _('Account code "%s" is too long to be exported to EBP.') %
+                    _('Account code "%s" is too long to be exported to EBP.') % 
                         account_nb)
             if len(move.name) > 15:
                 raise wizard.except_wizard(_('Move name too long'),
-                    _('Move name "%s" is too long to be exported to EBP.') %
+                    _('Move name "%s" is too long to be exported to EBP.') % 
                         move.name)
 
             # Collect data for the file of move lines
@@ -325,7 +328,7 @@ def _export(self, cr, uid, data, context):
     # Close the move summaries file
     moves_file.close()
     logger.notifyChannel("ebp", netsvc.LOG_INFO,
-        "%d line(s) representing %d move(s) exported to ECRITURES.TXT in %s - %d move(s) ignored" %
+        "%d line(s) representing %d move(s) exported to ECRITURES.TXT in %s - %d move(s) ignored" % 
         (l, len(exported_move_ids), path, len(ignored_move_ids)))
 
     # Write the accounts to a CSV file encoded in windows latin-1
@@ -346,7 +349,7 @@ def _export(self, cr, uid, data, context):
         accounts_file.write('\r\n')
     accounts_file.close()
     logger.notifyChannel("ebp", netsvc.LOG_INFO,
-        "%d accounts(s) exported to COMPTES.TXT in %s" %
+        "%d accounts(s) exported to COMPTES.TXT in %s" % 
         (len(accounts_data), path)
     )
 
