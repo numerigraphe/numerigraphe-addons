@@ -38,5 +38,19 @@
 				</field>
 			</field>
 		</record>
+
+		<record id="view_account_move_line_filter" model="ir.ui.view">
+			<field name="name">account_export_ebp.move.select</field>
+			<field name="model">account.move</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="account.view_account_move_filter" />
+			<field name="arch" type="xml">
+				<filter string="Posted" position="after">
+					<separator orientation="vertical" />
+					<filter icon="terp-accessories-archiver-minus" string="Not Exported"
+						domain="[('exported_ebp', '=', False)]" help="Journal Entries not yet exported to EBP" />
+				</filter>
+			</field>
+		</record>
 	</data>
 </openerp>

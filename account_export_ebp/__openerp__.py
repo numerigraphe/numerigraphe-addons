@@ -20,7 +20,7 @@
 
 {
     'name' : "Export accounting moves to EBP's accounting software",
-    'version' : '1.0',
+    'version' : '1.1',
     'author' : u'Numérigraphe SARL',
     'website': 'http://numerigraphe.com',
     'category': 'Generic Modules/Accounting',
@@ -31,11 +31,12 @@ The export feature is in the form of a wizard related to accounting moves, so th
 
 Three pieces of configuration need to be set:
 - the company for each fiscal year
-- the path to folder for each company in EBP's software
+- the URI, user name and password of to access the EBP folders as Windows network shares
 - the number of each fiscal year in these folders
+The files will be directly generated in the EBP network shares.
 If those are properly set, the files should be imported automatically as simulation moves by the EBP software next time the folder is opened.
 
-Please note that the files will be generated in the server's file system hierarchy, which may demand some sort of remote access (CIFS mount points for example) if the machine hosting EBP's software is not the same.  
+The python package "smbc" must be installed on the server to use this module.   
 ''',
     'depends' : ['account_accountant'],
     'init_xml' : [
