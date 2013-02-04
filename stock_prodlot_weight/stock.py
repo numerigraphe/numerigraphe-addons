@@ -102,6 +102,12 @@ class stock_production_lot(osv.osv):
             'Unit Average weight', digits=(16, 4), help="The unit average weight in Kg."),
     }
     
-    # FIXME reset the weight when copying
-    
+    def copy(self, cr, uid, id, default=None, context=None):
+        """Reset the weight on copied lots"""
+        if default is None:
+            default = {}
+        if 'weight_average' not in default:
+            default['weight_average'] = 0.0
+        return super(stock_production_lot, self).copy(cr, uid, id, default=default,
+                                                      context=context)
 stock_production_lot()
