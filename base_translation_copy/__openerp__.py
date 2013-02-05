@@ -20,7 +20,7 @@
 
 {
     'name' : 'Copy Translations to English',
-    'version' : '1.0',
+    'version' : '1.1',
     'author' : u'Numérigraphe',
     'category' : 'Translation',
     'depends' : [],
