@@ -34,7 +34,6 @@
                  ],
     'update_xml' : [
                     'stock_view.xml',
-                    'product_view.xml',
                    ],
     'active': False,
     'installable': True,

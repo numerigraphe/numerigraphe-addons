@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//form//field[@name='stock_available']" position="after">
-                        <field name="unit_weight_average" colspan="4"/>
+                        <field name="weight_observed" colspan="4"/>
                     </xpath>
                 </data>
             </field>
@@ -26,7 +26,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//tree//field[@name='stock_available']" position="after">
-                        <field name="unit_weight_average" colspan="4"/>
+                        <field name="weight_observed" colspan="4"/>
                     </xpath>
                 </data>
             </field>
@@ -41,7 +41,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//form//field[@name='weight_net']" position="after">
-                        <field name="weight_average" colspan="4"/>
+                        <field name="weight_observed" colspan="4"/>
                     </xpath>
                 </data>
             </field>
@@ -56,7 +56,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//tree//field[@name='uom_id']" position="after">
-                        <field name="weight_average" colspan="4"/>
+                        <field name="weight_observed" colspan="4"/>
                     </xpath>
                 </data>
             </field>
