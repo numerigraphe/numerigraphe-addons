@@ -77,4 +77,44 @@ class product_template(osv.osv):
     
 product_template()
     
+class product_label(osv.osv):
+
+    _inherit = 'product.label'
+
+    _columns = {
+        'need_quality': fields.boolean('Quality Control', help="If checked, new production lots will be locked by default, allowing quality control to take place."),
+    }
+
+    _defaults = {
+         'need_quality': lambda *a: False,
+    }
+
+    def create(self, cr, uid, values, context=None):
+        """
+        check if the parent need quality
+        """
+        if 'parent_id' in values and 'need_quality' not in values:
+            values['need_quality'] = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
+        return  super(product_label, self).create(cr, uid, values, context=context)
+
+    def write(self, cr, uid, ids, values, context=None):
+        """
+        check if the parent need quality and force need quality in children
+        """
+        if not isinstance(ids, list):
+            ids = [ids]
+        need_quality = values.get('need_quality', None)
+        if need_quality is None and 'parent_id' in values:
+            need_quality = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
+        # the variable need quality can be change
+        if need_quality is not None:
+            # add need quality in values to force it
+            values['need_quality'] = need_quality
+            # force children
+            child_ids = self.search(cr, uid, [('parent_id', 'in', ids)], context=context)
+            if child_ids:
+                self.write(cr, uid, child_ids, {'need_quality': need_quality}, context=context)
+        return super(product_label, self).write(cr, uid, ids, values, context=context)
+product_label()
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

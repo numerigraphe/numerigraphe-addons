@@ -76,11 +76,15 @@ class stock_production_lot(osv.osv):
         """Lock the lot if the product category requires it or state in product is first use"""
         product_obj = self.pool.get("product.product")
         product = product_obj.browse(cr, uid, values['product_id'], context=context)
+        for obj in product.product_tmpl_id.label_ids:
+            print obj.name;
+            print obj.need_quality;
+        
         new_values = values.copy()
-        if product.product_tmpl_id.state == 'first':
-            new_values['locked'] = True
-        else:
-            new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
+        #if product.product_tmpl_id.state == 'first':
+        #    new_values['locked'] = True
+        #else:
+        #    new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
         return super(stock_production_lot, self).create(cr, uid, new_values, context=context)
 stock_production_lot()
 
