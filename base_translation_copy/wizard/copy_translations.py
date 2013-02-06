@@ -59,11 +59,13 @@ class wizard_copy_translations(osv.osv_memory):
         logger.notifyChannel(self._name, netsvc.LOG_INFO,
                              "Copying translations from %s to en_US" % wizard.lang)
         
-        # Read all the model translations in the new language
+        # Read all the model translations in the new language (except system objects and XML data)
         trans_ids = trans_obj.search(cr, uid, [
-             ('type', '=', 'model'),
-             ('lang', '=', wizard.lang),
-             ('value', '!=', ''),
+                ('type', '=', 'model'),
+                ('lang', '=', wizard.lang),
+                ('value', '!=', ''),
+                ('name', 'not ilike', 'ir.%'),
+                ('xml_id', '=', False),
             ], context=None)
         for trans in trans_obj.browse(cr, uid, trans_ids, context=None):
             try:
@@ -88,8 +90,9 @@ class wizard_copy_translations(osv.osv_memory):
                     # Copy the versions in the new language to the English version
                     # We could pass trans.res_id as a single integer,
                     # but some buggy objects would break
-                    object.write(cr, uid, [trans.res_id], {field: trans.value},
-                                 context=None)
+                    object.write(cr, uid, [trans.res_id], {field: trans.value}, context=None)
+                    # Remove the translation, it's now useless
+                    trans_obj.unlink(cr, uid, trans.id, context=None)
             except BogusTranslation as error:
                 # Useless translation detected
                 logger.notifyChannel(self._name, netsvc.LOG_DEBUG,

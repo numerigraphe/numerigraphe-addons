@@ -19,30 +19,25 @@
 ##############################################################################
 
 {
-    'name' : 'Copy Translations to English',
-    'version' : '1.1',
+    'name' : 'Compute the average weight of products based Lots',
+    'version' : '1.0',
     'author' : u'Numérigraphe',
-    'category' : 'Translation',
-    'depends' : [],
-    'description': """\
-This module lets you copy all the translations of a language to English.
-
-This is useful because English is the default language for all objects in
-OpenERP, so when users work in any another language they will have to manage
-translations to and from the English language.
-When they don't, operations such as object copying or renaming will produce
-unexpected behaviors because the English names are not updated.
-To tackle this in an environment where English is not used by the users,
-this module adds a wizard in Administration > Translations to let you copy
-all the strings in one language to the English translations.""",
-    'demo_xml' : [],
-    'init_xml' : [],
+    'category': 'Custom',
+    'description': "This module lets users enter the weight of production lots,"
+                   "and computes the average unit weight of the product based "
+                   "on the weight and the quantity currently in stock of each "
+                   "production lot.",
+    'depends' : [
+                 'stock',
+                ],
+    'init_xml' : [
+                 ],
     'update_xml' : [
-                    'wizard/copy_translations_view.xml',
-                    'base_translation_copy_data.xml',
-                    ],
+                    'stock_view.xml',
+                   ],
     'active': False,
     'installable': True,
     'license' : 'GPL-3',
 }
 
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
