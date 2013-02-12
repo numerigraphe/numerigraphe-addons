@@ -24,9 +24,25 @@
                 <xpath
                 expr="//field[@name='green_color']"
                 position="after">
+                    <field name="need_quality" select="1"/>               
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_label_list" model="ir.ui.view">
+            <field name="name">product.label.list</field>
+            <field name="model">product.label</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product_label.view_product_label_list"/>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <xpath
+                expr="//field[@name='complete_name']"
+                position="after">
                     <field name="need_quality"/>                
                 </xpath>
             </field>
         </record>
+
     </data>
 </openerp>
