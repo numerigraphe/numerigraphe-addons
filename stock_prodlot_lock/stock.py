@@ -89,13 +89,14 @@ class stock_production_lot(osv.osv):
             if obj.need_quality:
                 new_values['locked'] = True
                 break
-            
+        
         # test need control quality for product in first use
         if product.product_tmpl_id.state == 'first':
             new_values['locked'] = True
         
-        if not new_values['locked']:
-            new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
+        # test need control quality for product category
+        if product.product_tmpl_id.categ_id.need_quality:
+            new_values['locked'] = True
             
         return super(stock_production_lot, self).create(cr, uid, new_values, context=context)
 stock_production_lot()
@@ -105,10 +106,7 @@ class stock_move(osv.osv):
     _inherit = 'stock.move'
 
     def _check_prodlot(self, cr, uid, ids, context=None):
-        """
-        for each move check if the production lot is unlock
-        if the lot is lock raise
-        """
+        """Prevent stock moves on locked prodlots"""
         if context is None:
             context = {}
         if not context.get('locked_move', True):
@@ -133,15 +131,11 @@ class stock_move(osv.osv):
                    ]
     
     def action_done(self, cr, uid, ids, context=None):
-        if ids:
-            stock_move_obj = self.browse(cr, uid, id)
-            for id in ids:
-                if stock_move_obj.location_id.need_quality:
-                    production_lot_obj = self.pool.get('stock.production.lot')
-                    production_lot_obj.write(cr, uid, [stock_move_obj.prodlot_id.id], {'locked': True}, context=context)
-
-        return  super(stock_move, self).action_done(cr, uid, ids, context=context)
-
+        """Lock the prodlot when a move is "done" from a location needing quality check"""
+        prodlot_ids = [m.prodlot_id.id
+                       for m in self.browse(cr, uid, ids, context=context)
+                       if m.location_id.need_quality and m.prodlot_id]
+        if prodlot_ids:
+            self.pool.get('stock.production.lot').write(cr, uid, prodlot_ids,{'locked': True}, context=context)
+        return super(stock_move, self).action_done(cr, uid, ids, context=context)
 stock_move()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -18,8 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv
-from osv import fields
+from osv import osv, fields
 from tools.translate import _
 
 class product_category(osv.osv):
@@ -35,30 +34,26 @@ class product_category(osv.osv):
     }
 
     def create(self, cr, uid, values, context=None):
-        """
-        check if the parent need quality
-        """
-        if 'parent_id' in values and 'need_quality' not in values:
-            values['need_quality'] = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
-        return  super(product_category, self).create(cr, uid, values, context=context)
+        """Propagate need_quality from the parent unless it's explicitly given a value"""
+        if values.get('parent_id') and 'need_quality' not in values:
+            value = values.copy()
+            values['need_quality'] = self.read(cr, uid, values['parent_id'], ['need_quality'], context=context).get('need_quality', False)
+        return super(product_category, self).create(cr, uid, values, context=context)
 
     def write(self, cr, uid, ids, values, context=None):
-        """
-        check if the parent need quality and force need quality in children
-        """
+        """Propagate need_quality to the children"""
         if not isinstance(ids, list):
             ids = [ids]
-        need_quality = values.get('need_quality', None)
-        if need_quality is None and 'parent_id' in values:
-            need_quality = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
-        # the variable need quality can be change
-        if need_quality is not None:
+        if values.get('parent_id') in values and 'need_quality' not in values:
             # add need quality in values to force it
-            values['need_quality'] = need_quality
-            # force children
+            value = values.copy()
+            values['need_quality'] = self.read(cr, uid, values['parent_id'], ['need_quality'], context=context).get('need_quality', False)
+        # Propagate change to children
+        if 'need_quality' in values:
             child_ids = self.search(cr, uid, [('parent_id', 'in', ids)], context=context)
             if child_ids:
-                self.write(cr, uid, child_ids, {'need_quality': need_quality}, context=context)
+                # Recursively set need_quality to all the children
+                self.write(cr, uid, child_ids, {'need_quality': values['need_quality']}, context=context)
         return super(product_category, self).write(cr, uid, ids, values, context=context)
 product_category()
 
@@ -74,7 +69,6 @@ class product_template(osv.osv):
             ('end','End of Lifecycle'),
             ('obsolete','Obsolete')], 'Status', help="Tells the user if he can use the product or not.")
     }
-    
 product_template()
     
 class product_label(osv.osv):
@@ -90,31 +84,27 @@ class product_label(osv.osv):
     }
 
     def create(self, cr, uid, values, context=None):
-        """
-        check if the parent need quality
-        """
-        if 'parent_id' in values and 'need_quality' not in values:
-            values['need_quality'] = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
-        return  super(product_label, self).create(cr, uid, values, context=context)
+        """Propagate need_quality from the parent unless it's explicitly given a value"""
+        if values.get('parent_id') and 'need_quality' not in values:
+            value = values.copy()
+            values['need_quality'] = self.read(cr, uid, values['parent_id'], ['need_quality'], context=context).get('need_quality', False)
+        return super(product_label, self).create(cr, uid, values, context=context)
 
     def write(self, cr, uid, ids, values, context=None):
-        """
-        check if the parent need quality and force need quality in children
-        """
+        """Check if the parent need quality and force need quality in children"""
         if not isinstance(ids, list):
             ids = [ids]
-        need_quality = values.get('need_quality', None)
-        if need_quality is None and 'parent_id' in values:
-            need_quality = self.read(cr, uid, values.get('parent_id'), ['need_quality'], context=context).get('need_quality', False)
-        # the variable need quality can be change
-        if need_quality is not None:
+        if values.get('parent_id') and 'need_quality' not in values:
+            need_quality = self.read(cr, uid, values['parent_id'], ['need_quality'], context=context).get('need_quality', False)
             # add need quality in values to force it
+            value = values.copy()
             values['need_quality'] = need_quality
+        # the variable need quality can be change
+        if 'need_quality' in values:
             # force children
             child_ids = self.search(cr, uid, [('parent_id', 'in', ids)], context=context)
             if child_ids:
-                self.write(cr, uid, child_ids, {'need_quality': need_quality}, context=context)
+                # Recursively set need_quality to all the children
+                self.write(cr, uid, child_ids, {'need_quality': values['need_quality']}, context=context)
         return super(product_label, self).write(cr, uid, ids, values, context=context)
 product_label()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
