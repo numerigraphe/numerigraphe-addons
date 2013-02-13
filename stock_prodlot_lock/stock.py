@@ -24,12 +24,18 @@ from tools.translate import _
 class stock_location(osv.osv):
     _inherit = 'stock.location'
 
+    def onchange_usage(self, cr, uid, ids, usage, context=None):
+        if usage != "production":
+            return {'value' : {'need_quality' : False}} 
+
     _columns = {
         'receipt': fields.boolean('Receipt Location', help="Checking this indicates if this location is receipt type."),
+        'need_quality': fields.boolean('Quality Control', help="If checked, new production lots will be locked by default, allowing quality control to take place."),
     }
 
     _defaults = {
          'receipt': lambda *a: False,
+         'need_quality': lambda *a: False,
     }
 stock_location()
 
@@ -73,14 +79,25 @@ class stock_production_lot(osv.osv):
         self.write(cr, uid, [id], {'locked': False}, context=context)
         
     def create(self, cr, uid, values, context=None):
-        """Lock the lot if the product category requires it or state in product is first use"""
+        """Lock the lot if the product category or product label requires it or state in product is first use """
         product_obj = self.pool.get("product.product")
         product = product_obj.browse(cr, uid, values['product_id'], context=context)
         new_values = values.copy()
+        
+        # test need control quality for labels
+        for obj in product.product_tmpl_id.label_ids:
+            if obj.need_quality:
+                new_values['locked'] = True
+                break
+        
+        # test need control quality for product in first use
         if product.product_tmpl_id.state == 'first':
             new_values['locked'] = True
-        else:
-            new_values['locked'] = product.product_tmpl_id.categ_id.need_quality
+        
+        # test need control quality for product category
+        if product.product_tmpl_id.categ_id.need_quality:
+            new_values['locked'] = True
+            
         return super(stock_production_lot, self).create(cr, uid, new_values, context=context)
 stock_production_lot()
 
@@ -89,10 +106,7 @@ class stock_move(osv.osv):
     _inherit = 'stock.move'
 
     def _check_prodlot(self, cr, uid, ids, context=None):
-        """
-        for each move check if the production lot is unlock
-        if the lot is lock raise
-        """
+        """Prevent stock moves on locked prodlots"""
         if context is None:
             context = {}
         if not context.get('locked_move', True):
@@ -115,6 +129,13 @@ class stock_move(osv.osv):
                     (_check_prodlot,
                      "One or more lots are awaiting quality control and cannot be moved.", ['prodlot_id']),
                    ]
+    
+    def action_done(self, cr, uid, ids, context=None):
+        """Lock the prodlot when a move is "done" from a location needing quality check"""
+        prodlot_ids = [m.prodlot_id.id
+                       for m in self.browse(cr, uid, ids, context=context)
+                       if m.location_id.need_quality and m.prodlot_id]
+        if prodlot_ids:
+            self.pool.get('stock.production.lot').write(cr, uid, prodlot_ids,{'locked': True}, context=context)
+        return super(stock_move, self).action_done(cr, uid, ids, context=context)
 stock_move()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
