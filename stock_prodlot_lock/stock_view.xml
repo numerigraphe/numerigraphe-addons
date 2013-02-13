@@ -38,8 +38,12 @@
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">
                 <data>
+        			<xpath expr="//form//field[@name='usage']" position="attributes">
+            			<attribute name="on_change">onchange_usage(usage)</attribute>
+        			</xpath>
                     <xpath expr="//form//field[@name='usage']" position="after">
                         <field name="receipt" colspan="4"/>
+                        <field name="need_quality" colspan="4" attrs="{'invisible':[('usage','!=','production')]}"/>
                     </xpath>
                 </data>
             </field>
