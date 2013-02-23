@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2012-06-13 08:38+0000\n"
-"PO-Revision-Date: 2012-06-13 08:38+0000\n"
+"POT-Creation-Date: 2013-02-13 16:20+0000\n"
+"PO-Revision-Date: 2013-02-13 16:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,83 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_production_lot
-msgid "Production lot"
-msgstr "Lot de production"
-
-#. module: stock_prodlot_lock
-#: code:addons/stock_prodlot_lock/stock.py:110
-#, python-format
-msgid "Production Lot Locked"
-msgstr "Lot bloqué"
-
-#. module: stock_prodlot_lock
-#: constraint:stock.move:0
-msgid "One or more lots are awaiting quality control and cannot be moved."
-msgstr "Un ou plusieurs lots sont en attente de contrôle qualité, et ne peuvent pas être déplacés."
-
-#. module: stock_prodlot_lock
-#: help:stock.location,receipt:0
-msgid "Checking this indicates if this location is receipt type."
-msgstr "Cocher si l'emplacement est de type reception."
-
-#. module: stock_prodlot_lock
-#: constraint:product.template:0
-msgid "Error: The default UOM and the purchase UOM must be in the same category."
-msgstr "Erreur : l'unité de mesure par défaut et l'unité d'achat doivent appartenir à la même catégorie."
-
-#. module: stock_prodlot_lock
-#: constraint:stock.move:0
-msgid "You must assign a production lot for this product"
-msgstr "Vous devez affecter un lot de fabrication à ce produit."
-
-#. module: stock_prodlot_lock
-#: field:product.category,need_quality:0
-msgid "Quality Control"
-msgstr "Contrôle qualité"
-
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_location
-msgid "Location"
-msgstr "Emplacement"
-
-#. module: stock_prodlot_lock
-#: view:stock.production.lot:0
-msgid "Quality Control and traceability"
-msgstr "Contrôle qualité et traçabilité"
-
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_product_category
-msgid "Product Category"
-msgstr "Catégorie de produit"
-
-#. module: stock_prodlot_lock
-#: constraint:stock.move:0
-msgid "You try to assign a lot which is not from the same product"
-msgstr "Vous essayez d'affecter un lot qui n'est pas pour ce produit."
-
-#. module: stock_prodlot_lock
-#: sql_constraint:stock.production.lot:0
-msgid "The combination of lot number and supplier reference must be unique !"
-msgstr "The combination of lot number and supplier reference must be unique !"
-
-#. module: stock_prodlot_lock
-#: field:stock.location,receipt:0
-msgid "Receipt Location"
-msgstr "Emplacement de reception"
-
-#. module: stock_prodlot_lock
-#: model:ir.module.module,shortdesc:stock_prodlot_lock.module_meta_information
-msgid "Lock production lots"
-msgstr "Lock production lots"
-
-#. module: stock_prodlot_lock
-#: view:stock.production.lot:0
-msgid "Locked"
-msgstr "Bloqué"
-
-#. module: stock_prodlot_lock
-#: code:addons/stock_prodlot_lock/stock.py:107
+#: code:addons/stock_prodlot_lock/stock.py:121
 #, python-format
 msgid " - Lot %s: %s.\n"
 ""
@@ -100,42 +24,19 @@ msgstr " - Lot %s : %s.\n"
 ""
 
 #. module: stock_prodlot_lock
-#: code:addons/stock_prodlot_lock/stock.py:111
-#, python-format
-msgid "One or more lots are awaiting quality control and cannot be moved:\n"
-"%s"
-msgstr "Un ou plusieurs lots sont bloqués en attente de contrôle qualité, et ne peuvent pas être déplacés :\n"
-"%s"
+#: model:ir.model,name:stock_prodlot_lock.model_product_category
+msgid "Catégorie de produits"
+msgstr "Catégorie de produits"
 
 #. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_product_template
-msgid "Product Template"
-msgstr "Modèle de produit"
+#: help:stock.location,receipt:0
+msgid "Checking this indicates if this location is receipt type."
+msgstr "Cocher si l'emplacement est de type reception."
 
 #. module: stock_prodlot_lock
-#: help:stock.production.lot,locked:0
-msgid "Checking this indicates that this Production Lot is locked until Quality Control is made, and no Stock Move can be created."
-msgstr "Cocher cette case indique que le lot est bloqué jusqu'au contrôle qualité : aucun mouvement de stock n'est possible."
-
-#. module: stock_prodlot_lock
-#: model:ir.module.module,description:stock_prodlot_lock.module_meta_information
-msgid "This module lets users lock a production lot, forbidding any new stock move from being confirmed. Based on custom module by Sylëam."
-msgstr "This module lets users lock a production lot, forbidding any new stock move from being confirmed. Based on custom module by Sylëam."
-
-#. module: stock_prodlot_lock
-#: sql_constraint:stock.production.lot:0
-msgid "The lot number must be unique !"
-msgstr "Le N° de lot doit être unique !"
-
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_move
-msgid "Stock Move"
-msgstr "Mouvement de stock"
-
-#. module: stock_prodlot_lock
-#: field:stock.production.lot,locked:0
-msgid "Awaiting Quality Control"
-msgstr "Attente contrôle qualité"
+#: model:ir.model,name:stock_prodlot_lock.model_stock_location
+msgid "Emplacement"
+msgstr "Emplacement"
 
 #. module: stock_prodlot_lock
 #: constraint:product.category:0
@@ -143,7 +44,98 @@ msgid "Error ! You can not create recursive categories."
 msgstr "Erreur ! Il est impossible de créer des catégories récursives."
 
 #. module: stock_prodlot_lock
-#: help:product.category,need_quality:0
+#: constraint:product.label:0
+msgid "Error ! You can not create recursive labels."
+msgstr "Erreur ! Un label ne doit pas être parent de ses propres parents."
+
+#. module: stock_prodlot_lock
+#: constraint:product.template:0
+msgid "Error: The default UOM and the purchase UOM must be in the same category."
+msgstr "Erreur : l'unité de mesure par défaut et l'unité d'achat doivent appartenir à la même catégorie."
+
+#. module: stock_prodlot_lock
+#: help:product.label,need_quality:0
+#: help:stock.location,need_quality:0
 msgid "If checked, new production lots will be locked by default, allowing quality control to take place."
-msgstr "Si cette case est cochée, les nouveaux lots de production seront bloqués dès leur creation, afin de permettre un contrôle qualité."
+msgstr "Si coché, les nouveaux lots de production seront verrouillés par défaut, ce qui indique qu'un contrôle qualité doit avoir lieu."
+
+#. module: stock_prodlot_lock
+#: view:stock.production.lot:0
+msgid "Locked"
+msgstr "Bloqué"
+
+#. module: stock_prodlot_lock
+#: model:ir.model,name:stock_prodlot_lock.model_stock_production_lot
+msgid "Lot de production"
+msgstr "Lot de production"
+
+#. module: stock_prodlot_lock
+#: model:ir.model,name:stock_prodlot_lock.model_product_template
+msgid "Modèle de produit"
+msgstr "Modèle de produit"
+
+#. module: stock_prodlot_lock
+#: model:ir.model,name:stock_prodlot_lock.model_stock_move
+msgid "Mouvement de stock"
+msgstr "Mouvement de stock"
+
+#. module: stock_prodlot_lock
+#: constraint:stock.move:0
+msgid "One or more lots are awaiting quality control and cannot be moved."
+msgstr "Un ou plusieurs lots sont en attente de contrôle qualité, et ne peuvent pas être déplacés."
+
+#. module: stock_prodlot_lock
+#: code:addons/stock_prodlot_lock/stock.py:125
+#, python-format
+msgid "One or more lots are awaiting quality control and cannot be moved:\n"
+"%s"
+msgstr "Un ou plusieurs lots sont bloqués en attente de contrôle qualité, et ne peuvent pas être déplacés :\n"
+"%s"
+
+#. module: stock_prodlot_lock
+#: code:addons/stock_prodlot_lock/stock.py:124
+#, python-format
+msgid "Production Lot Locked"
+msgstr "Lot bloqué"
+
+#. module: stock_prodlot_lock
+#: field:product.label,need_quality:0
+#: field:stock.location,need_quality:0
+msgid "Quality Control"
+msgstr "Controle qualité"
+
+#. module: stock_prodlot_lock
+#: view:stock.production.lot:0
+msgid "Quality Control and traceability"
+msgstr "Contrôle qualité et traçabilité"
+
+#. module: stock_prodlot_lock
+#: field:stock.location,receipt:0
+msgid "Receipt Location"
+msgstr "Emplacement de reception"
+
+#. module: stock_prodlot_lock
+#: sql_constraint:stock.production.lot:0
+msgid "The combination of serial number and internal reference must be unique !"
+msgstr "La combinaison du numéro de série et du lot fournisseur doit être unique !"
+
+#. module: stock_prodlot_lock
+#: sql_constraint:stock.production.lot:0
+msgid "The lot number must be unique !"
+msgstr "Le N° de lot doit être unique !"
+
+#. module: stock_prodlot_lock
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Vous devez affecter un lot de fabrication à ce produit."
+
+#. module: stock_prodlot_lock
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Vous essayez d'affecter un lot qui n'est pas pour ce produit."
+
+#. module: stock_prodlot_lock
+#: model:ir.model,name:stock_prodlot_lock.model_product_label
+msgid "Étiquette produit"
+msgstr "Étiquette produit"
 

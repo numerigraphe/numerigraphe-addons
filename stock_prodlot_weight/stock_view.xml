@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_stock_production_lot_form" model="ir.ui.view">
+            <field name="name">stock.production.lot.form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//form//field[@name='stock_available']" position="after">
+                        <field name="weight_observed" colspan="4"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    
+        <record id="view_stock_production_lot_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+            <field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//tree//field[@name='stock_available']" position="after">
+                        <field name="weight_observed" colspan="4"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+       <record id="view_product_normal_form_view" model="ir.ui.view">
+            <field name="name">product.normal.form</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//form//field[@name='weight_net']" position="after">
+                        <field name="weight_observed" colspan="4"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+       <record id="view_product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.normal.tree</field>
+            <field name="model">product.product</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="priority" eval="17"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//tree//field[@name='uom_id']" position="after">
+                        <field name="weight_observed" colspan="4"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+	</data>
+	
+</openerp>
