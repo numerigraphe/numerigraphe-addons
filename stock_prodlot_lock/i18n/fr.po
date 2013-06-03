@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-02-13 16:20+0000\n"
-"PO-Revision-Date: 2013-02-13 16:20+0000\n"
+"POT-Creation-Date: 2013-06-03 16:27+0000\n"
+"PO-Revision-Date: 2013-06-03 16:27+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,20 +23,12 @@ msgid " - Lot %s: %s.\n"
 msgstr " - Lot %s : %s.\n"
 ""
 
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_product_category
-msgid "Catégorie de produits"
-msgstr "Catégorie de produits"
 
 #. module: stock_prodlot_lock
 #: help:stock.location,receipt:0
 msgid "Checking this indicates if this location is receipt type."
 msgstr "Cocher si l'emplacement est de type reception."
 
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_location
-msgid "Emplacement"
-msgstr "Emplacement"
 
 #. module: stock_prodlot_lock
 #: constraint:product.category:0
@@ -65,19 +57,16 @@ msgid "Locked"
 msgstr "Bloqué"
 
 #. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_production_lot
-msgid "Lot de production"
-msgstr "Lot de production"
+#: code:addons/stock_prodlot_lock/stock.py:81
+#, python-format
+msgid "Lot was locked"
+msgstr "Blocage du lot"
 
 #. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_product_template
-msgid "Modèle de produit"
-msgstr "Modèle de produit"
-
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_stock_move
-msgid "Mouvement de stock"
-msgstr "Mouvement de stock"
+#: code:addons/stock_prodlot_lock/stock.py:81
+#, python-format
+msgid "Lot was unlocked"
+msgstr "Déblocage du lot"
 
 #. module: stock_prodlot_lock
 #: constraint:stock.move:0
@@ -112,30 +101,4 @@ msgstr "Contrôle qualité et traçabilité"
 #. module: stock_prodlot_lock
 #: field:stock.location,receipt:0
 msgid "Receipt Location"
-msgstr "Emplacement de reception"
-
-#. module: stock_prodlot_lock
-#: sql_constraint:stock.production.lot:0
-msgid "The combination of serial number and internal reference must be unique !"
-msgstr "La combinaison du numéro de série et du lot fournisseur doit être unique !"
-
-#. module: stock_prodlot_lock
-#: sql_constraint:stock.production.lot:0
-msgid "The lot number must be unique !"
-msgstr "Le N° de lot doit être unique !"
-
-#. module: stock_prodlot_lock
-#: constraint:stock.move:0
-msgid "You must assign a production lot for this product"
-msgstr "Vous devez affecter un lot de fabrication à ce produit."
-
-#. module: stock_prodlot_lock
-#: constraint:stock.move:0
-msgid "You try to assign a lot which is not from the same product"
-msgstr "Vous essayez d'affecter un lot qui n'est pas pour ce produit."
-
-#. module: stock_prodlot_lock
-#: model:ir.model,name:stock_prodlot_lock.model_product_label
-msgid "Étiquette produit"
-msgstr "Étiquette produit"
-
+msgstr "Emplacement de réception"

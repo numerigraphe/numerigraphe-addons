@@ -73,11 +73,25 @@ class stock_production_lot(osv.osv):
         return super(stock_production_lot, self).search(cr, uid, new_args, offset=offset, limit=limit, order=order, context=context, count=count)
 
     def lock(self, cr, uid, id, context=None):
+        """API friendly method to lock the lot)"""
         self.write(cr, uid, [id], {'locked': True}, context=context)
 
     def unlock(self, cr, uid, id, context=None):
+        """API friendly method to unlock the lot)"""
         self.write(cr, uid, [id], {'locked': False}, context=context)
         
+    def write(self, cr, uid, ids, vals, context=None):
+        """Log locking/unlocking as prodlot revisions"""
+        values = super(stock_production_lot, self).write(cr, uid, ids, vals, context=context)
+        if 'locked' in vals:
+            msg = vals['locked'] and _('Lot was locked') or _('Lot was unlocked')
+            if type(ids) != list:
+                ids = [ids]
+            for id in ids:
+                self.pool.get("stock.production.lot.revision").create(cr, uid,
+                    {'lot_id': id, 'name': msg}, context=context)
+        return values
+    
     def create(self, cr, uid, values, context=None):
         """Lock the lot if the product category or product label requires it or state in product is first use """
         product_obj = self.pool.get("product.product")
