@@ -18,5 +18,26 @@
 #
 ##############################################################################
 
-import stock
-import product
+{
+    'name' : 'Compute the average weight of products based Lots',
+    'version' : '1.0',
+    'author' : u'Numérigraphe',
+    'category': 'Custom',
+    'description': "This module lets users enter the weight of production lots,"
+                   "and computes the average unit weight of the product based "
+                   "on the weight and the quantity currently in stock of each "
+                   "production lot.",
+    'depends' : [
+                 'stock',
+                ],
+    'init_xml' : [
+                 ],
+    'update_xml' : [
+                    'stock_view.xml',
+                   ],
+    'active': False,
+    'installable': True,
+    'license' : 'GPL-3',
+}
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
