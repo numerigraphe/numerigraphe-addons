@@ -57,6 +57,16 @@ class stock_inventory_hierarchical(osv.osv):
             'res_id': id,
         }
 
+    def create(self, cr, user, vals, context=None):
+        """ Override create method to copy date of parent to children"""
+        if vals is None:
+            return super(stock_inventory_hierarchical, self).create(cr, user, vals, context=context)
+
+        if vals['parent_id']:
+            parent_date = self.read(cr, user, [vals['parent_id']], ['date'], context=context)
+            vals['date'] = parent_date[0].get('date')
+        return super(stock_inventory_hierarchical, self).create(cr, user, vals, context=context)
+
     def write(self, cr, uid, ids, vals, context=None):
         """ Override write method to copy date of parent to children.
         """
@@ -64,9 +74,11 @@ class stock_inventory_hierarchical(osv.osv):
             context = {}
         if vals is None:
             return super(stock_inventory_hierarchical, self).write(cr, uid, ids, vals, context=context)
+
         values = super(stock_inventory_hierarchical, self).write(cr, uid, ids, vals, context=context)
         if 'date' not in vals or context.get('norecurs'):
             return values
+
         if type(ids) != list:
             ids = [ids]
         children_ids = self.search(cr, uid, [('parent_id', 'child_of', ids)])
