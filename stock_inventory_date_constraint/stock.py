@@ -18,50 +18,97 @@
 #
 ##############################################################################
 
-
-from osv import osv
-
+from osv import osv, orm
+from tools.translate import _
 
 class StockMoveConstraint(osv.osv):
 
     _inherit = 'stock.move'
 
-    def date_before_inventory_constraint(self, cr, uid, ids, context=None):
-        """Make sure no stock move is introduced before the date of a finished inventory"""
-        for move in self.browse(cr, uid, ids, context=context):
-            # Stock moves with another status but 'done' or 'cancel' are accepted because they don't change the available quantity
-            # Stock Moves going may go back from 'done' to 'canceled' (ie. cancelled inventory)
-            if move.state not in ['done', 'cancel']:
-                continue
-
-            # Search for inventory lines with the same location / prodlot / product
-            sil_obj = self.pool.get('stock.inventory.line')
-            sil_ids = sil_obj.search(cr, uid,
-                [('product_id', '=', move.product_id.id),
-                 ('prod_lot_id', '=', move.prodlot_id.id),
-                 ('location_id', 'in', [move.location_id.id,
-                                        move.location_dest_id.id])],
-                context=context)
-
-            if not sil_ids:
-                continue
-
-            inventory_ids = [i['inventory_id'][0]
-                             for i in sil_obj.read(cr, uid,
-                                                   sil_ids, ['inventory_id'],
-                                                   context=context)]
-
-            # reading end date for each inventory
-            if self.pool.get('stock.inventory').search(
-                    cr, uid, [('id', 'in', inventory_ids),
-                              ('state', '=', 'done'),
-                              ('date', '>', move.date)], context=context):
-                return False
-        
-        return True
+    def _past_inventories(self, cr, uid, product_ids, prodlot_ids, location_ids, limit_date, context=None):
+        """Search for inventories already finished after a given date"""
+        # Search for inventory lines with the given location / prodlot / product
+        sil_obj = self.pool.get('stock.inventory.line')
+        sil_ids = sil_obj.search(cr, uid, [('product_id', 'in', product_ids),
+                                           ('prod_lot_id', 'in', prodlot_ids),
+                                           ('location_id', 'in', location_ids)],
+                                 context=context)
+        if not sil_ids:
+            return False
+        # Search for inventories dates after the move containing those lines
+        inventory_ids = [i['inventory_id'][0]
+                         for i in sil_obj.read(cr, uid,
+                                               sil_ids, ['inventory_id'],
+                                               context=context)]
+        return self.pool.get('stock.inventory').search(
+                cr, uid, [('id', 'in', inventory_ids),
+                          ('state', '=', 'done'),
+                          ('date', '>=', limit_date)], context=context)
     
-    # XXX To be strict, we should check additional fields, but we trust the GUI to not let users mess with them: 'date', 'location_id', 'prod_lot_id', 'product_id'
-    _constraints = [(date_before_inventory_constraint,
-                     'Error: The stock move is before the date of an inventory',
-                     ['state'])]
+    def create(self, cr, uid, vals, context=None):
+        """Make sure the Stock Move being created doesn't make a finished inventory wrong"""
+        # Take default values into account
+        defaults = self.default_get(cr, uid,
+                                  ['product_id', 'prodlot_id', 'location_id',
+                                   'location_dest_id', 'date'],
+                                  context=context)
+        defaults.update(vals)
+        vals = defaults
+        
+        if (vals.get('state') == 'done'
+             and self._past_inventories(cr, uid, [vals.get('product_id')],
+                                       [vals.get('prodlot_id')],
+                                       [vals.get('location_id'), vals.get('location_dest_id')],
+                                       vals.get('date'), context=context)):
+            raise orm.except_orm(
+                _('Wrong Stock Move'),
+                _('The Stock Moves is dated before the date of a finished inventory'))
+        return super(StockMoveConstraint, self).create(cr, uid, vals, context=context)
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        """Make sure the changes being made to the Stock Moves don't make a finished inventory wrong"""
+        # XXX: the logic here is not 100% proven and may still allow some corner cases
+        # The difficulty is that inventories can be changed by doing or undoing a move, changing it's date, product, prodlot etc.  
+        wrong_moves = []
+        # Nothing to do if we change no value that can affect past inventories
+        if ('state' not in vals
+             and 'date' not in vals
+             and 'locatation_id' not in vals
+             and 'locatation_dest_id' not in vals
+             and 'prodlot_id' not in vals
+             and 'product_id' not in vals):
+            return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
+        
+        for move in self.browse(cr, uid, ids, context=context):
+            # Decide the limit date of the inventories that could be made wrong, depending on how the Stock Move is being changed
+            new_state = vals.get('state', move.state)
+            if move.state == 'done':
+                if new_state == 'done':
+                    # Get the earliest date from the new and the old date
+                    limit_date = min(move.date, vals['date'])
+                else:
+                    limit_date = move.date
+            else:
+                if new_state == 'done':
+                    limit_date = vals.get('date', move.date)
+                else:
+                    continue
+            
+            # Search for inventories made wrong by the change
+            if self._past_inventories(cr, uid,
+                                      [vals.get('product_id'), move.product_id.id],
+                                      [vals.get('prodlot_id'), move.prodlot_id.id],
+                                      [vals.get('location_id'), move.location_id.id,
+                                       vals.get('location_dest_id'), move.location_dest_id.id],
+                                      limit_date, context=context):
+                # That inventory matches, so the move is wrong!
+                wrong_moves.append(move)
+        
+        if wrong_moves:
+            # Make a message string with the names of the Stock Moves
+            msg = "\n".join([_("- %s (Id. %d)") % (m.name, m.id) for m in wrong_moves])
+            raise orm.except_orm(
+                _('Wrong Stock Moves'),
+                _('The following Stock Moves are dated before the date of a finished inventory:\n') + msg)
+        return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
 StockMoveConstraint()
