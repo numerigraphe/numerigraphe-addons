@@ -70,7 +70,7 @@
   I create yet another Stock Move dated today, in 'draft' state.
 -
   !record {model: stock.move, id: draft_stock_move2}:
-    name: 2nd sTest draft stock move before inventory date
+    name: 2nd Test draft stock move before inventory date
     location_id: stock.stock_location_components
     location_dest_id: stock.stock_location_7
     product_id: product.product_product_pc1
@@ -110,3 +110,24 @@
                        context={'location': [ref('stock.stock_location_components')],
                                 'to_date': '2099-12-31 19:10:34'})
   assert products[0]['qty_available'] == 20.0, "Quantity is not equal to 20.0 : %s" % products[0]['qty_available']
+-
+  I try to cancel the first inventory.
+  Either this must fail or we must check that the quantity is still correct.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm
+    try:
+      self.action_cancel_inventary(cr, uid, [ref('stock_inventory_init')])
+      # I check the available quantity
+      products = self.pool.get('product.product').read(
+        cr, uid, [ref('product.product_product_pc1')], ['qty_available'],
+        context={'location': [ref('stock.stock_location_components')],
+                 'to_date': '2099-12-31 19:10:34'})
+      assert products[0]['qty_available'] == 20.0, "Quantity is not equal to 20 after canceling the inventory : %s" % products[0]['qty_available']
+    except orm.except_orm as e:
+      log("Good ! The Inventory could not be canceled : %s" % e)
+-
+  I check that the last inventory can be canceled
+-
+  !python {model: stock.inventory}: |
+    self.action_cancel_inventary(cr, uid, [ref('stock_inventory_physical0')])
