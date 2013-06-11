@@ -55,7 +55,7 @@
             <field name="priority" eval="17"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="//tree//field[@name='uom_id']" position="after">
+                    <xpath expr="//tree//field[@name='state']" position="before">
                         <field name="weight_observed" colspan="4"/>
                     </xpath>
                 </data>

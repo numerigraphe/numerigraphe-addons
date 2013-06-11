@@ -1,0 +1,102 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* hierarchical_inventory
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.4\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2013-06-05 12:05+0000\n"
+"PO-Revision-Date: 2013-06-05 12:05+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#: constraint:stock.inventory:0
+#. module: hierarchical_inventory
+msgid "Error! You can not create recursive inventories."
+msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
+
+#: model:ir.ui.menu,name:hierarchical_inventory.menu_hierarchical_inventory_form
+#. module: hierarchical_inventory
+msgid "Hierarchical inventory"
+msgstr "Inventaire hiérarchique"
+
+#: model:ir.actions.act_window,name:hierarchical_inventory.menu_hierarchical_inventory_action
+#. module: hierarchical_inventory
+msgid "Hierarchical physical inventory"
+msgstr "Inventaire hiérarchique physique"
+
+#: field:stock.inventory,inventory_ids:0
+#. module: hierarchical_inventory
+msgid "List of inventory children"
+msgstr "Liste des inventaires enfants"
+
+#: field:stock.inventory,lock_stock_mvt:0
+#. module: hierarchical_inventory
+msgid "Needed to lock stock movement"
+msgstr "Nécessaire pour vérouiller les mouvements de stock"
+
+#: view:stock.inventory:0
+#. module: hierarchical_inventory
+msgid "Number of sub inventories"
+msgstr "Nombre de sous-inventaires"
+
+#: field:stock.inventory,parent_id:0
+#. module: hierarchical_inventory
+msgid "Parent"
+msgstr "Parent"
+
+#: field:stock.inventory,parent_left:0
+#. module: hierarchical_inventory
+msgid "Parent Left"
+msgstr "Parent gauche"
+
+#: field:stock.inventory,parent_right:0
+#. module: hierarchical_inventory
+msgid "Parent Right"
+msgstr "Parent droit"
+
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
+#. module: hierarchical_inventory
+#, python-format
+msgid "Some children are not confirmed."
+msgstr "Certains enfants ne sont pas \"confirmé\"."
+
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:116
+#. module: hierarchical_inventory
+#, python-format
+msgid "Some children are not done."
+msgstr "Certains enfants ne sont pas \"Terminé\""
+
+#: view:stock.inventory:0
+#. module: hierarchical_inventory
+msgid "Sub inventories"
+msgstr "Sous inventaire"
+
+#: view:stock.inventory:0
+#. module: hierarchical_inventory
+msgid "Sub inventories :"
+msgstr "Sous inventaire :"
+
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:68
+#. module: hierarchical_inventory
+#, python-format
+msgid "Sub inventory : %s"
+msgstr "Sous inventaire : %s"
+
+#: view:stock.inventory:0
+#. module: hierarchical_inventory
+msgid "View this inventory"
+msgstr "Voir ce sous inventaire"
+
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:116
+#. module: hierarchical_inventory
+#, python-format
+msgid "Warning !"
+msgstr "Attention !"
+
