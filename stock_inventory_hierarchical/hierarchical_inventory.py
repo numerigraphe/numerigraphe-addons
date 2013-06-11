@@ -39,24 +39,29 @@ class stock_inventory_hierarchical(osv.osv):
 
     _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
 
-    def open_sub_inventory(self, cr, uid, id, context=None):
-        """ Method to open sub inventory from one2many list on new tab, with specific view. """
-        if type(id) != list:
-            id = [id]
-        id = id[0]
-        res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'stock', 'view_inventory_form')
-        res_id = res and res[1] or False
-        inv = self.browse(cr, uid, id, context=context)
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Sub inventory : %s") % inv.name,
-            'view_type': 'form',
-            'view_mode': 'form',
-            'view_id': [res_id],
-            'res_model': self._name,
-            'res_id': id,
-        }
-
+# XXX: Ideally we would have liked to have a button to open sub-inventories,
+# but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
+# Maybe we may try that again with the new web client one day... 
+#     def open_sub_inventory(self, cr, uid, id, context=None):
+#         """ Method to open sub inventory from one2many list on new tab, with specific view. """
+#         # Find out the form view id
+#         if type(id) != list:
+#             id = [id]
+#         id = id[0]
+#         res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'stock', 'view_inventory_form')
+#         view_id = res and res[1] or False
+#         inv = self.browse(cr, uid, id, context=context)
+#         return {
+#             'type': 'ir.actions.act_window',
+#             'name': _("Sub inventory : %s") % inv.name,
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'view_id': [view_id],
+#             'res_model': 'stock.inventory',
+#             'res_id': id,
+#         }
+#         return True
+    
     def create(self, cr, user, vals, context=None):
         """ Override create method to copy date of parent to children"""
         if vals is None:
