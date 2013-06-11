@@ -62,6 +62,11 @@
                     colors="blue:state in ('draft', 'confirm');darkgreen: state in ('done');grey:state == 'gray'">
                     <field name="name" />
                     <field name="state" />
+                    <!-- XXX: Ideally we would have liked to have a button to open sub-inventories,
+                    but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
+                    Maybe we may try that again with the new web client one day... 
+                    <button string="View this inventory" type="object" name="open_sub_inventory"/>
+                    -->
                 </tree>
             </field>
         </record>
@@ -76,27 +81,29 @@
                 <form>
                     <group colspan="4" col="2">
                         <field name="name" />
-                        
-                    </group>                        
-                    <group colspan="4" col="2">
-                        <field name="inventory_ids" height="400" nolabel="1"
-                            context="{'form_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_form_view', 'tree_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_tree_view'}" />
-                    </group>                 
-                    <separator/>  
-                    <group colspan="4" col="3">   
-                        <field name="state" />                      
-                        <button string="View this inventory" type="object" name="open_sub_inventory" />
+                    </group>
+                    <field name="inventory_ids" nolabel="1" colspan="4"
+                        context="{'form_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_form_view', 'tree_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_tree_view'}" />
+                    <group colspan="4" col="3">
+                        <field name="state" />
+                        <!-- XXX: Ideally we would have liked to have a button to open sub-inventories,
+                            but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
+                            Maybe we may try that again with the new web client one day... 
+                            
+                            <button string="View this inventory" type="object" name="open_sub_inventory"/>
+                        -->
                     </group>
                 </form>
             </field>
         </record>
-
-        <record model="ir.actions.act_window" id="menu_stock_inventory_hierarchical_action">
-            <field name="name">Hierarchical physical inventory</field>
-            <field name="res_model">stock.inventory</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
+        
+         <act_window id="action_view_sub_inventory"
+            name="Sub-Inventories"
+            res_model="stock.inventory"
+            src_model="stock.inventory"
+            view_mode="tree,form"
+            view_type="form"
+            domain="[('parent_id', '=', active_id)]"
+            context="{'full':1}"/>
     </data>
 </openerp>
