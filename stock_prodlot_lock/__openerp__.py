@@ -26,9 +26,8 @@
     'description': "This module lets users lock a production lot, forbidding any new stock move from being confirmed. Based on custom module by Sylëam.",
     'depends' : [
                  'stock',
+                 'product_label',
                 ],
-    'init_xml' : [
-                 ],
     'update_xml' : [
                     'stock_view.xml',
                     'product_view.xml',
@@ -37,5 +36,3 @@
     'installable': True,
     'license' : 'GPL-3',
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
