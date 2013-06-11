@@ -18,17 +18,4 @@
 #
 ##############################################################################
 
-{
-    "name": "Stock inventory valuation",
-    "version": "1.0",
-    "depends": ["stock"],
-    "author": u"Numérigraphe",
-    "category": "Pricing",
-    "description": """
-        Store price, uom and quantity for each product on stock after an inventory.
-    """,
-    "init_xml": [],
-    "update_xml": ["stock_inventory_valuation_view.xml"],
-    "installable": True,
-    "active": False,
-}
+import inventory_hierarchical_valuation

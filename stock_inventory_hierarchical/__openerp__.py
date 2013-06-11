@@ -21,9 +21,9 @@
 
 {
     "name": "Hierarchical Physical Inventory",
-    "version": "1.0",
+    "version": "1.1",
     "depends": ["stock"],
-    "author": "Numérigraphe",
+    "author": u"Numérigraphe",
     "category": "stock inventory",
     "description": """
     This module have the following features :

@@ -25,7 +25,8 @@ from tools.translate import _
 
 
 class stock_inventory_valuation(osv.osv):
-    """ Save products informations (quantity, standard price) when inventory is confirmed. """
+    """ Save products informations (quantity, standard price) when inventory is confirmed.
+    """
     _name = 'stock.inventory.valuation'
     _description = 'Stock inventory valuation'
 
@@ -42,37 +43,46 @@ stock_inventory_valuation()
 
 
 class stock_inventory_valuation_inherit(osv.osv):
-    """ This class make link between stock_inventory object and stock_inventory_valuation """
+    """ This class make link between stock_inventory object and stock_inventory_valuation object """
     _inherit = 'stock.inventory'
     _columns = {
             'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations', ondelete='cascade', readonly=True)
                 }
 
+    def inventory_lines(self, inventory):
+        """ Browse of inventory line """
+        for line in inventory.inventory_line_id:
+            yield line
+
     def action_confirm(self, cr, uid, ids, context=None):
         """ to compute the stock valuation of products.
         """
-        for inv in self.browse(cr, uid, ids, context=context):
-            values = {}
-            for line in inv.inventory_line_id:
-                if line.product_id.id in values:
-                    value = values[line.product_id.id]
-                    value['product_qty'] += line.product_qty
-                else:
-                    value = {
-                        'name': 'INV:' + str(line.inventory_id.id) + ':' + line.inventory_id.name,
-                        'inventory_id': line.inventory_id.id,
-                        'product_id': line.product_id.id,
-                        'product_uom': line.product_uom.id,
-                        'product_qty': line.product_qty,
-                        'standard_price': line.product_id.standard_price,
-                        }
-                values[line.product_id.id] = value
+        if context is None:
+            context = {}
+        valuation = context.get('valuation', True)
+        if valuation:
+            for inv in self.browse(cr, uid, ids, context=context):
+                values = {}
+                for line in self.inventory_lines(inv):
+                    if line.product_id.id in values:
+                        value = values[line.product_id.id]
+                        value['product_qty'] += line.product_qty
+                    else:
+                        value = {
+                            'name': 'INV:' + str(inv.id) + ':' + inv.name,
+                            'inventory_id': inv.id,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom.id,
+                            'product_qty': line.product_qty,
+                            'standard_price': line.product_id.standard_price,
+                            }
+                    values[line.product_id.id] = value
 
-            for value in values.itervalues():
-                self.pool.get('stock.inventory.valuation').create(cr, uid, value, context=context)
+                for value in values.itervalues():
+                    self.pool.get('stock.inventory.valuation').create(cr, uid, value, context=context)
 
-            message = _('Product valuation for ') + " '" + inv.name + "' " + _("is done.")
-            self.log(cr, uid, inv.id, message)
+                message = _('Product valuation for ') + " '" + inv.name + "' " + _("is done.")
+                self.log(cr, uid, inv.id, message)
 
         # finally, the parent class is called to prepare stock moves and change the state of inventory to 'confirm'
         return super(stock_inventory_valuation_inherit, self).action_confirm(cr, uid, ids, context=context)

@@ -19,16 +19,17 @@
 ##############################################################################
 
 {
-    "name": "Stock inventory valuation",
+    "name": "Valuation for stock hierarchical inventories",
     "version": "1.0",
-    "depends": ["stock"],
+    "depends": ["stock_inventory_hierarchical", "stock_inventory_valuation"],
     "author": u"Numérigraphe",
-    "category": "Pricing",
+    "category": "stock inventory",
     "description": """
-        Store price, uom and quantity for each product on stock after an inventory.
+        Perform valuation of inventory who have sub inventories recursively.
     """,
-    "init_xml": [],
-    "update_xml": ["stock_inventory_valuation_view.xml"],
+    "update_xml": [],
     "installable": True,
-    "active": False,
+    "active": True,
 }
+
+

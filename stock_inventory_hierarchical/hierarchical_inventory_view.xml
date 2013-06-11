@@ -41,7 +41,7 @@
 
                 <xpath
                     expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']"
-                    position="before">
+                    position="after">
                     <page string="Sub inventories">
                         <field name="parent_id" invisible="1" />
                         <field name="inventory_ids" nolabel="1"

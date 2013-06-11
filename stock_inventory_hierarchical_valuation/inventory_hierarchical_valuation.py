@@ -18,17 +18,26 @@
 #
 ##############################################################################
 
-{
-    "name": "Stock inventory valuation",
-    "version": "1.0",
-    "depends": ["stock"],
-    "author": u"Numérigraphe",
-    "category": "Pricing",
-    "description": """
-        Store price, uom and quantity for each product on stock after an inventory.
-    """,
-    "init_xml": [],
-    "update_xml": ["stock_inventory_valuation_view.xml"],
-    "installable": True,
-    "active": False,
-}
+from osv import osv
+
+
+class inventory_hierarchical_valuation(osv.osv):
+
+    _inherit = 'stock.inventory'
+
+    def inventory_lines(self, inventory):
+        """ Browse lines of inventories and sub inventories """
+        for line in super(inventory_hierarchical_valuation, self).inventory_lines(inventory):
+            yield line
+        for inv_id in inventory.inventory_ids:
+            for line in self.inventory_lines(inv_id):
+                yield line
+
+    def action_confirm(self, cr, uid, ids, context=None):
+        """ Block inventory valuation if the inventory have parents (parent_id field not empty)"""
+        for inv in self.browse(cr, uid, ids, context=context):
+            if inv.parent_id:
+                context['valuation'] = False
+        return super(inventory_hierarchical_valuation, self).action_confirm(cr, uid, ids, context=context)
+
+inventory_hierarchical_valuation()
