@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<!-- From view : form_view ou form_view_inherit ou form_view_notebook -->
+
+		<!-- Tree view : tree_view ou tree_view_inherit -->		
+
+		<!-- Search view -->
+	    
+		<!-- Actions : act_window -->		
+
+
+	</data>
+</openerp>
