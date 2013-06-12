@@ -7,14 +7,40 @@
             <field name="product_id" ref="product.product_product_pc1" />
         </record>
 
-        <!-- Record an inventory we can use in the tests. -->
-        <!-- We need it in the demo data because test data is rolled back 
+        <!-- Record inventories we can use in the tests. -->
+        <!-- We need them in the demo data because test data is rolled back 
             whenever an exception is raised. -->
-        <!-- This inventory is dated in the distant future because we want 
+        
+        <!-- Record an inventory to make sure the next one will have stock moves posted. -->
+        <record id="stock_inventory_init" model="stock.inventory">
+            <field name="name">Initial Stock situation for testing the date constraint</field>
+            <field name="state">draft</field>
+            <field name="date">2025-01-01 12:05:27</field>
+        </record>
+        <record id="stock_inventory_line" model="stock.inventory.line">
+            <field name="inventory_id" ref="stock_inventory_init" />
+            <field name="product_id" ref="product.product_product_pc1" />
+            <field name="prod_lot_id" ref="lot_test0"/>
+            <field name="product_uom" ref="product.product_uom_unit" />
+            <field name="product_qty">27.0</field>
+            <field name="location_id" ref="stock.stock_location_components" />
+        </record>
+        <function model="stock.inventory" name="action_confirm">
+            <function
+                eval="[[('id', '=', ref('stock_inventory_init'))]]"
+                model="stock.inventory" name="search" />
+        </function>
+        <function model="stock.inventory" name="action_done">
+            <function
+                eval="[[('id', '=', ref('stock_inventory_init'))]]"
+                model="stock.inventory" name="search" />
+        </function>
+        
+        <!-- The next inventory is dated in the distant future because we want
             to test it against stock moves made before, but stock.move.action_done forces 
             the move date to today. -->
         <record id="stock_inventory_physical0" model="stock.inventory">
-            <field name="name">Initial Stock situation for testing the date constraint</field>
+            <field name="name">Stock situation in 2099 for testing the date constraint</field>
             <field name="date">2099-01-01 12:05:27</field>
             <field name="state">draft</field>
         </record>

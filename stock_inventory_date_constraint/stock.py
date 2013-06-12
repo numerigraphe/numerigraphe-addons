@@ -21,6 +21,21 @@
 from osv import osv, orm
 from tools.translate import _
 
+class StockInventoryCancelable(osv.osv):
+    """Make inventories cancelable despite the constraint on stock move dates""" 
+    _inherit = "stock.inventory"
+    
+    def action_cancel_inventary(self, cr, uid, ids, context=None):
+        """Inject a context key to not block the deletion of stock moves"""
+        if context is None:
+            context = {}
+        else:
+            context = context.copy()
+        context['ignore_inventories'] = ids
+        return super(StockInventoryCancelable, self).action_cancel_inventary(
+            cr, uid, ids, context=context)
+StockInventoryCancelable()
+
 class StockMoveConstraint(osv.osv):
 
     _inherit = 'stock.move'
@@ -28,10 +43,13 @@ class StockMoveConstraint(osv.osv):
     def _past_inventories(self, cr, uid, product_ids, prodlot_ids, location_ids, limit_date, context=None):
         """Search for inventories already finished after a given date"""
         # Search for inventory lines with the given location / prodlot / product
+        if context is None:
+            context = {}
         sil_obj = self.pool.get('stock.inventory.line')
         sil_ids = sil_obj.search(cr, uid, [('product_id', 'in', product_ids),
                                            ('prod_lot_id', 'in', prodlot_ids),
-                                           ('location_id', 'in', location_ids)],
+                                           ('location_id', 'in', location_ids),
+                                           ('inventory_id', 'not in', context.get('ignore_inventories', []))],
                                  context=context)
         if not sil_ids:
             return False
@@ -48,28 +66,33 @@ class StockMoveConstraint(osv.osv):
     def create(self, cr, uid, vals, context=None):
         """Make sure the Stock Move being created doesn't make a finished inventory wrong"""
         # Take default values into account
-        defaults = self.default_get(cr, uid,
+        old_vals = vals
+        vals = self.default_get(cr, uid,
                                   ['product_id', 'prodlot_id', 'location_id',
                                    'location_dest_id', 'date'],
                                   context=context)
-        defaults.update(vals)
-        vals = defaults
+        vals.update(old_vals)
         
-        if (vals.get('state') == 'done'
-             and self._past_inventories(cr, uid, [vals.get('product_id')],
-                                       [vals.get('prodlot_id')],
-                                       [vals.get('location_id'), vals.get('location_dest_id')],
-                                       vals.get('date'), context=context)):
-            raise orm.except_orm(
-                _('Wrong Stock Move'),
-                _('The Stock Moves is dated before the date of a finished inventory'))
+        if vals.get('state') == 'done':
+            inv_ids = self._past_inventories(cr, uid, [vals.get('product_id')],
+                                             [vals.get('prodlot_id')],
+                                             [vals.get('location_id'), vals.get('location_dest_id')],
+                                             vals.get('date'), context=context)
+            if inv_ids:
+                # Make a message string with the names of the Inventories
+                inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
+                msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
+                                 for i in inventories])
+                raise orm.except_orm(
+                    _('Wrong Stock Moves'),
+                    _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
         return super(StockMoveConstraint, self).create(cr, uid, vals, context=context)
     
     def write(self, cr, uid, ids, vals, context=None):
         """Make sure the changes being made to the Stock Moves don't make a finished inventory wrong"""
         # XXX: the logic here is not 100% proven and may still allow some corner cases
         # The difficulty is that inventories can be changed by doing or undoing a move, changing it's date, product, prodlot etc.  
-        wrong_moves = []
+        inv_ids = []
         # Nothing to do if we change no value that can affect past inventories
         if ('state' not in vals
              and 'date' not in vals
@@ -94,21 +117,21 @@ class StockMoveConstraint(osv.osv):
                 else:
                     continue
             
-            # Search for inventories made wrong by the change
-            if self._past_inventories(cr, uid,
+            # Search for inventories conflicting the change
+            inv_ids.extend(self._past_inventories(cr, uid,
                                       [vals.get('product_id'), move.product_id.id],
                                       [vals.get('prodlot_id'), move.prodlot_id.id],
                                       [vals.get('location_id'), move.location_id.id,
                                        vals.get('location_dest_id'), move.location_dest_id.id],
-                                      limit_date, context=context):
-                # That inventory matches, so the move is wrong!
-                wrong_moves.append(move)
+                                      limit_date, context=context))
         
-        if wrong_moves:
-            # Make a message string with the names of the Stock Moves
-            msg = "\n".join([_("- %s (Id. %d)") % (m.name, m.id) for m in wrong_moves])
+        if inv_ids:
+            # Make a message string with the names of the Inventories
+            inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
+            msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
+                             for i in inventories])
             raise orm.except_orm(
                 _('Wrong Stock Moves'),
-                _('The following Stock Moves are dated before the date of a finished inventory:\n') + msg)
+                _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
         return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
 StockMoveConstraint()
