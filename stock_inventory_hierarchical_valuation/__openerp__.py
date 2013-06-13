@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,9 +27,6 @@
     "description": """
         Perform valuation of inventory who have sub inventories recursively.
     """,
-    "update_xml": [],
-    "installable": True,
-    "active": True,
+    # Will work with v6.1 and later
+    "auto_install": True,
 }
-
-
