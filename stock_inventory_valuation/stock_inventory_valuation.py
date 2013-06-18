@@ -18,11 +18,9 @@
 #
 ##############################################################################
 
-
 from osv import osv, fields
 import decimal_precision as dp
 from tools.translate import _
-
 
 class stock_inventory_valuation(osv.osv):
     """ Save products informations (quantity, standard price) when inventory is confirmed.
@@ -40,7 +38,6 @@ class stock_inventory_valuation(osv.osv):
         }
 
 stock_inventory_valuation()
-
 
 class stock_inventory_valuation_inherit(osv.osv):
     """ This class make link between stock_inventory object and stock_inventory_valuation object """

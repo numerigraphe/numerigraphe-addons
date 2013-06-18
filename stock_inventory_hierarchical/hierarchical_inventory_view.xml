@@ -24,7 +24,7 @@
             <field name="inherit_id" ref="stock.view_inventory_filter" />
             <field name="arch" type="xml">
                 <field name="date" position="after">
-                    <field name="parent_id" />                    
+                    <field name="parent_id" />
                 </field>
             </field>
         </record>
@@ -62,6 +62,7 @@
                     colors="blue:state in ('draft', 'confirm');darkgreen: state in ('done');grey:state == 'gray'">
                     <field name="name" />
                     <field name="state" />
+                    <field name="inventory_ids"/>
                     <!-- XXX: Ideally we would have liked to have a button to open sub-inventories,
                     but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
                     Maybe we may try that again with the new web client one day... 

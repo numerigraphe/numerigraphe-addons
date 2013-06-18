@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 #
 ##############################################################################
 
-
 {
     "name": "Hierarchical Physical Inventory",
     "version": "1.0",
@@ -34,6 +33,4 @@
         - prepare paper inventory filled with empty locations to check only,
     """,
     "update_xml": ["hierarchical_inventory_view.xml"],
-    "installable": True,
-    "active": False,
 }

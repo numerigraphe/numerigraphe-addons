@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# parent_left and parent_right : see account_account column declaration and Performance Optimization chapter on the memento.
 ##############################################################################
+
 from osv import osv, fields
 from tools.translate import _
-
 
 class stock_inventory_hierarchical(osv.osv):
     _inherit = 'stock.inventory'
@@ -31,7 +30,6 @@ class stock_inventory_hierarchical(osv.osv):
 
     _columns = {
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
-        #'lock_stock_mvt': fields.boolean('Needed to lock stock movement'),  # lock stock move during the inventory (for future use)
         'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of inventory children', readonly=True, states={'draft': [('readonly', False)]}),
         'parent_left': fields.integer('Parent Left', select=1),
         'parent_right': fields.integer('Parent Right', select=1),
