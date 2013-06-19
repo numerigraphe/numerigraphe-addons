@@ -78,7 +78,7 @@ class stock_inventory(osv.osv):
                 for value in values.itervalues():
                     self.pool.get('stock.inventory.valuation').create(cr, uid, value, context=context)
 
-                message = _('Product valuation for ') + " '" + inv.name + "' " + _("is done.")
+                message = _("Product valuation for '%s' is done") % inv.name
                 self.log(cr, uid, inv.id, message)
 
         # finally, the parent class is called to prepare stock moves and change the state of inventory to 'confirm'
