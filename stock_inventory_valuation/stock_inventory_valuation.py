@@ -29,22 +29,22 @@ class stock_inventory_valuation(osv.osv):
     _description = 'Stock inventory valuation'
 
     _columns = {
-            'name': fields.char('name', size=64, required=True, select=True),
-            'inventory_id': fields.many2one('stock.inventory', 'Inventory', ondelete='cascade', readonly=True),
-            'product_id': fields.many2one('product.product', 'Product', ondelete='restrict', readonly=True),
-            'product_qty': fields.float('Inventory Quantity', digits_compute=dp.get_precision('Product UoM')),
-            'product_uom': fields.many2one('product.uom', 'Unit of Measure', readonly=True, help="unit of measure of product."),
-            'standard_price': fields.float('Cost Price', required=True, digits_compute=dp.get_precision('Product Price'), help="Product's cost for accounting stock valuation. It is the base price for the supplier price."),
-        }
+        'name': fields.char('name', size=64, required=True, select=True),
+        'inventory_id': fields.many2one('stock.inventory', 'Inventory', ondelete='cascade', readonly=True),
+        'product_id': fields.many2one('product.product', 'Product', ondelete='restrict', readonly=True),
+        'product_qty': fields.float('Inventory Quantity', digits_compute=dp.get_precision('Product UoM')),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure', readonly=True, help="unit of measure of product."),
+        'standard_price': fields.float('Cost Price', required=True, digits_compute=dp.get_precision('Product Price'), help="Product's cost for accounting stock valuation. It is the base price for the supplier price."),
+    }
 
 stock_inventory_valuation()
 
-class stock_inventory_valuation_inherit(osv.osv):
+class stock_inventory(osv.osv):
     """ This class make link between stock_inventory object and stock_inventory_valuation object """
     _inherit = 'stock.inventory'
     _columns = {
-            'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations', ondelete='cascade', readonly=True)
-                }
+        'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations', ondelete='cascade', readonly=True)
+    }
 
     def inventory_lines(self, inventory):
         """ Browse of inventory line """
@@ -82,7 +82,7 @@ class stock_inventory_valuation_inherit(osv.osv):
                 self.log(cr, uid, inv.id, message)
 
         # finally, the parent class is called to prepare stock moves and change the state of inventory to 'confirm'
-        return super(stock_inventory_valuation_inherit, self).action_confirm(cr, uid, ids, context=context)
+        return super(stock_inventory, self).action_confirm(cr, uid, ids, context=context)
 
     def action_cancel_inventary(self, cr, uid, ids, context=None):
         """ to delete records valuation on database.
@@ -91,6 +91,13 @@ class stock_inventory_valuation_inherit(osv.osv):
         for inv in self.browse(cr, uid, ids, context=context):
             siv_line_ids = siv_obj.search(cr, uid, [('inventory_id', '=', inv.id)])
             siv_obj.unlink(cr, uid, siv_line_ids, context=context)
-        return super(stock_inventory_valuation_inherit, self).action_cancel_inventary(cr, uid, ids, context=context)
+        return super(stock_inventory, self).action_cancel_inventary(cr, uid, ids, context=context)
+    
+    def copy(self, cr, uid, id, default=None, context=None):
+        """Do not copy the product valuation when cloning inventories"""
+        default = default and default.copy() or {}
+        default['valuation_ids'] = []
+        return super(stock_inventory, self).copy(cr, uid, id, default=default, context=context)
+    
+stock_inventory()
 
-stock_inventory_valuation_inherit()
