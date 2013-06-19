@@ -81,7 +81,7 @@
             <field name="arch" type="xml">
                 <form>
                     <group colspan="4" col="2">
-                        <field name="name" />
+                        <field name="name" default_focus="1"/>
                     </group>
                     <field name="inventory_ids" nolabel="1" colspan="4"
                         context="{'form_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_form_view', 'tree_view_ref' : 'stock_inventory_hierarchical.stock_inventory_hierarchical_subinventory_tree_view'}" />
