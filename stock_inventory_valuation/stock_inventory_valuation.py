@@ -99,11 +99,11 @@ class stock_inventory(osv.osv):
             siv_obj.unlink(cr, uid, siv_line_ids, context=context)
         return super(stock_inventory, self).action_cancel_inventary(cr, uid, ids, context=context)
     
-    def copy(self, cr, uid, id, default=None, context=None):
+    # This is better done in copy_data() than copy() because copy_data() s called for related records too
+    def copy_data(self, cr, uid, id, default=None, context=None):
         """Do not copy the product valuation when cloning inventories"""
         default = default and default.copy() or {}
         default['valuation_ids'] = []
-        return super(stock_inventory, self).copy(cr, uid, id, default=default, context=context)
+        return super(stock_inventory, self).copy_data(cr, uid, id, default=default, context=context)
     
 stock_inventory()
-
