@@ -35,8 +35,27 @@ class stock_inventory_hierarchical(osv.osv):
         'parent_right': fields.integer('Parent Right', select=1),
         }
 
-    _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
+    # XXX: drop this in v7
+    def _check_recursion(self, cr, uid, ids, context=None, parent=None):
+        """Backport of osv.osv._check_recursion from v7.0, to allow writing parents and children in the same write()"""
+        if not parent:
+            parent = self._parent_name
 
+        # must ignore 'active' flag, ir.rules, etc. => direct SQL query
+        query = 'SELECT "%s" FROM "%s" WHERE id = %%s' % (parent, self._table)
+        for id in ids:
+            current_id = id
+            while current_id is not None:
+                cr.execute(query, (current_id,))
+                result = cr.fetchone()
+                current_id = result[0] if result else None
+                if current_id == id:
+                    return False
+        return True
+    # XXX: use this in v7
+    #_constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
+    _constraints = [(_check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
+    
 # XXX: Ideally we would have liked to have a button to open sub-inventories,
 # but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
 # Maybe we may try that again with the new web client one day... 
