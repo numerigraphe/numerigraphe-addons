@@ -43,22 +43,29 @@ class stock_inventory(osv.osv):
     """ This class make link between stock_inventory object and stock_inventory_valuation object """
     _inherit = 'stock.inventory'
     _columns = {
-        'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations', ondelete='cascade', readonly=True)
+        'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations',
+                                         ondelete='cascade', readonly=True)
     }
 
     def inventory_lines(self, inventory):
-        """ Browse of inventory line """
+        """Generator of inventory line Ids.
+        
+        This default implementation is trivial, but this method exists for
+        inherited models to redefine it, to include other inventory lines."""
         for line in inventory.inventory_line_id:
             yield line
 
     def action_confirm(self, cr, uid, ids, context=None):
-        """ to compute the stock valuation of products.
+        """ Compute the valuation of products. 
+        
+        @param context['valuation']: enable/disable the computation of the valuation 
         """
         if context is None:
             context = {}
-        valuation = context.get('valuation', True)
-        if valuation:
+        
+        if context.get('valuation', True):
             for inv in self.browse(cr, uid, ids, context=context):
+                # Collect the valuation of each product
                 values = {}
                 for line in self.inventory_lines(inv):
                     if line.product_id.id in values:
@@ -74,14 +81,13 @@ class stock_inventory(osv.osv):
                             'standard_price': line.product_id.standard_price,
                             }
                     values[line.product_id.id] = value
-
+                
+                # Record the valuations
                 for value in values.itervalues():
                     self.pool.get('stock.inventory.valuation').create(cr, uid, value, context=context)
 
                 message = _("Product valuation for '%s' is done") % inv.name
                 self.log(cr, uid, inv.id, message)
-
-        # finally, the parent class is called to prepare stock moves and change the state of inventory to 'confirm'
         return super(stock_inventory, self).action_confirm(cr, uid, ids, context=context)
 
     def action_cancel_inventary(self, cr, uid, ids, context=None):

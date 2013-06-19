@@ -20,23 +20,39 @@
 
 from osv import osv
 
-class inventory_hierarchical_valuation(osv.osv):
+class stock_inventory(osv.osv):
 
     _inherit = 'stock.inventory'
 
     def inventory_lines(self, inventory):
-        """ Browse lines of inventories and sub inventories """
-        for line in super(inventory_hierarchical_valuation, self).inventory_lines(inventory):
+        """ Generator of lines of inventories and sub-inventories
+        
+        This lets the valuation method compute the total of the whole inventory and sub-inventories"""
+        for line in super(stock_inventory, self).inventory_lines(inventory):
             yield line
         for inv_id in inventory.inventory_ids:
             for line in self.inventory_lines(inv_id):
                 yield line
 
     def action_confirm(self, cr, uid, ids, context=None):
-        """ Block inventory valuation if the inventory have parents (parent_id field not empty)"""
-        for inv in self.browse(cr, uid, ids, context=context):
-            if inv.parent_id:
-                context['valuation'] = False
-        return super(inventory_hierarchical_valuation, self).action_confirm(cr, uid, ids, context=context)
+        """ Do not compute valuation on inventories which have parents"""
+        # Create a context without valuation
+        if context is None:
+            context = {}
+        ctx_wo_valuation = context.copy()
+        ctx_wo_valuation['valuation'] = False
+        
+        # Process non-root inventories, with valuation disabled
+        branch_ids = self.search(cr, uid,
+           [('id', 'in', ids), ('parent_id', '!=', False)], context=context)
+        if branch_ids:
+            res = super(stock_inventory, self).action_confirm(cr, uid, branch_ids, context=ctx_wo_valuation)
+        
+        # Process root inventories
+        root_ids = [i for i in ids if i not in branch_ids]
+        if root_ids:
+            res = super(stock_inventory, self).action_confirm(cr, uid, root_ids, context=context)
+        
+        return res
 
-inventory_hierarchical_valuation()
+stock_inventory()

@@ -131,7 +131,7 @@ class stock_inventory_hierarchical(osv.osv):
     
     def create(self, cr, user, vals, context=None):
         """ Copy date of parent to children"""
-        if vals and 'parent_id' in vals:
+        if vals and vals.get('parent_id'):
             parent_date = self.read(cr, user, [vals['parent_id']], ['date'], context=context)
             vals = vals.copy()
             vals['date'] = parent_date[0]['date']
