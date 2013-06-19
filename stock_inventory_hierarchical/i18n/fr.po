@@ -101,3 +101,7 @@ msgstr "Voir ce sous inventaire"
 msgid "Warning !"
 msgstr "Attention !"
 
+#: field:stock.inventory,confirmed_rate:0
+#. module: hierarchical_inventory
+msgid "Confirmed"
+msgstr "Confirmé"
