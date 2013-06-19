@@ -154,11 +154,13 @@ class stock_inventory_hierarchical(osv.osv):
         return self.write(cr, uid, children_ids, {'date': vals['date']}, context=ctx)
 
     def action_cancel_inventary(self, cr, uid, ids, context=None):
-        """ Cancel inventory only if all the children are canceled """
-        children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
-                                             ('state', '<>', 'cancel')], context=context, count=True)
-        if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not canceled.'))
+        """ Cancel inventory only if all the parents are canceled """
+        inventories = self.browse(cr, uid, ids, context=context)
+        for inventory in inventories:
+            while inventory.parent_id:
+                inventory = inventory.parent_id
+                if inventory.state != 'cancel':
+                    raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not canceled.'))
         return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
 
     def action_confirm(self, cr, uid, ids, context=None):
