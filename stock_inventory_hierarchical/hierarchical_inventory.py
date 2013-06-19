@@ -44,6 +44,7 @@ class stock_inventory_hierarchical(osv.osv):
         return res
     
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        """Allow search on value returned by name_get ("parent/ child")"""
         if not args:
             args = []
         if not context:
@@ -57,21 +58,22 @@ class stock_inventory_hierarchical(osv.osv):
         return self.name_get(cr, uid, ids, context=context)
 
     def _name_get_fnc(self, cr, uid, ids, field_name, arg, context=None):
+        """Function field containing the long name"""
         res = self.name_get(cr, uid, ids, context=context)
         return dict(res)
 
-    def _confirmed_rate(self, cr, uid, ids, field_name, arg, context):
+    def _confirmed_rate(self, cr, uid, ids, field_name, arg, context=None):
         """Number of (sub)inventories confirmed/total"""
         rates = {}
         for id in ids:
-            nb = self.search(cr, uid, [('parent_id', 'child_of', id)], count=True)
+            nb = self.search(cr, uid, [('parent_id', 'child_of', id)], context=context, count=True)
             nb_confirmed = self.search(cr, uid, [('parent_id', 'child_of', id),
-                                                 ('state', 'in', ('confirm', 'done'))], count=True)
+                                                 ('state', 'in', ('confirm', 'done'))], context=context, count=True)
             rates[id] = 100 * nb_confirmed / nb
         return rates
     
     _columns = {
-		# XXX remove "method=True" in v7 ?
+        # XXX remove "method=True" in v7 ?
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Complete reference'),
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
         'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of Sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
@@ -99,7 +101,10 @@ class stock_inventory_hierarchical(osv.osv):
         return True
     # XXX: use this in v7
     # _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
-    _constraints = [(_check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
+    _constraints = [
+        (_check_recursion,
+         _('Error! You can not create recursive inventories.'), ['parent_id']),
+    ]
     
 # XXX: Ideally we would have liked to have a button to open Sub-inventories,
 # but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
@@ -125,25 +130,20 @@ class stock_inventory_hierarchical(osv.osv):
 #         return True
     
     def create(self, cr, user, vals, context=None):
-        """ Override create method to copy date of parent to children"""
-        if vals is None:
-            return super(stock_inventory_hierarchical, self).create(cr, user, vals, context=context)
-
-        if vals['parent_id']:
+        """ Copy date of parent to children"""
+        if vals and 'parent_id' in vals:
             parent_date = self.read(cr, user, [vals['parent_id']], ['date'], context=context)
-            vals['date'] = parent_date[0].get('date')
+            vals = vals.copy()
+            vals['date'] = parent_date[0]['date']
         return super(stock_inventory_hierarchical, self).create(cr, user, vals, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        """ Override write method to copy date of parent to children.
-        """
+        """ Copy date of parent to children"""
         if context is None:
             context = {}
-        if vals is None:
-            return super(stock_inventory_hierarchical, self).write(cr, uid, ids, vals, context=context)
 
         values = super(stock_inventory_hierarchical, self).write(cr, uid, ids, vals, context=context)
-        if 'date' not in vals or context.get('norecurs'):
+        if not vals or 'date' not in vals or context.get('norecurs'):
             return values
 
         if type(ids) != list:
@@ -170,8 +170,7 @@ class stock_inventory_hierarchical(osv.osv):
         return super(stock_inventory_hierarchical, self).action_confirm(cr, uid, ids, context=context)
 
     def action_done(self, cr, uid, ids, context=None):
-        """ Perform validation only if all the children states are 'done'.
-        """
+        """ Perform validation only if all the children states are 'done'. """
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', '!=', 'done')], context=context, count=True)
         if children_count > 1:
