@@ -30,7 +30,7 @@ class stock_inventory_hierarchical(osv.osv):
 
     _columns = {
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
-        'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of inventory children', readonly=True, states={'draft': [('readonly', False)]}),
+        'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
         'parent_left': fields.integer('Parent Left', select=1),
         'parent_right': fields.integer('Parent Right', select=1),
         }
@@ -108,12 +108,20 @@ class stock_inventory_hierarchical(osv.osv):
         ctx['norecurs'] = True  # needed to write children once.
         return self.write(cr, uid, children_ids, {'date': vals['date']}, context=ctx)
 
+    def action_cancel_inventary(self, cr, uid, ids, context=None):
+        """ Cancel inventory only if all the children are canceled """
+        children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
+                                             ('state', '<>', 'cancel')], context=context, count=True)
+        if children_count > 1:
+            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not canceled.'))
+        return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
+
     def action_confirm(self, cr, uid, ids, context=None):
         """ Confirm inventory only if all the children are confirmed """
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', 'not in', ['confirm', 'done'])], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some children are not confirmed.'))
+            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not confirmed.'))
         return super(stock_inventory_hierarchical, self).action_confirm(cr, uid, ids, context=context)
 
     def action_done(self, cr, uid, ids, context=None):
@@ -122,7 +130,7 @@ class stock_inventory_hierarchical(osv.osv):
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', '!=', 'done')], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some children are not done.'))
+            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not done.'))
         return super(stock_inventory_hierarchical, self).action_done(cr, uid, ids, context=context)
 
 stock_inventory_hierarchical()

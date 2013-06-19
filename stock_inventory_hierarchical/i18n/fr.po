@@ -32,8 +32,8 @@ msgstr "Inventaire hiérarchique physique"
 
 #: field:stock.inventory,inventory_ids:0
 #. module: hierarchical_inventory
-msgid "List of inventory children"
-msgstr "Liste des inventaires enfants"
+msgid "List of sub-inventories"
+msgstr "Liste des sous-inventaires"
 
 #: field:stock.inventory,lock_stock_mvt:0
 #. module: hierarchical_inventory
@@ -63,14 +63,20 @@ msgstr "Parent droit"
 #: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
 #. module: hierarchical_inventory
 #, python-format
-msgid "Some children are not confirmed."
-msgstr "Certains enfants ne sont pas \"confirmé\"."
+msgid "Some sub-inventories are not confirmed."
+msgstr "Certains sous-inventaires ne sont pas confirmés."
+
+#: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
+#. module: hierarchical_inventory
+#, python-format
+msgid "Some sub-inventories are not canceled."
+msgstr "Certains sous-inventaires ne sont pas annulés."
 
 #: code:addons/hierarchical_inventory/hierarchical_inventory.py:116
 #. module: hierarchical_inventory
 #, python-format
-msgid "Some children are not done."
-msgstr "Certains enfants ne sont pas \"Terminé\""
+msgid "Some sub-inventories are not done."
+msgstr "Certains sous-inventaires ne sont pas terminés."
 
 #: view:stock.inventory:0
 #. module: hierarchical_inventory
@@ -86,7 +92,7 @@ msgstr "Sous inventaire :"
 #. module: hierarchical_inventory
 #, python-format
 msgid "Sub inventory : %s"
-msgstr "Sous inventaire : %s"
+msgstr "Sous-inventaire : %s"
 
 #: view:stock.inventory:0
 #. module: hierarchical_inventory
