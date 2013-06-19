@@ -28,7 +28,41 @@ class stock_inventory_hierarchical(osv.osv):
     _parent_order = 'date, name'
     _order = 'parent_left'
 
+    def name_get(self, cr, uid, ids, context=None):
+        """Show the parent inventory's name in the name of the children"""
+        if isinstance(ids, (list, tuple)) and not len(ids):
+            return []
+        if isinstance(ids, (long, int)):
+            ids = [ids]
+        reads = self.read(cr, uid, ids, ['name','parent_id'], context=context)
+        res = []
+        for record in reads:
+            name = record['name']
+            if record['parent_id']:
+                name = record['parent_id'][1]+' / '+name
+            res.append((record['id'], name))
+        return res
+    
+    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if not context:
+            context = {}
+        if name:
+            # Be sure name_search is symetric to name_get
+            name = name.split(' / ')[-1]
+            ids = self.search(cr, uid, [('name', operator, name)] + args, limit=limit, context=context)
+        else:
+            ids = self.search(cr, uid, args, limit=limit, context=context)
+        return self.name_get(cr, uid, ids, context=context)
+
+    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+
     _columns = {
+		#XXX remove "method=True" in v7 ?
+        'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Complete reference'),
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
         'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
         'parent_left': fields.integer('Parent Left', select=1),
