@@ -81,12 +81,7 @@ msgstr "Certains sous-inventaires ne sont pas terminés."
 #: view:stock.inventory:0
 #. module: hierarchical_inventory
 msgid "Sub inventories"
-msgstr "Sous inventaire"
-
-#: view:stock.inventory:0
-#. module: hierarchical_inventory
-msgid "Sub inventories :"
-msgstr "Sous inventaire :"
+msgstr "Sous-inventaire"
 
 #: code:addons/hierarchical_inventory/hierarchical_inventory.py:68
 #. module: hierarchical_inventory

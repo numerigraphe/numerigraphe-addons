@@ -34,12 +34,12 @@ class stock_inventory_hierarchical(osv.osv):
             return []
         if isinstance(ids, (long, int)):
             ids = [ids]
-        reads = self.read(cr, uid, ids, ['name','parent_id'], context=context)
+        reads = self.read(cr, uid, ids, ['name', 'parent_id'], context=context)
         res = []
         for record in reads:
             name = record['name']
             if record['parent_id']:
-                name = record['parent_id'][1]+' / '+name
+                name = record['parent_id'][1] + ' / ' + name
             res.append((record['id'], name))
         return res
     
@@ -56,17 +56,28 @@ class stock_inventory_hierarchical(osv.osv):
             ids = self.search(cr, uid, args, limit=limit, context=context)
         return self.name_get(cr, uid, ids, context=context)
 
-    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+    def _name_get_fnc(self, cr, uid, ids, field_name, arg, context=None):
         res = self.name_get(cr, uid, ids, context=context)
         return dict(res)
 
+    def _confirmed_rate(self, cr, uid, ids, field_name, arg, context):
+        """Number of (sub)inventories confirmed/total"""
+        rates = {}
+        for id in ids:
+            nb = self.search(cr, uid, [('parent_id', 'child_of', id)], count=True)
+            nb_confirmed = self.search(cr, uid, [('parent_id', 'child_of', id),
+                                                 ('state', 'in', ('confirm', 'done'))], count=True)
+            rates[id] = 100 * nb_confirmed / nb
+        return rates
+    
     _columns = {
-		#XXX remove "method=True" in v7 ?
+		# XXX remove "method=True" in v7 ?
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Complete reference'),
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
         'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
         'parent_left': fields.integer('Parent Left', select=1),
         'parent_right': fields.integer('Parent Right', select=1),
+        'confirmed_rate': fields.function(_confirmed_rate, method=True, string='Confirmed', type='float'),
         }
 
     # XXX: drop this in v7
@@ -87,7 +98,7 @@ class stock_inventory_hierarchical(osv.osv):
                     return False
         return True
     # XXX: use this in v7
-    #_constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
+    # _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     _constraints = [(_check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     
 # XXX: Ideally we would have liked to have a button to open sub-inventories,
