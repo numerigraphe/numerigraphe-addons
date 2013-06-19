@@ -74,7 +74,7 @@ class stock_inventory_hierarchical(osv.osv):
 		# XXX remove "method=True" in v7 ?
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Complete reference'),
         'parent_id': fields.many2one('stock.inventory', 'Parent', ondelete='cascade', readonly=True, states={'draft': [('readonly', False)]}),
-        'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
+        'inventory_ids': fields.one2many('stock.inventory', 'parent_id', 'List of Sub-inventories', readonly=True, states={'draft': [('readonly', False)]}),
         'parent_left': fields.integer('Parent Left', select=1),
         'parent_right': fields.integer('Parent Right', select=1),
         'confirmed_rate': fields.function(_confirmed_rate, method=True, string='Confirmed', type='float'),
@@ -101,11 +101,11 @@ class stock_inventory_hierarchical(osv.osv):
     # _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     _constraints = [(_check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     
-# XXX: Ideally we would have liked to have a button to open sub-inventories,
+# XXX: Ideally we would have liked to have a button to open Sub-inventories,
 # but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
 # Maybe we may try that again with the new web client one day... 
 #     def open_sub_inventory(self, cr, uid, id, context=None):
-#         """ Method to open sub inventory from one2many list on new tab, with specific view. """
+#         """ Method to open Sub-inventory from one2many list on new tab, with specific view. """
 #         # Find out the form view id
 #         if type(id) != list:
 #             id = [id]
@@ -115,7 +115,7 @@ class stock_inventory_hierarchical(osv.osv):
 #         inv = self.browse(cr, uid, id, context=context)
 #         return {
 #             'type': 'ir.actions.act_window',
-#             'name': _("Sub inventory : %s") % inv.name,
+#             'name': _("Sub-inventory : %s") % inv.name,
 #             'view_type': 'form',
 #             'view_mode': 'form',
 #             'view_id': [view_id],
@@ -158,7 +158,7 @@ class stock_inventory_hierarchical(osv.osv):
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', '<>', 'cancel')], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not canceled.'))
+            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not canceled.'))
         return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
 
     def action_confirm(self, cr, uid, ids, context=None):
@@ -166,7 +166,7 @@ class stock_inventory_hierarchical(osv.osv):
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', 'not in', ['confirm', 'done'])], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not confirmed.'))
+            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not confirmed.'))
         return super(stock_inventory_hierarchical, self).action_confirm(cr, uid, ids, context=context)
 
     def action_done(self, cr, uid, ids, context=None):
@@ -175,7 +175,7 @@ class stock_inventory_hierarchical(osv.osv):
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', '!=', 'done')], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some sub-inventories are not done.'))
+            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not done.'))
         return super(stock_inventory_hierarchical, self).action_done(cr, uid, ids, context=context)
 
 stock_inventory_hierarchical()
