@@ -35,8 +35,7 @@ class stock_move(osv.osv):
                                                       context=context)
 
     def copy(self, cr, uid, id, default=None, context=None):
-        if not default:
-            default = {}
+        default = default and default.copy() or {}
         default['product_initial_qty']=0
         return super(stock_move, self).copy(cr, uid, id, default=default,
                                             context=context)

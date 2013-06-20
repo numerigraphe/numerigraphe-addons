@@ -130,6 +130,7 @@ class stock_move(osv.osv):
             if (move.prodlot_id and move.prodlot_id.locked
                 and move.location_id.usage not in ['supplier', 'inventory','production']
                 and move.location_dest_id.usage != 'inventory'
+                and move.location_id.id != move.location_dest_id.id
                 and not(move.location_dest_id.usage == 'internal' and move.location_dest_id.receipt == True)
                 and move.state == 'done' ):
                 message += _(" - Lot %s: %s.\n") % (

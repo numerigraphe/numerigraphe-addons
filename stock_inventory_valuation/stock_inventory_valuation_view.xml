@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+    <!-- Create a new tab on the notebook -->
+    <record model="ir.ui.view" id="stock_inventory_valuation_form_view">
+        <field name="name">stock.inventory.valuation.form</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="/form[@string='Physical Inventory']/notebook/page[@string='Posted Inventory']"
+                position="after">
+                <page string="Valuation of inventory">
+                    <field name="valuation_ids" nolabel="1"/>                         
+                </page>
+            </xpath>            
+            <xpath
+                expr="/form[@string='Physical Inventory']/group/button[@name='action_cancel_inventary']"
+                position="attributes">
+                    <attribute name="confirm">The inventory valuation will be deleted.
+                    Are you sure ?</attribute>
+            </xpath>                        
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="stock_inventory_valuation_tree_view">
+        <field name="name">stock.inventory.valuation.tree</field>
+        <field name="model">stock.inventory.valuation</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Details" editable="bottom">
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="product_uom"/>
+                <field name="standard_price"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="stock_inventory_valuation_line_form_view">
+        <field name="name">stock.inventory.valuation.detail.form</field>
+        <field name="model">stock.inventory.valuation</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                 <group colspan="4" col="2">
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="product_uom"/>
+                    <field name="standard_price"/> 
+                 </group>              
+            </form>
+        </field>
+    </record>
+
+
+	</data>
+</openerp>

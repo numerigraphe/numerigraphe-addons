@@ -1,7 +1,7 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,20 +19,13 @@
 ##############################################################################
 
 {
-    'name' : 'Lock production lots',
-    'version' : '1.0',
-    'author' : u'Sylëam, Numérigraphe',
-    'category': 'Custom',
-    'description': "This module lets users lock a production lot, forbidding any new stock move from being confirmed. Based on custom module by Sylëam.",
-    'depends' : [
-                 'stock',
-                 'product_label',
-                ],
-    'update_xml' : [
-                    'stock_view.xml',
-                    'product_view.xml',
-                   ],
-    'active': False,
-    'installable': True,
-    'license' : 'GPL-3',
+    "name": "Stock inventory valuation",
+    "version": "1.0",
+    "depends": ["stock"],
+    "author": u"Numérigraphe",
+    "category": "Pricing",
+    "description": """
+        Store price, uom and quantity for each product on stock after an inventory.
+    """,
+    "update_xml": ["stock_inventory_valuation_view.xml"],
 }

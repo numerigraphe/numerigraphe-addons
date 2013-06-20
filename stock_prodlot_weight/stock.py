@@ -95,8 +95,7 @@ class stock_production_lot(osv.osv):
     
     def copy(self, cr, uid, id, default=None, context=None):
         """Reset the weight on copied lots"""
-        if default is None:
-            default = {}
+        default = default and default.copy() or {}
         if 'weight_observed' not in default:
             default['weight_observed'] = 0.0
         return super(stock_production_lot, self).copy(cr, uid, id, default=default,
