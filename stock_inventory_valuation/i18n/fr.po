@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-06-11 14:49+0000\n"
-"PO-Revision-Date: 2013-06-11 14:49+0000\n"
+"POT-Creation-Date: 2013-06-19 13:23+0000\n"
+"PO-Revision-Date: 2013-06-19 13:23+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,6 +30,10 @@ msgstr "Détails"
 msgid "Error! You can not create recursive inventories."
 msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
 
+#. module: stock_inventory_valuation
+#: model:ir.model,name:stock_inventory_valuation.model_stock_inventory
+msgid "Gestion des stocks"
+msgstr "Gestion des stocks"
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,inventory_id:0
@@ -52,10 +56,10 @@ msgid "Product Valuations"
 msgstr "Produits valorisés"
 
 #. module: stock_inventory_valuation
-#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:84
+#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:81
 #, python-format
-msgid "Product valuation for "
-msgstr "Valorisation de "
+msgid "Product valuation for '%s' is done"
+msgstr "La valorisation de \"%s\" est terminée."
 
 #. module: stock_inventory_valuation
 #: help:stock.inventory.valuation,standard_price:0
@@ -76,12 +80,6 @@ msgstr "Unité de mesure"
 #: view:stock.inventory:0
 msgid "Valuation of inventory"
 msgstr "Valorisation de l'inventaire"
-
-#. module: stock_inventory_valuation
-#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:84
-#, python-format
-msgid "is done."
-msgstr "est terminé."
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,name:0
