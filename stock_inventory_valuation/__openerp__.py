@@ -27,5 +27,6 @@
     "description": """
         Store price, uom and quantity for each product on stock after an inventory.
     """,
-    "update_xml": ["stock_inventory_valuation_view.xml"],
+    "update_xml": ["stock_inventory_valuation_view.xml",
+                   "security/ir.model.access.csv"],
 }
