@@ -160,7 +160,7 @@ class stock_inventory_hierarchical(osv.osv):
             while inventory.parent_id:
                 inventory = inventory.parent_id
                 if inventory.state != 'cancel':
-                    raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not canceled.'))
+                    raise osv.except_osv(_('Warning !'), _('One of the parent Inventories is not canceled.'))
         return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
 
     def action_confirm(self, cr, uid, ids, context=None):
