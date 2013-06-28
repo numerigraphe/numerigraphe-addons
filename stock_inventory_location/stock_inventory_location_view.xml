@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_inventory_location_form_view">
+            <field name="name">stock.inventory.location.form</field>
+            <field name="model">stock.inventory</field>                
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">                               
+
+<!--                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']/tree/field[@name='location_id']" position="replace">
+                   <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(location_id)"/>
+                </xpath>                
+-->
+                <xpath 
+                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
+                    position="after">
+                    <group colspan="4" col="1">
+                        <field colspan="1" name="location_inventory_ids" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
+                            <tree string="Locations" editable="bottom">                                                                       
+                                <field name="inventory_id" invisible="1"/>                                
+                                <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
+                                <field name="products_count" context="{'inventory_id':active_id}"/>
+                                <field name="state"/>    
+                                <field name="empty"/>   
+                            </tree>
+                        </field>
+                    </group>                    
+                </xpath>
+                
+            </field>  
+        </record>    
+	</data>
+</openerp>
+
+
+<!-- solution 1 :   Déplace la colonne emplacement en dernière position. 
+                    Modifie l'icone d'écaltement en lots
+                    Il semblerai que la regle soit de créer une plus petite liste en dessous plutôt qu'a coté                     
+ --> 
+<!-- 
+                <xpath
+                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
+                    position="before">
+                        <group colspan="4"/>
+                </xpath>
+
+                <xpath 
+                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
+                    position="after">
+                                                        
+                        <field colspan="2" col="4" name="location_inventory_ids" nolabel="1" widget="one2many_list">
+                            <tree string="Locations" editable="bottom">                                       
+                                <field name="inventory_id" invisible="1"/>
+                                <field name="location_id"/>
+                                <field name="state"/>    
+                                <field name="empty"/>                
+                            </tree>
+                        </field>
+                </xpath>
+                
+                <xpath 
+                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
+                    position="replace">                    
+                        <field colspan="3" col="4" name="inventory_line_id" nolabel="1" widget="one2many_list"/>                                           
+                </xpath>                
+ -->

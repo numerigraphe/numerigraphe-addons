@@ -20,7 +20,7 @@
 
 
 {
-    "name": "Inventory Location",
+    "name": "Stock Inventory Location",
     "version": "1.0",
     "depends": ["stock"],
     "author": u"Numérigraphe",
@@ -29,7 +29,8 @@
         Create a link between inventory and locations.
         You can easily follow the inventory progression and mark the empty locations.
     """,
-    "update_xml": ["name_view.xml"],
+    "update_xml": ["stock_inventory_location_view.xml",
+                   "wizard/stock_fill_location_inventory_view.xml"],
     "installable": True,
     "active": False,
 }

@@ -18,5 +18,5 @@
 #
 ##############################################################################
 
-
-import inventory_location
+import stock_inventory_location
+import wizard
