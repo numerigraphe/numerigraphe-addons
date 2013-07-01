@@ -63,8 +63,8 @@ msgstr "Parent droit"
 #. module: stock_inventory_hierarchical
 #: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:161
 #, python-format
-msgid "Some Sub-inventories are not canceled."
-msgstr "Certains sous-inventaires ne sont pas annulés."
+msgid "One of the parent Inventories is not canceled."
+msgstr "Un des inventaires pères n'est pas annulé."
 
 #. module: stock_inventory_hierarchical
 #: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:169
