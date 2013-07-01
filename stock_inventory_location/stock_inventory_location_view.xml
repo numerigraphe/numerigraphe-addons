@@ -5,62 +5,61 @@
             <field name="name">stock.inventory.location.form</field>
             <field name="model">stock.inventory</field>                
             <field name="inherit_id" ref="stock.view_inventory_form"/>
-            <field name="arch" type="xml">                               
+            <field name="arch" type="xml">                                               
+                <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']" position="replace">
+                    <!-- Add the locations list  for inventory -->                    
+                    <field colspan="1" name="location_inventory_ids" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
+                        <tree string="Locations" editable="bottom">                                                                       
+                            <field name="inventory_id" invisible="1"/>                                
+                            <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
+                            <field name="products_count" context="{'inventory_id':active_id}"/>
+                            <field name="state"/>    
+                            <field name="empty"/>   
+                        </tree>
+                        <form string="locations">
+                            <field name="inventory_id" invisible="1"/>                                
+                            <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
+                            <field name="products_count" context="{'inventory_id':active_id}"/>
+                            <field name="state"/>    
+                            <field name="empty"/>  
+                        </form>                            
+                    </field>  
+                                      
+                    <!-- Modify the default view to add inventory_id (needed for on_change method call) -->
+                    <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
+                        <tree string="Products" editable="bottom">
+                             <field name="inventory_id" invisible="1"/>
+                            <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(inventory_id, location_id)"/>
+                            <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                            <field name="prod_lot_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" />
+                            <button name="%(stock.action_view_stock_inventory_line_split)d"
+                                string="Split inventory lines" groups="base.group_extended"
+                                type="action" icon="terp-stock_effects-object-colorize" states="draft,confirm"/>
+                            <field name="state" invisible="True"/>
+                            <field name = "id" invisible="1"/>
+                        </tree>
+                        <form string="Products ">
+                             <field name="inventory_id" invisible="1"/>
+                            <field domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(inventory_id, location_id)"/>
+                            <newline/>
+                            <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom"/>
+                            <group colspan="2" col="4">
+                            <field name="prod_lot_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" />
+                                <button name="%(stock.action_view_stock_inventory_line_split)d"
+                                    string="Split inventory lines" groups="base.group_extended"
+                                    type="action" icon="terp-stock_effects-object-colorize"/>
+                            <field name = "id" invisible="1"/>
+                            </group>
+                        </form>
+                    </field>
+                     
+                </xpath> 
 
-<!--                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']/tree/field[@name='location_id']" position="replace">
-                   <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(location_id)"/>
-                </xpath>                
--->
-                <xpath 
-                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
-                    position="after">
-                    <group colspan="4" col="1">
-                        <field colspan="1" name="location_inventory_ids" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
-                            <tree string="Locations" editable="bottom">                                                                       
-                                <field name="inventory_id" invisible="1"/>                                
-                                <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
-                                <field name="products_count" context="{'inventory_id':active_id}"/>
-                                <field name="state"/>    
-                                <field name="empty"/>   
-                            </tree>
-                        </field>
-                    </group>                    
-                </xpath>
-                
             </field>  
         </record>    
 	</data>
 </openerp>
-
-
-<!-- solution 1 :   Déplace la colonne emplacement en dernière position. 
-                    Modifie l'icone d'écaltement en lots
-                    Il semblerai que la regle soit de créer une plus petite liste en dessous plutôt qu'a coté                     
- --> 
-<!-- 
-                <xpath
-                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
-                    position="before">
-                        <group colspan="4"/>
-                </xpath>
-
-                <xpath 
-                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
-                    position="after">
-                                                        
-                        <field colspan="2" col="4" name="location_inventory_ids" nolabel="1" widget="one2many_list">
-                            <tree string="Locations" editable="bottom">                                       
-                                <field name="inventory_id" invisible="1"/>
-                                <field name="location_id"/>
-                                <field name="state"/>    
-                                <field name="empty"/>                
-                            </tree>
-                        </field>
-                </xpath>
-                
-                <xpath 
-                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']"
-                    position="replace">                    
-                        <field colspan="3" col="4" name="inventory_line_id" nolabel="1" widget="one2many_list"/>                                           
-                </xpath>                
- -->

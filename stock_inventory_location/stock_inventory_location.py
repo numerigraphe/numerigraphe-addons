@@ -18,7 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from osv import osv, orm, fields
+from tools.translate import _
 
 
 class stock_inventory_location(osv.osv):
@@ -51,9 +52,8 @@ class stock_inventory_location(osv.osv):
                                        ('done', 'Done')],
                                       'state', required=True, readonly=True),  # open state needed to open inventory and lock stock move
             'empty': fields.boolean('Empty location'),
-            'products_count': fields.function(_products_count, method=True, string='Number of products', type='integer'),
+            'products_count': fields.function(_products_count, method=True, string='Imported products', type='integer'),
             'active': fields.boolean('Active'),
-
         }
 
     _defaults = {
@@ -88,11 +88,6 @@ class stock_inventory_location(osv.osv):
             self.create(cr, uid, inventory_location_details, context=context)
         return {}
 
-
-    def onchange_location_id(self, cr, uid, ids, location_id, context=None):
-        print "stock_inventory_location.location_id : %s" % location_id
-        return False
-
 stock_inventory_location()
 
 
@@ -106,7 +101,29 @@ class stock_inventory(osv.osv):
 stock_inventory()
 
 
-# est-ce qu bon endroit
+class stock_inventory_line(osv.osv):
+
+    _inherit = 'stock.inventory.line'
+
+    def onchange_location_id(self, cr, uid, ids, inventory_id, location_id, context=None):
+        """ Raise exception if location_id not in locations list for this inventory """
+        stock_inventory_location_obj = self.pool.get('stock.inventory.location')
+        stock_inventory_location_ids = stock_inventory_location_obj.search(cr, uid, [('inventory_id', '=', inventory_id),
+                                                                                     ('location_id', '=', location_id)], context=context)
+        if not stock_inventory_location_ids:
+            raise orm.except_orm(
+                    _('Wrong location'),
+                    _('You cannot add this location to inventory line.\nYou must add this location on the locations list'))
+        return True
+
+    _defaults = {
+         'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
+         }
+
+stock_inventory_line()
+
+
+# est-ce au bon endroit...
 
 # class stock_location(osv.osv):
 #     _inherit = 'stock.location'
