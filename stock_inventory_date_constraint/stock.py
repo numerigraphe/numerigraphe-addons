@@ -52,7 +52,7 @@ class StockMoveConstraint(osv.osv):
                                            ('inventory_id', 'not in', context.get('ignore_inventories', []))],
                                  context=context)
         if not sil_ids:
-            return False
+            return []
         # Search for inventories dates after the move containing those lines
         inventory_ids = [i['inventory_id'][0]
                          for i in sil_obj.read(cr, uid,

@@ -1,6 +1,6 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-#	* hierarchical_inventory
+#	* stock_inventory_hierarchical
 #
 msgid ""
 msgstr ""
@@ -15,87 +15,90 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
+#. module: stock_inventory_hierarchical
+#: field:stock.inventory,complete_name:0
+msgid "Complete reference"
+msgstr "Réference complète"
+
+#. module: stock_inventory_hierarchical
+#: field:stock.inventory,confirmed_rate:0
+msgid "Confirmed"
+msgstr "Confirmé"
+
+#. module: stock_inventory_hierarchical
 #: constraint:stock.inventory:0
-#. module: hierarchical_inventory
 msgid "Error! You can not create recursive inventories."
 msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
 
-#: model:ir.ui.menu,name:hierarchical_inventory.menu_hierarchical_inventory_form
-#. module: hierarchical_inventory
-msgid "Hierarchical inventory"
-msgstr "Inventaire hiérarchique"
-
-#: model:ir.actions.act_window,name:hierarchical_inventory.menu_hierarchical_inventory_action
-#. module: hierarchical_inventory
-msgid "Hierarchical physical inventory"
-msgstr "Inventaire hiérarchique physique"
-
+#. module: stock_inventory_hierarchical
 #: field:stock.inventory,inventory_ids:0
-#. module: hierarchical_inventory
-msgid "List of inventory children"
-msgstr "Liste des inventaires enfants"
+msgid "List of Sub-inventories"
+msgstr "Liste des sous-inventaires"
 
-#: field:stock.inventory,lock_stock_mvt:0
-#. module: hierarchical_inventory
-msgid "Needed to lock stock movement"
-msgstr "Nécessaire pour vérouiller les mouvements de stock"
-
+#. module: stock_inventory_hierarchical
 #: view:stock.inventory:0
-#. module: hierarchical_inventory
-msgid "Number of sub inventories"
+msgid "Main inventories"
+msgstr "Inventaires principaux"
+
+#. module: stock_inventory_hierarchical
+#: view:stock.inventory:0
+msgid "Number of Sub-inventories"
 msgstr "Nombre de sous-inventaires"
 
+#. module: stock_inventory_hierarchical
 #: field:stock.inventory,parent_id:0
-#. module: hierarchical_inventory
 msgid "Parent"
 msgstr "Parent"
 
+#. module: stock_inventory_hierarchical
 #: field:stock.inventory,parent_left:0
-#. module: hierarchical_inventory
 msgid "Parent Left"
 msgstr "Parent gauche"
 
+#. module: stock_inventory_hierarchical
 #: field:stock.inventory,parent_right:0
-#. module: hierarchical_inventory
 msgid "Parent Right"
 msgstr "Parent droit"
 
-#: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
-#. module: hierarchical_inventory
+#. module: stock_inventory_hierarchical
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:161
 #, python-format
-msgid "Some children are not confirmed."
-msgstr "Certains enfants ne sont pas \"confirmé\"."
+msgid "One of the parent Inventories is not canceled."
+msgstr "Un des inventaires pères n'est pas annulé."
 
-#: code:addons/hierarchical_inventory/hierarchical_inventory.py:116
-#. module: hierarchical_inventory
+#. module: stock_inventory_hierarchical
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:169
 #, python-format
-msgid "Some children are not done."
-msgstr "Certains enfants ne sont pas \"Terminé\""
+msgid "Some Sub-inventories are not confirmed."
+msgstr "Certains sous-inventaires ne sont pas confirmés."
 
-#: view:stock.inventory:0
-#. module: hierarchical_inventory
-msgid "Sub inventories"
-msgstr "Sous inventaire"
-
-#: view:stock.inventory:0
-#. module: hierarchical_inventory
-msgid "Sub inventories :"
-msgstr "Sous inventaire :"
-
-#: code:addons/hierarchical_inventory/hierarchical_inventory.py:68
-#. module: hierarchical_inventory
+#. module: stock_inventory_hierarchical
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:178
 #, python-format
-msgid "Sub inventory : %s"
-msgstr "Sous inventaire : %s"
+msgid "Some Sub-inventories are not done."
+msgstr "Certains sous-inventaires ne sont pas terminés."
 
+#. module: stock_inventory_hierarchical
+#: model:ir.actions.act_window,name:stock_inventory_hierarchical.action_view_sub_inventory
 #: view:stock.inventory:0
-#. module: hierarchical_inventory
+msgid "Sub-inventories"
+msgstr "Sous-inventaires"
+
+#. module: stock_inventory_hierarchical
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:118
+#, python-format
+msgid "Sub-inventory : %s"
+msgstr "Sous-inventaire : %s"
+
+#. module: stock_inventory_hierarchical
+#: view:stock.inventory:0
 msgid "View this inventory"
 msgstr "Voir ce sous inventaire"
 
-#: code:addons/hierarchical_inventory/hierarchical_inventory.py:104
-#: code:addons/hierarchical_inventory/hierarchical_inventory.py:116
-#. module: hierarchical_inventory
+#. module: stock_inventory_hierarchical
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:161
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:169
+#: code:addons/stock_inventory_hierarchical/hierarchical_inventory.py:178
 #, python-format
 msgid "Warning !"
 msgstr "Attention !"

@@ -26,8 +26,8 @@
     "category": "stock inventory",
     "description": """
     This module have the following features :
-        - hierarchical structure of inventory and sub inventories,
-        - a location can be linked with only one sub-inventory during inventory,
+        - hierarchical structure of inventory and Sub-inventories,
+        - a location can be linked with only one Sub-inventory during inventory,
         - check empty locations,
         - prepare paper inventory filled with formations about products and location, but empty quantity,
         - prepare paper inventory filled with empty locations to check only,
