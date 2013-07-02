@@ -62,7 +62,7 @@ class product_product(osv.osv):
             # Take any shop using any warehouse that has these locations as stock location
             if context.get('location', False):
                 # Either a single or multiple locations can be in the context 
-                if type(context['location']) == type(1):
+                if not isinstance(context['location'], list):
                     location_ids = [context['location']]
                 else:
                     location_ids = context['location']

@@ -112,7 +112,7 @@ class stock_inventory_hierarchical(osv.osv):
 #     def open_sub_inventory(self, cr, uid, id, context=None):
 #         """ Method to open Sub-inventory from one2many list on new tab, with specific view. """
 #         # Find out the form view id
-#         if type(id) != list:
+#         if not isinstance(id, list):
 #             id = [id]
 #         id = id[0]
 #         res = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'stock', 'view_inventory_form')
@@ -146,7 +146,7 @@ class stock_inventory_hierarchical(osv.osv):
         if not vals or 'date' not in vals or context.get('norecurs'):
             return values
 
-        if type(ids) != list:
+        if not isinstance(ids, list):
             ids = [ids]
         children_ids = self.search(cr, uid, [('parent_id', 'child_of', ids)])
         ctx = context.copy()
