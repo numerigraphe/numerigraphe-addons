@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+           
         <record model="ir.ui.view" id="stock_inventory_location_form_view">
             <field name="name">stock.inventory.location.form</field>
             <field name="model">stock.inventory</field>                
             <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="priority" eval="10"/>
             <field name="arch" type="xml">                                               
                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']" position="replace">
                     <!-- Add the locations list  for inventory -->                    
-                    <field colspan="1" name="location_inventory_ids" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
-                        <tree string="Locations" editable="bottom">                                                                       
-                            <field name="inventory_id" invisible="1"/>                                
-                            <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
-                            <field name="products_count" context="{'inventory_id':active_id}"/>
-                            <field name="state"/>    
-                            <field name="empty"/>   
-                        </tree>
-                        <form string="locations">
-                            <field name="inventory_id" invisible="1"/>                                
-                            <field name="location_id" on_change="onchange_inventory_location_id(inventory_id, location_id)"/>
-                            <field name="products_count" context="{'inventory_id':active_id}"/>
-                            <field name="state"/>    
-                            <field name="empty"/>  
-                        </form>                            
-                    </field>  
-                                      
+                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]">
+                        <tree string="Locations" editable="bottom">                                                                                                       
+                            <field name="name"/> 
+                        </tree>                                    
+                    </field>
+
                     <!-- Modify the default view to add inventory_id (needed for on_change method call) -->
                     <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
                         <tree string="Products" editable="bottom">
-                             <field name="inventory_id" invisible="1"/>
+                            <field name="inventory_id" invisible="1"/>
                             <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(inventory_id, location_id)"/>
                             <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
                             <field name="product_qty"/>
@@ -56,10 +47,22 @@
                             </group>
                         </form>
                     </field>
-                     
                 </xpath> 
-
+                
+                <!-- Add button to open an inventory. Call wizard on confirm inventory -->
+                <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_cancel_inventary']" position="replace">                    
+                    <button name="action_cancel_inventary" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>                                 
+                    <button name="action_open" states="draft" string="Open Inventory" type="object" icon="gtk-open"/>
+                </xpath> 
+                
+                <!-- replace action_confirm button  -->
+                <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_confirm']" position="replace">                                          
+                    <button name="%(action_view_stock_inventory_empty_location)d"
+                        string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
+                </xpath>                
+                               
             </field>  
-        </record>    
+        </record>
+
 	</data>
 </openerp>

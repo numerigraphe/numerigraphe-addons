@@ -29,8 +29,11 @@
         Create a link between inventory and locations.
         You can easily follow the inventory progression and mark the empty locations.
     """,
-    "update_xml": ["stock_inventory_location_view.xml",
-                   "wizard/stock_fill_location_inventory_view.xml"],
+    "update_xml": [
+                   "wizard/stock_confirm_empty_location.xml",
+                   "stock_inventory_location_view.xml",
+                   "wizard/stock_fill_location_inventory_view.xml",
+                   ],
     "installable": True,
     "active": False,
 }
