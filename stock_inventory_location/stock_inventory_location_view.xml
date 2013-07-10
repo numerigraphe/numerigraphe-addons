@@ -57,7 +57,7 @@
                 
                 <!-- replace action_confirm button  -->
                 <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_confirm']" position="replace">                                          
-                    <button name="%(action_view_stock_inventory_empty_location)d"
+                    <button name="%(action_view_stock_inventory_uninventoried_location)d"
                         string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
                 </xpath>                
                                

@@ -20,4 +20,4 @@
 
 
 import stock_fill_location_inventory
-import stock_confirm_empty_location
+import stock_confirm_uninventoried_location

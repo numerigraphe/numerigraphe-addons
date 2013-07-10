@@ -2,21 +2,21 @@
 <openerp>
     <data>
 
-        <record id="action_view_stock_inventory_empty_location" model="ir.actions.act_window">
-            <field name="name">Confirm empty location</field>
+        <record id="action_view_stock_inventory_uninventoried_location" model="ir.actions.act_window">
+            <field name="name">Confirm uninventoried location</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">stock.inventory.empty.locations</field>
+            <field name="res_model">stock.inventory.uninventoried.locations</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
 
-        <record id="view_confirm_empty_location" model="ir.ui.view">
-            <field name="name">Confirm empty location</field>
-            <field name="model">stock.inventory.empty.locations</field>
+        <record id="view_confirm_uninventoried_location" model="ir.ui.view">
+            <field name="name">Confirm uninventoried location</field>
+            <field name="model">stock.inventory.uninventoried.locations</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Confirm empty locations">
+                <form string="Confirm uninventoried locations">
                     <group colspan="4" col="1">
                         <field name="location_ids" nolabel="1">
                             <tree>
@@ -25,11 +25,11 @@
                         </field>                        
                     </group>
                     <group colspan="4" col="2">
-                        <label string="This is the list of empty locations."/>
+                        <label string="This is the list of uninventoried locations."/>
                         <label string="Do you want to continue ?"/>
                         <separator string="" colspan="4" />
                         <button special="cancel" string="_Cancel" icon='gtk-cancel'/>
-                        <button name="confirm_empty_locations" string="Confirm empty locations" type="object" icon="gtk-ok"/>
+                        <button name="confirm_uninventoried_locations" string="Confirm uninventoried locations" type="object" icon="gtk-ok"/>
                     </group>
                 </form>
             </field>

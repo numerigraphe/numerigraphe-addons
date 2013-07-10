@@ -30,7 +30,7 @@
         You can easily follow the inventory progression and mark the empty locations.
     """,
     "update_xml": [
-                   "wizard/stock_confirm_empty_location.xml",
+                   "wizard/stock_confirm_uninventoried_location.xml",
                    "stock_inventory_location_view.xml",
                    "wizard/stock_fill_location_inventory_view.xml",
                    ],

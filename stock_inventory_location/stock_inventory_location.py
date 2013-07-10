@@ -36,9 +36,8 @@ class stock_inventory_location(osv.osv):
         'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel', 'location_id', 'inventory_id', 'Locations'),
         }
 
-
     def action_open(self, cr, uid, ids, context=None):
-        """ Open the inventory : 
+        """ Open the inventory :
         open all locations, import and print inventory sheet become possible
         """
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)

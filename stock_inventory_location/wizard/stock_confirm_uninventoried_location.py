@@ -22,21 +22,21 @@ from osv import fields, osv
 from tools.translate import _
 
 
-class stock_inventory_empty_location(osv.osv_memory):
+class stock_inventory_uninventoried_location(osv.osv_memory):
 
-    _name = 'stock.inventory.empty.locations'
-    _description = 'Ask to user to confirm the empty locations.'
+    _name = 'stock.inventory.uninventoried.locations'
+    _description = 'Ask to user to confirm the uninventoried locations.'
 
     _columns = {
                 'location_ids': fields.many2many('stock.location',
-                                                 'stock_inventory_empty_location_rel',
+                                                 'stock_inventory_uninventoried_location_rel',
                                                  'location_id',
                                                  'wizard_id',
-                                                 'Empty locations', readonly=True),
+                                                 'Uninventoried location', readonly=True),
                 }
 
     def default_locations(self, cr, uid, context=None):
-        """ initialize view with the list of empty locations """
+        """ initialize view with the list of uninventoried locations """
         if context is None:
             context = {}
 
@@ -48,19 +48,19 @@ class stock_inventory_empty_location(osv.osv_memory):
                                                                  ('inventory_id', '=', context['active_id'])], context=context)
         inventory_line_locations_ids = inventory_line_obj.read(cr, uid, inventory_line_ids, ['location_id'], context=context)
         list_loc_ids = list(set([_id['location_id'][0] for _id in inventory_line_locations_ids]))
-        list_empty_locations_ids = [_id for _id in location_ids['location_ids'] if _id not in list_loc_ids]
-        return list_empty_locations_ids
+        list_uninventoried_locations_ids = [_id for _id in location_ids['location_ids'] if _id not in list_loc_ids]
+        return list_uninventoried_locations_ids
 
     _defaults = {
         'location_ids': default_locations,
         }
 
 
-    def confirm_empty_locations(self, cr, uid, ids, context=None):
+    def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """
         stock_inventory_obj = self.pool.get('stock.inventory')
         ids = context['active_ids']
         stock_inventory_obj.action_confirm(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-stock_inventory_empty_location()
+stock_inventory_uninventoried_location()

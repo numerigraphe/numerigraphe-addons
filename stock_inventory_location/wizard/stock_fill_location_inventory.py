@@ -50,91 +50,29 @@ class stock_fill_location_inventory(osv.osv_memory):
 
     def fill_inventory(self, cr, uid, ids, context=None):
         """ Fill the inventory only with open locations on the inventory.
-        Add line far empty location with empty product or virtual product.
         """
         if context is None:
             context = {}
 
         inventory_obj = self.pool.get('stock.inventory')
-        inventory_line_obj = self.pool.get('stock.inventory.line')
         location_obj = self.pool.get('stock.location')
-        move_obj = self.pool.get('stock.move')
-        uom_obj = self.pool.get('product.uom')
 
-        # TODO : look if order option will be added on v
         location_ids = inventory_obj.read(cr, uid, [context.get('active_id')], ['location_ids'])
-
         fill_inventory = self.browse(cr, uid, ids[0], context=context)
+        options = {'recursive': False, 'set_stock_zero': False}
+
         if fill_inventory.recursive:
             location_ids = location_obj.get_children(cr, uid, location_ids[0].get('location_ids'), context=context)
+            options['recursive'] = True
         else:
             location_ids = location_ids[0].get('location_ids')
 
         location_ids = list(OrderedDict.fromkeys(location_ids))
 
-        res = []
-        flag = False
+        if fill_inventory.set_stock_zero:
+            options['set_stock_zero'] = True
 
-        for location in location_ids:
-            datas = {}
-
-            move_ids = move_obj.search(cr, uid, ['|', ('location_dest_id', '=', location),
-                                                        ('location_id', '=', location),
-                                                        ('state', '=', 'done')], context=context)
-
-            for move in move_obj.browse(cr, uid, move_ids, context=context):
-                lot_id = move.prodlot_id.id
-                prod_id = move.product_id.id
-
-                if move.location_dest_id.id == location:
-                    qty = uom_obj._compute_qty(cr, uid, move.product_uom.id, move.product_qty, move.product_id.uom_id.id)
-                else:
-                    qty = -uom_obj._compute_qty(cr, uid, move.product_uom.id, move.product_qty, move.product_id.uom_id.id)
-
-                if datas.get((prod_id, lot_id)):
-                    # Floating point sum could introduce some tiny rounding errors.
-                    qty = rounding(qty + datas[(prod_id, lot_id)]['product_qty'], move.product_id.uom_id.rounding)
-
-                datas[(prod_id, lot_id)] = {'product_id': prod_id,
-                                            'location_id': location,
-                                            'product_qty': qty,
-                                            'product_uom': move.product_id.uom_id.id,
-                                            'prod_lot_id': lot_id,
-                                            'default_code': move.product_id.default_code,
-                                            'prodlot_name': move.prodlot_id.name}
-
-            if datas:
-                flag = True
-                res.append(datas)
-
-        if not flag:
-            raise osv.except_osv(_('Warning !'), _('No product in this location.'))
-
-        for stock_move in res:
-            prod_lots = sorted(stock_move, key=lambda k: (stock_move[k]['default_code'], stock_move[k]['prodlot_name']))
-            for prod_lot in prod_lots:
-                stock_move_details = stock_move.get(prod_lot)
-
-                if abs(stock_move_details['product_qty']) == 0:
-                    continue  # ignore product if stock equal 0
-
-                stock_move_details.update({'inventory_id': context['active_ids'][0]})
-
-                if fill_inventory.set_stock_zero:
-                    stock_move_details.update({'product_qty': 0})
-
-                domain = [(field, '=', stock_move_details[field])
-                           for field in ['location_id',
-                                         'product_id',
-                                         'prod_lot_id',
-                                         'inventory_id']
-                          ]
-
-                line_ids = inventory_line_obj.search(cr, uid, domain, context=context)
-
-                if not line_ids:
-                    inventory_line_obj.create(cr, uid, stock_move_details, context=context)
-
+        self._fill_location_lines(cr, uid, location_ids, options, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
 stock_fill_location_inventory()
