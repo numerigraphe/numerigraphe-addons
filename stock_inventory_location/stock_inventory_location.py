@@ -33,7 +33,7 @@ class stock_inventory_location(osv.osv):
 
     def action_open(self, cr, uid, ids, context=None):
         """ Open the inventory :
-        open all locations, import and print inventory sheet become possible
+        - open all locations, import and print inventory sheet become possible
         """
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)
 

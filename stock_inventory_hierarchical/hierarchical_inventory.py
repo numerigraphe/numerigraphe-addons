@@ -128,13 +128,16 @@ class stock_inventory_hierarchical(osv.osv):
 #             'res_id': id,
 #         }
 #         return True
-    
+
+    field_to_propagate = ['date']
+
     def create(self, cr, user, vals, context=None):
         """ Copy date of parent to children"""
         if vals and vals.get('parent_id'):
-            parent_date = self.read(cr, user, [vals['parent_id']], ['date'], context=context)
-            vals = vals.copy()
-            vals['date'] = parent_date[0]['date']
+            for f in self.field_to_propagate:
+                parent_field = self.read(cr, user, [vals['parent_id']], [f], context=context)
+                vals = vals.copy()
+                vals[f] = parent_field[0][f]
         return super(stock_inventory_hierarchical, self).create(cr, user, vals, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -143,7 +146,14 @@ class stock_inventory_hierarchical(osv.osv):
             context = {}
 
         values = super(stock_inventory_hierarchical, self).write(cr, uid, ids, vals, context=context)
-        if not vals or 'date' not in vals or context.get('norecurs'):
+        if not vals or context.get('norecurs'):
+            return values
+
+        record = {}
+        for f in self.field_to_propagate:
+            if f in vals:
+                record[f] = vals[f]
+        if not record:
             return values
 
         if not isinstance(ids, list):
@@ -151,7 +161,7 @@ class stock_inventory_hierarchical(osv.osv):
         children_ids = self.search(cr, uid, [('parent_id', 'child_of', ids)])
         ctx = context.copy()
         ctx['norecurs'] = True  # needed to write children once.
-        return self.write(cr, uid, children_ids, {'date': vals['date']}, context=ctx)
+        return self.write(cr, uid, children_ids, record, context=ctx)
 
     def action_cancel_inventary(self, cr, uid, ids, context=None):
         """ Cancel inventory only if all the parents are canceled """
