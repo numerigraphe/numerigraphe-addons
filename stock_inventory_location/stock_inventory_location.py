@@ -21,19 +21,14 @@
 from osv import osv, orm, fields
 from tools.translate import _
 
-'''
-
--  gestion des emplacements avec l'état de l'inventaire
--  sur confirmation inventaire (open -> confirm)
-
-'''
-
 
 class stock_inventory_location(osv.osv):
     _inherit = 'stock.inventory'
     _columns = {
         'state': fields.selection((('draft', 'Draft'), ('open', 'Open'), ('done', 'Done'), ('confirm', 'Confirmed'), ('cancel', 'Cancelled')), 'State', readonly=True, select=True),
+        'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventory lines', readonly=True, states={'open': [('readonly', False)]}),
         'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel', 'location_id', 'inventory_id', 'Locations'),
+        'inventory_type': fields.boolean('Complete', help="Check the box if the inventory is complete.\nLet the box unchecked if the inventory is partial."),
         }
 
     def action_open(self, cr, uid, ids, context=None):
@@ -45,6 +40,27 @@ class stock_inventory_location(osv.osv):
     _defaults = {
         'state': lambda *a: 'draft',
         }
+
+    def _check_location_free_from_inventories(self, cr, uid, ids):
+        for inventory in self.browse(cr, uid, ids, context=None):
+            if not inventory.inventory_type:
+                return True  # always accepted on partial inventories
+
+            location_obj = self.pool.get('stock.location')
+            inventory_date = self.read(cr, uid, ids, ['date'])[0]
+
+            # search if location has been added on another inventories
+            location_ids = [location.id for location in inventory.location_ids]
+            location_ids = location_obj.get_children(cr, uid, location_ids)
+            inv_ids = self.search(cr, uid, [('location_ids', 'in', location_ids),
+                                            ('id', '!=', inventory.id),
+                                            ('date', '=', inventory_date['date']),
+                                            ('inventory_type', '=', True), ])
+            if inv_ids:
+                return False
+        return True
+
+    _constraints = [(_check_location_free_from_inventories, 'Error: Some locations was on another inventories.', ['id'])]
 
 stock_inventory_location()
 
@@ -65,18 +81,23 @@ class stock_inventory_line(osv.osv):
                 _('You cannot add this type of location to inventory.'))
 
         location_ids = inventory_obj.read(cr, uid, [inventory_id], ['location_ids'], context=context)
-        # search children of location
-        location_ids = location_obj.search(cr, uid, [('location_id',
-                       'child_of', location_ids[0]['location_ids'])], context=context)
+
+        if location_ids[0]['location_ids']:
+            # search children of location
+            location_ids = location_obj.search(cr, uid, [('location_id',
+                           'child_of', location_ids[0]['location_ids'])], context=context)
         if location_id not in location_ids:
-            raise orm.except_orm(
-                _('Wrong location'),
-                _('You cannot add this location to inventory line.\nYou must add this location on the locations list'))
-        return True
+            return {'value': {'location_id': False},
+                    'warning': {'title': _('Warning: Wrong location'),
+                                'message': _("You cannot add this location to inventory line.\n"
+                                             "You must add this location on the locations list")}
+                    }
+        else:
+            return True
 
     _defaults = {
-                  'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
-                  }
+                'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
+                }
 
 stock_inventory_line()
 

@@ -29,7 +29,19 @@ class stock_fill_location_inventory(osv.osv_memory):
 
     _columns = {
          'location_id': fields.many2one('stock.location', 'Location'),
+         'inventory_type': fields.boolean('stock.inventory', 'Type'),
          }
+
+    def get_inventory_type(self, cr, uid, context=None):
+        if context.get('active_id', False):
+            inventory_obj = self.pool.get('stock.inventory')
+            inventory_type = inventory_obj.read(cr, uid, [context.get('active_id')], ['inventory_type'], context=context)[0]['inventory_type']
+            return inventory_type
+        return False
+
+    _defaults = {
+        'inventory_type': get_inventory_type,
+        }
 
     def view_init(self, cr, uid, fields_list, context=None):
         """ inherit from original to add multiple selection of location
@@ -54,11 +66,14 @@ class stock_fill_location_inventory(osv.osv_memory):
         if context is None:
             context = {}
 
+        fill_inventory = self.browse(cr, uid, ids[0], context=context)
+        if not fill_inventory.inventory_type:
+            return super(stock_fill_location_inventory, self).fill_inventory(cr, uid, ids, context=context)  # call standard wizard
+
         inventory_obj = self.pool.get('stock.inventory')
         location_obj = self.pool.get('stock.location')
 
         location_ids = inventory_obj.read(cr, uid, [context.get('active_id')], ['location_ids'])
-        fill_inventory = self.browse(cr, uid, ids[0], context=context)
         options = {'recursive': False, 'set_stock_zero': False}
 
         if fill_inventory.recursive:

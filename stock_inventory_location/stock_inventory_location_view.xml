@@ -7,10 +7,16 @@
             <field name="model">stock.inventory</field>                
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field name="priority" eval="10"/>
-            <field name="arch" type="xml">                                               
+            <field name="arch" type="xml">                                                               
+                <!-- Add type of inventory : partial or complete. -->                
+                <xpath expr="//form[@string='Physical Inventory']/field[@name='date']" position="after">
+                    <field name="inventory_type"/>
+                </xpath>
+
+                <!-- Add some features like control of location on change... -->
                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']" position="replace">
                     <!-- Add the locations list  for inventory -->                    
-                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]">
+                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('inventory_type','!=',True)]}">
                         <tree string="Locations" editable="bottom">                                                                                                       
                             <field name="name"/> 
                         </tree>                                    
@@ -27,7 +33,7 @@
                             <field name="prod_lot_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" />
                             <button name="%(stock.action_view_stock_inventory_line_split)d"
                                 string="Split inventory lines" groups="base.group_extended"
-                                type="action" icon="terp-stock_effects-object-colorize" states="draft,confirm"/>
+                                type="action" icon="terp-stock_effects-object-colorize" states="draft,open,confirm"/>
                             <field name="state" invisible="True"/>
                             <field name = "id" invisible="1"/>
                         </tree>
@@ -59,10 +65,23 @@
                 <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_confirm']" position="replace">                                          
                     <button name="%(action_view_stock_inventory_uninventoried_location)d"
                         string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
-                </xpath>                
-                               
+                </xpath>                                               
             </field>  
         </record>
+
+        <!-- Add filter for complete or partial inventory -->
+        <record model="ir.ui.view" id="view_inventory_complete_filter">
+            <field name="name">complete.inventory.filter</field>
+            <field name="model">stock.inventory</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="stock.view_inventory_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <filter icon="terp-check" name="complete_inventories" string="Complete inventories" domain="[('inventory_type', '=', True)]" help="Only select inventories that have no parents." />
+                    <separator orientation="vertical"/>
+                </xpath>
+            </field>
+        </record>                
 
 	</data>
 </openerp>
