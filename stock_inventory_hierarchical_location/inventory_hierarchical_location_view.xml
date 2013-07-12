@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+        <record model="ir.ui.view" id="stock_inventory_hierarchical_location_form_view">
+            <field name="name">hierarchical.inventory.location.form</field>
+            <field name="model">stock.inventory</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_inventory_form" />
+            <field name="arch" type="xml">
+
+                 <xpath expr="//form[@string='Physical Inventory']/field[@name='inventory_type']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('parent_id', '!=', False)]}</attribute>                    
+                </xpath>
+           
+            </field>
+        </record>
+
+	</data>
+</openerp>
