@@ -27,14 +27,45 @@ class stock_inventory_valuation(osv.osv):
     """
     _name = 'stock.inventory.valuation'
     _description = 'Stock inventory valuation'
-
+    def _get_total_valuation(self, cr, uid, ids, fields, arg, context=None):
+        valuations = self.browse(cr, uid, ids, context=context)
+        return {v.id: v.standard_price * v.product_qty for v in valuations}
+    
     _columns = {
         'name': fields.char('name', size=64, required=True, select=True),
-        'inventory_id': fields.many2one('stock.inventory', 'Inventory', ondelete='cascade', readonly=True),
+        'inventory_id': fields.many2one('stock.inventory', 'Inventory',
+                                        ondelete='cascade', readonly=True),
+        'date': fields.related('inventory_id', 'date',
+                                       relation='stock.inventory', type='date',
+                                       readonly=True, store=True,
+                                       string='Date'),
         'product_id': fields.many2one('product.product', 'Product', ondelete='restrict', readonly=True),
-        'product_qty': fields.float('Inventory Quantity', digits_compute=dp.get_precision('Product UoM')),
-        'product_uom': fields.many2one('product.uom', 'Unit of Measure', readonly=True, help="unit of measure of product."),
-        'standard_price': fields.float('Cost Price', required=True, digits_compute=dp.get_precision('Product Price'), help="Product's cost for accounting stock valuation. It is the base price for the supplier price."),
+        'category_id':  fields.related('product_id', 'categ_id',
+                                       relation='product.category', type='many2one',
+                                       readonly=True, store=True,
+                                       string='Product Category'),
+        'label_ids':  fields.related('product_id', 'label_ids',
+                                       relation='product.label', type='many2many',
+                                       readonly=True,
+                                       string='Product Labels'),
+        'product_qty': fields.float('Inventory Quantity',
+                                    digits_compute=dp.get_precision('Product UoM'),
+                                    readonly=True),
+        'total_valuation': fields.float('Inventory Quantity',
+                                    digits_compute=dp.get_precision('Product UoM'),
+                                    readonly=True),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure',
+                                       readonly=True,
+                                       help="unit of measure of product."),
+        # XXX avg is pretty lame since it's not weighted by quantity
+        'standard_price': fields.float('Average Unit Price',
+                                       digits_compute=dp.get_precision('Product Price'),
+                                       group_operator='avg',
+                                       help="Unit Cost Price of the Product at the date when the Inventory was confirmed."),
+        # XXX should store that to get totals in the GUI
+        'total_valuation': fields.function(_get_total_valuation, method=True, type="float", string='Total Valuation',
+                                           digits_compute=dp.get_precision('Account'),
+                                           readonly=True),
     }
 
 stock_inventory_valuation()
