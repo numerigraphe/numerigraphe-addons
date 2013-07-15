@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from osv import osv
 from tools.translate import _
 
 

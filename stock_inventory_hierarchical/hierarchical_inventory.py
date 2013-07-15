@@ -21,6 +21,7 @@
 from osv import osv, fields
 from tools.translate import _
 
+
 class stock_inventory_hierarchical(osv.osv):
     _inherit = 'stock.inventory'
 
