@@ -102,6 +102,8 @@ class StockMoveConstraint(osv.osv):
              and 'product_id' not in vals):
             return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
         
+        if not isinstance(ids, list):
+            ids = [ids]
         for move in self.browse(cr, uid, ids, context=context):
             # Decide the limit date of the inventories that could be made wrong, depending on how the Stock Move is being changed
             new_state = vals.get('state', move.state)
