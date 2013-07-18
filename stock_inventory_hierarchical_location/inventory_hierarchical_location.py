@@ -27,13 +27,15 @@ class inventory_hierarchical_location(osv.osv):
 
     def action_open(self, cr, uid, ids, context=None):
         """ Open the inventory :
-        Only if all children inventories are open.
+        Open only if all the parents are Open.
         """
-        children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
-                                             ('state', '!=', 'open')], context=context, count=True)
-        if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not open.'))
-        return self.write(cr, uid, ids, {'state': 'open'}, context=context)
+        inventories = self.browse(cr, uid, ids, context=context)
+        for inventory in inventories:
+            while inventory.parent_id:
+                inventory = inventory.parent_id
+                if inventory.state != 'open':
+                    raise osv.except_osv(_('Warning !'), _('One of the parent inventories are not open.'))
+        return super(inventory_hierarchical_location, self).action_open(cr, uid, ids, context=context)
 
     field_to_propagate = ['inventory_type', 'date']
 
