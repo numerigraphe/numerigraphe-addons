@@ -23,7 +23,6 @@ from tools.translate import _
 
 
 class stock_inventory_uninventoried_location(osv.osv_memory):
-
     _name = 'stock.inventory.uninventoried.locations'
     _description = 'Ask to user to confirm the uninventoried locations.'
 
@@ -35,26 +34,35 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
                                                  'Uninventoried location', readonly=True),
                 }
 
+    def get_locations(self, cr, uid, inventory_id, context=None):
+        """ Get all locations from inventory. """
+        inventory_obj = self.pool.get('stock.inventory')
+        location_obj = self.pool.get('stock.location')
+        location_ids = inventory_obj.read(cr, uid, [inventory_id], ['location_ids'], context=context)[0]
+        return location_obj.get_children(cr, uid, location_ids['location_ids'], context=None)
+
+    def get_locations_inventoried(self, cr, uid, inventory_id, location_ids, context=None):
+        """ Get all locations on inventory lines. """
+        inventory_line_obj = self.pool.get('stock.inventory.line')
+        inventory_line_ids = inventory_line_obj.search(cr, uid, [('location_id', 'in', location_ids),
+                                                                 ('inventory_id', '=', inventory_id)], context=context)
+        inventory_line_locations_ids = inventory_line_obj.read(cr, uid, inventory_line_ids, ['location_id'], context=context)
+        return list(set([_id['location_id'][0] for _id in inventory_line_locations_ids]))
+
     def default_locations(self, cr, uid, context=None):
-        """ initialize view with the list of uninventoried locations """
+        """ Initialize view with the list of uninventoried locations.
+            Search for children of the location if exists.
+        """
         if context is None:
             context = {}
 
-        inventory_obj = self.pool.get('stock.inventory')
-        inventory_line_obj = self.pool.get('stock.inventory.line')
-
-        location_ids = inventory_obj.read(cr, uid, [context['active_id']], ['location_ids'], context=context)[0]
-        inventory_line_ids = inventory_line_obj.search(cr, uid, [('location_id', 'in', location_ids['location_ids']),
-                                                                 ('inventory_id', '=', context['active_id'])], context=context)
-        inventory_line_locations_ids = inventory_line_obj.read(cr, uid, inventory_line_ids, ['location_id'], context=context)
-        list_loc_ids = list(set([_id['location_id'][0] for _id in inventory_line_locations_ids]))
-        list_uninventoried_locations_ids = [_id for _id in location_ids['location_ids'] if _id not in list_loc_ids]
-        return list_uninventoried_locations_ids
+        location_ids = self.get_locations(cr, uid, context['active_id'])
+        inventory_line_locations_ids = self.get_locations_inventoried(cr, uid, context['active_id'], location_ids)
+        return  [_id for _id in location_ids if _id not in inventory_line_locations_ids]
 
     _defaults = {
         'location_ids': default_locations,
         }
-
 
     def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """

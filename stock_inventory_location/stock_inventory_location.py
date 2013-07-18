@@ -42,16 +42,15 @@ class stock_inventory_location(osv.osv):
         }
 
     def _check_location_free_from_inventories(self, cr, uid, ids):
+        """ Verify if the location is free (exact id, not children).
+        """
         for inventory in self.browse(cr, uid, ids, context=None):
             if not inventory.inventory_type:
                 return True  # always accepted on partial inventories
-
-            location_obj = self.pool.get('stock.location')
+            #location_obj = self.pool.get('stock.location')
             inventory_date = self.read(cr, uid, ids, ['date'])[0]
-
-            # search if location has been added on another inventories
             location_ids = [location.id for location in inventory.location_ids]
-            location_ids = location_obj.get_children(cr, uid, location_ids)
+            #location_ids = location_obj.get_children(cr, uid, location_ids)
             inv_ids = self.search(cr, uid, [('location_ids', 'in', location_ids),
                                             ('id', '!=', inventory.id),
                                             ('date', '=', inventory_date['date']),
@@ -107,12 +106,10 @@ class stock_location(osv.osv):
     _order = 'name'
 
     def get_children(self, cr, uid, ids, context=None):
-        """ Get all children of inventory """
-        children = list()
-        for location_id in ids:
-            res = self.search(cr, uid, [('location_id', 'child_of', location_id), ('usage', '=', 'internal')])
-            if res:
-                children.extend(res)
-        return children
+        """ Get all children locations of inventory
+        and return the location.id list of all children.
+        """
+        res = self.search(cr, uid, [('location_id', 'child_of', ids), ('usage', '=', 'internal')])
+        return res
 
 stock_location()
