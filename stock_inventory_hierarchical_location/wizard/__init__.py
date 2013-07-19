@@ -18,20 +18,4 @@
 #
 ##############################################################################
 
-{
-    "name": "Inventory Hierarchical location",
-    "version": "1.0",
-    "depends": ["stock_inventory_hierarchical", "stock_inventory_location"],
-    "author": u"Numérigraphe",
-    "category": "stock inventory",
-    "description": """
-        Add locations to hierarchical inventories.
-    """,
-    "init_xml": [],
-    "update_xml": [
-                   "wizard/stock_inventory_missing_locations_view.xml",
-                   "inventory_hierarchical_location_view.xml",
-                   ],
-    # Will work with v6.1 and later
-    "auto_install": True,
-}
+import stock_inventory_missing_locations

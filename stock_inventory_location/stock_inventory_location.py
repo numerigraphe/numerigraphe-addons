@@ -27,7 +27,7 @@ class stock_inventory_location(osv.osv):
     _columns = {
         'state': fields.selection((('draft', 'Draft'), ('open', 'Open'), ('done', 'Done'), ('confirm', 'Confirmed'), ('cancel', 'Cancelled')), 'State', readonly=True, select=True),
         'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventory lines', readonly=True, states={'open': [('readonly', False)]}),
-        'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel', 'location_id', 'inventory_id', 'Locations'),
+        'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel', 'location_id', 'inventory_id', 'Locations', readonly=True, states={'draft': [('readonly', False)]}),
         'inventory_type': fields.boolean('Complete', help="Check the box if the inventory is complete.\nLet the box unchecked if the inventory is partial."),
         }
 
@@ -47,10 +47,8 @@ class stock_inventory_location(osv.osv):
         for inventory in self.browse(cr, uid, ids, context=None):
             if not inventory.inventory_type:
                 return True  # always accepted on partial inventories
-            #location_obj = self.pool.get('stock.location')
             inventory_date = self.read(cr, uid, ids, ['date'])[0]
             location_ids = [location.id for location in inventory.location_ids]
-            #location_ids = location_obj.get_children(cr, uid, location_ids)
             inv_ids = self.search(cr, uid, [('location_ids', 'in', location_ids),
                                             ('id', '!=', inventory.id),
                                             ('date', '=', inventory_date['date']),
@@ -73,7 +71,6 @@ class stock_inventory_line(osv.osv):
         inventory_obj = self.pool.get('stock.inventory')
         location_obj = self.pool.get('stock.location')
         location_infos = location_obj.read(cr, uid, [location_id], ['usage'], context=context)
-        # verify if type of location to add is internal
         if location_infos[0]['usage'] != 'internal':
             raise orm.except_orm(
                 _('Wrong location'),

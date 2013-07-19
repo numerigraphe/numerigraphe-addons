@@ -27,6 +27,7 @@ class inventory_hierarchical_location(osv.osv):
 
     def action_open(self, cr, uid, ids, context=None):
         """ Open the inventory :
+        Before opening, if missing locations, ask to user to validate the opening without these locations.
         Open only if all the parents are Open.
         """
         inventories = self.browse(cr, uid, ids, context=context)
@@ -58,6 +59,25 @@ class inventory_hierarchical_location(osv.osv):
                                            "You cannot add it !")}
         res['value'] = {'location_ids': res_location_ids, }
         return res
+
+    def open_missing_location_wizard(self, cr, uid, ids, context=None):
+        """ Open wizard if inventory have children. """
+        inventory_obj = self.pool.get('stock.inventory')
+        children_count = inventory_obj.search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
+        if children_count == 1:
+            return self.action_open(cr, uid, ids, context)
+        else:
+            context['active_ids'] = ids
+            context['active_id'] = ids[0]
+            return {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'stock.inventory.missing.location',
+                'target': 'new',
+                'context': context,
+                'nodestroy': True,
+                }
 
 inventory_hierarchical_location()
 

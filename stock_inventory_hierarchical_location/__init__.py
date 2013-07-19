@@ -19,3 +19,4 @@
 ##############################################################################
 
 import inventory_hierarchical_location
+import wizard
