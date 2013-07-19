@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2010 Numérigraphe SARL. All Rights Reserved.
@@ -22,7 +22,6 @@
     'name' : "Export accounting moves to EBP's accounting software",
     'version' : '1.1',
     'author' : u'Numérigraphe SARL',
-    'website': 'http://numerigraphe.com',
     'category': 'Generic Modules/Accounting',
     'description': '''This module lets you export accounting moves and accounts to flat text files readable by 'EBP Comptabilité', an accounting software package widely spread in France.
 The files are in the text format for EBP's software, version 3 and above.
@@ -41,16 +40,9 @@ If those are properly set, the files should be imported automatically as simulat
 The python package "smbc" must be installed on the server to use this module.   
 ''',
     'depends' : ['account_accountant'],
-    'init_xml' : [
-    ],
     'update_xml' : [
         'account_export_ebp_wizard.xml',
         'res_company_view.xml',
         'account_view.xml',
     ],
-    'demo_xml' : [],
-    'active': False,
-    'installable': True
 }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
