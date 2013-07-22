@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2010 Numérigraphe SARL. All Rights Reserved.
@@ -23,4 +23,4 @@ import res_company
 import account
 import res_partner
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

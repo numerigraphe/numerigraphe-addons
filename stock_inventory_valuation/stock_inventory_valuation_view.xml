@@ -31,8 +31,9 @@ Are you sure ?</attribute>
                 </group>
                 <newline/>
                 <group expand="0" string="Group By...">
-                    <filter name="filter_uom" string="Unit of Measure" icon="terp-mrp" domain="[]" context="{'group_by':'product_uom'}"/>
-                    <filter name="filter_category" string="Product Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'category_id'}"/>
+                    <filter name="inventory" string="Inventory" icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'inventory_id'}"/>
+                    <filter name="category" string="Product Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'category_id'}"/>
+                    <filter name="uom" string="Unit of Measure" icon="terp-mrp" domain="[]" context="{'group_by':'product_uom'}"/>
                 </group>
             </search>
         </field>
@@ -43,6 +44,8 @@ Are you sure ?</attribute>
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Details" editable="bottom">
+                <field name="inventory_id"/>
+                <field name="category_id"/>
                 <field name="product_id"/>
                 <field name="product_qty"/>
                 <field name="product_uom"/>
@@ -71,8 +74,8 @@ Are you sure ?</attribute>
                 <group col="2" colspan="4">
                     <separator colspan="2"/>
                     <field name="category_id"/>
-                    <label string="Labels"/>
-                    <field name="label_ids" nolabel="1"/>
+                    <label string="Labels" colspan="2"/>
+                    <field name="label_ids" nolabel="1" colspan="2"/>
                 </group>
             </form>
         </field>
@@ -83,7 +86,7 @@ Are you sure ?</attribute>
         src_model="stock.inventory"
         view_mode="tree,form"
         view_type="form"
-        context="{'search_default_filter_uom':1}"
+        context="{'search_default_inventory':1, 'search_default_category':1, 'search_default_uom':1}"
         domain="[('inventory_id', '=', active_id)]"/>
 	</data>
 </openerp>

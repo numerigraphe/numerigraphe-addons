@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2010 Numérigraphe SARL. All Rights Reserved.
@@ -33,5 +33,3 @@ class partner(osv.osv):
                  "to the Account Number to make it a Partner Account.",),    }
 
 partner()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
