@@ -18,6 +18,8 @@
 #
 ##############################################################################
 
+from collections import Iterable
+
 from osv import osv, orm, fields
 from tools.translate import _
 
@@ -58,6 +60,18 @@ class stock_inventory_location(osv.osv):
         return True
 
     _constraints = [(_check_location_free_from_inventories, 'Error: Some locations was on another inventories.', ['id'])]
+
+    def _get_locations_open_inventories(self, cr, uid, context=None):
+        """ Search locations on open inventories, only if location_ids was added (complete inventory only) """
+        open_inventories_ids = self.search(cr, uid, [('state', '=', 'open'), ], context=context)
+        location_ids = []
+        for open_inventory in self.browse(cr, uid, open_inventories_ids, context=context):
+            location_ids.extend([location.id for location in open_inventory.location_ids])
+        if location_ids:
+            location_ids = list(set(location_ids))
+            location_obj = self.pool.get('stock.location')
+            location_ids = location_obj.get_children(cr, uid, location_ids, context=context)
+        return location_ids
 
 stock_inventory_location()
 
@@ -102,11 +116,77 @@ class stock_location(osv.osv):
     _inherit = 'stock.location'
     _order = 'name'
 
+    def _check_inventory(self, cr, uid, ids, context=None):
+        """Raise an error if the Location is being inventoried"""
+        inventory_obj = self.pool.get('stock.inventory')
+        location_inventory_open_ids = inventory_obj._get_locations_open_inventories(cr, uid, context=context)
+        if not isinstance(ids, Iterable):
+            ids = [ids]
+        for id in ids:
+            if id in location_inventory_open_ids:
+                raise osv.except_osv(_('Error! Location on inventory'),
+                                     _('This location is being inventoried'))
+        return True
+
     def get_children(self, cr, uid, ids, context=None):
         """ Get all children locations of inventory
         and return the location.id list of all children.
         """
-        res = self.search(cr, uid, [('location_id', 'child_of', ids), ('usage', '=', 'internal')])
-        return res
+        return self.search(cr, uid, [('location_id', 'child_of', ids), ('usage', '=', 'internal')], context=context)
 
+    def write(self, cr, uid, ids, vals, context=None):
+        """Refuse write if the location is being inventoried"""
+        self._check_inventory(cr, uid, ids, context=context)
+        if not isinstance(ids, Iterable):
+            ids = [ids]
+        ids_to_check = ids
+        # If we are changing the parent, it must not be being inventoried
+        if  vals.get('location_id'):
+            ids_to_check.append(vals['location_id'])
+        self._check_inventory(cr, uid, ids_to_check, context=context)
+        return super(stock_location, self).write(cr, uid, ids, vals, context=context)
+
+    def create(self, cr, uid, vals, context=None):
+        """Refuse create if the parent location is being inventoried"""
+        self._check_inventory(cr, uid, vals.get('location_id'), context=context)
+        return super(stock_location, self).create(cr, uid, vals, context=context)
+
+    def unlink(self, cr, uid, ids, context=None):
+        """Refuse unlink if the location is being inventoried"""
+        self._check_inventory(cr, uid, ids, context=context)
+        return super(stock_location, self).unlink(cr, uid, ids, context=context)
 stock_location()
+
+
+class stock_move_lock(osv.osv):
+
+    _inherit = 'stock.move'
+
+    def _check_open_inventory_location(self, cr, uid, ids, context=None):
+        """ Check if location is not in opened inventory
+        Don't check on partial inventory (checkbox "Complete" not checked).
+        """
+        message = ""
+        inventory_obj = self.pool.get('stock.inventory')
+        location_inventory_open_ids = inventory_obj._get_locations_open_inventories(cr, uid, context=context)
+        if not location_inventory_open_ids:
+            return True  # Nothing to verify
+        for move in self.browse(cr, uid, ids, context=context):
+            if (move.location_id.usage != 'inventory'
+                and move.location_dest_id.id in location_inventory_open_ids):
+                message += " - %s\n" % (move.location_dest_id.name)
+
+            if (move.location_dest_id.usage != 'inventory'
+                and move.location_id.id in location_inventory_open_ids):
+                message += " - %s\n" % (move.location_id.name)
+        if message:
+            raise osv.except_osv(_('Error! Location on inventory'),
+                                 _('One or more locations are inventoried :\n%s') % message)
+        return True
+
+    _constraints = [
+                    (_check_open_inventory_location,
+                     "This location is being inventoried", ['location_id', 'location_dest_id']),
+                   ]
+
+stock_move_lock()
