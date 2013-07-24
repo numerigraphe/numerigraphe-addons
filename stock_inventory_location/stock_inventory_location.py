@@ -109,25 +109,6 @@ class stock_inventory_line(osv.osv):
                 'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
                 }
 
-    def _check_duplicates_line(self, cr, uid, ids, context=None):
-        """ Check if new lines are duplicates """
-        message = ''
-        for line in self.browse(cr, uid, ids, context=context):
-            duplicates_count = self.search(cr, uid, [('location_id', '=', line.location_id.id),
-                                               ('product_id', '=', line.product_id.id),
-                                               ('prod_lot_id', '=', line.prod_lot_id.id),
-                                               ('inventory_id', '=', line.inventory_id.id)
-                                               ], context=context, count=True)
-            if duplicates_count > 1:
-                message = '%s - %s - %s\n' % (line.location_id.name, line.prod_lot_id.name, line.product_id.name)
-
-        if message:
-            raise osv.except_osv(_('Warning : duplicates lines'),
-                                 _('The following lines are duplicates and will be deleted :\n%s') % message)
-        return True
-
-    _constraints = [(_check_duplicates_line, 'Error: duplicates lines', ['location_id', 'product_id', 'prod_lot_id']), ]
-
 stock_inventory_line()
 
 
