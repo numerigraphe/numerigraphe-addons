@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2010 Numérigraphe SARL. All Rights Reserved.
@@ -38,4 +38,4 @@
 #    'license' : 'AGPL-3', # XXX Bug #520854 : Missing license options
 }
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
