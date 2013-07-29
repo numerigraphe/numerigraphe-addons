@@ -21,6 +21,14 @@
 from osv import osv, fields
 import decimal_precision as dp
 
+
+# XXX :  Delete this function as soon as product._common can be imported.
+def rounding(f, r):
+    if not r:
+        return f
+    return round(f / r) * r
+
+
 class product_product(osv.osv):
     """Add the computation for the stock available for sale"""
     _inherit = 'product.product'
@@ -136,22 +144,51 @@ class product_product(osv.osv):
                 uoms = uom_obj.browse(cr, uid, list(set(uoms)), context=context)
             for o in uoms:
                 uoms_o[o.id] = o
-            
+
+            # compute available product from bom with n-1 available products
+            # Beware of product uom of source and destination
+            bom_obj = self.pool.get('mrp.bom')
+            uom_obj = self.pool.get('product.uom')
+            bom_available = {}
+            for product, uom in product2uom.iteritems():
+                bom = bom_obj._bom_find(cr, uid, product, uom)
+                if bom:
+                    bom_product_infos = bom_obj.read(cr, uid, [bom], ['child_complete_ids'], context=context)[0]
+                    bom_child_product_infos = bom_obj.read(cr, uid, bom_product_infos['child_complete_ids'], ['product_id', 'product_qty', 'product_uom'], context=context)
+                    bom_child_product_ids = [p['product_id'][0] for p in bom_child_product_infos]
+                    bom_child_product_qty = {bom_p['product_id'][0]: ({'product_qty': bom_p['product_qty'], 'product_uom': bom_p['product_uom'][0]}) for bom_p in bom_child_product_infos}
+                    min_qty = 999999999999.0
+                    for bom_product in self.browse(cr, uid, bom_child_product_ids, context=context):
+                        # qty of stock product available with bom uom
+                        qty_avail = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, bom_product.virtual_available, bom_child_product_qty[bom_product['id']].get('product_uom'))
+                        # qty we can make with qty of available product
+                        qty_avail = rounding((qty_avail / bom_child_product_qty[bom_product['id']].get('product_qty')), bom_product.uom_id.rounding)
+
+                        if qty_avail < min_qty:
+                            min_qty = qty_avail
+                    bom_available[product] = min_qty
+
             # Initialize the results
             for i in res.keys():
                 if 'quoted_qty' in field_names:
-                    res[i]['quoted_qty'] = 0.0;
+                    res[i]['quoted_qty'] = 0.0
                 if 'available_for_sale' in field_names:
                     res[i]['available_for_sale'] = res[i]['virtual_available']
-             
+
             for (amount, prod_id, prod_uom) in results:
                 # Convert the amount in the reporting UoM
                 amount = uom_obj._compute_qty_obj(cr, uid, uoms_o[prod_uom], amount,
                         uoms_o[context.get('uom', False) or product2uom[prod_id]])
+
                 if 'quoted_qty' in field_names:
                     res[prod_id]['quoted_qty'] -= amount
                 if 'available_for_sale' in field_names:
                     res[prod_id]['available_for_sale'] -= amount
+
+            for prod_id, qty_available in bom_available.iteritems():
+                if prod_id in res:
+                    res[prod_id]['available_for_sale'] += qty_available
+
         return res
 
     _columns = {
