@@ -140,17 +140,21 @@ StockMoveConstraint()
 
 
 class stock_inventory_line(osv.osv):
-    """  """
+    """ Check if the new line will not be a duplicate line.
+    Look for location_id, product_id and prod_lot_id.
+    """
     _inherit = 'stock.inventory.line'
 
     def _check_duplicates_line(self, cr, uid, ids, context=None):
         """ Check for duplicates lines """
         message = ''
         for line in self.browse(cr, uid, ids, context=context):
+            print line.prod_lot_id.id
+            print line.inventory_id.id
             duplicates_count = self.search(cr, uid, [('location_id', '=', line.location_id.id),
-                                               ('product_id', '=', line.product_id.id),
-                                               ('prod_lot_id', '=', line.prod_lot_id.id),
-                                               ('date', '=', line.inventory_id.date)
+                                                     ('product_id', '=', line.product_id.id),
+                                                     ('prod_lot_id', '=', line.prod_lot_id.id),
+                                                     ('inventory_id', '=', line.inventory_id.id)
                                                ], context=context, count=True)
             if duplicates_count > 1:
                 message = '%s - %s - %s\n' % (line.location_id.name, line.prod_lot_id.name, line.product_id.name)
