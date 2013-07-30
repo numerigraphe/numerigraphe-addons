@@ -149,8 +149,6 @@ class stock_inventory_line(osv.osv):
         """ Check for duplicates lines """
         message = ''
         for line in self.browse(cr, uid, ids, context=context):
-            print line.prod_lot_id.id
-            print line.inventory_id.id
             duplicates_count = self.search(cr, uid, [('location_id', '=', line.location_id.id),
                                                      ('product_id', '=', line.product_id.id),
                                                      ('prod_lot_id', '=', line.prod_lot_id.id),

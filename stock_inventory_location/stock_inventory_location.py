@@ -90,13 +90,15 @@ class stock_inventory_line(osv.osv):
                 _('Wrong location'),
                 _('You cannot add this type of location to inventory.'))
 
-        location_ids = inventory_obj.read(cr, uid, [inventory_id], ['location_ids'], context=context)
+        inventory_infos = inventory_obj.read(cr, uid, [inventory_id], ['location_ids', 'inventory_type'], context=context)
+        if not inventory_infos[0]['inventory_type']:
+            return True  # don't check if partial inventory
 
-        if location_ids[0]['location_ids']:
+        if inventory_infos[0]['location_ids']:
             # search children of location
-            location_ids = location_obj.search(cr, uid, [('location_id',
-                           'child_of', location_ids[0]['location_ids'])], context=context)
-        if location_id not in location_ids:
+            inventory_infos = location_obj.search(cr, uid, [('location_id',
+                           'child_of', inventory_infos[0]['location_ids'])], context=context)
+        if location_id not in inventory_infos:
             return {'value': {'location_id': False},
                     'warning': {'title': _('Warning: Wrong location'),
                                 'message': _("You cannot add this location to inventory line.\n"
