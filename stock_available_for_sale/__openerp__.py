@@ -19,8 +19,8 @@
 ##############################################################################
 
 {
-    'name' : 'Compute the stock available for sale',
-    'version' : '1.1',
+    'name' : 'Stock available for sale',
+    'version' : '1.2',
     'author' : u'Numérigraphe SÀRL',
     'category' : 'Stock',
     'depends' : [
@@ -28,15 +28,15 @@
                  'sale',
                  'sale_order_dates',
                  ],
-    'description': "This module computes the quantities available for sale for "
-                   "a product in a given context.\n"
-                   "This is computed in real time as the virtual stock minus "
-                   "the sum of the quantities in Quotations (draft Sale "
-                   "Orders).",
+    'description': """
+This module computes and displays the quantities available for sale for Product in a given context.
+
+3 new quantities are computed in real-time:
+- "Quoted" = the sum of the quantities of this product in Quotations, taking the context's shop or warehouse into account
+- "Potential" = quantity that can be manufactured with the components immediately at hand, following a single level of Bills of Materials)
+- "Available for Sale" = Virtual Stock + Potential - Quoted""",
     'update_xml' : [
                     'product_view.xml',
                     ],
-    'active': False,
-    'installable': True,
     'license' : 'GPL-3',
 }
