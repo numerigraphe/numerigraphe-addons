@@ -153,19 +153,24 @@ class product_product(osv.osv):
             for product, uom in product2uom.iteritems():
                 bom = bom_obj._bom_find(cr, uid, product, uom)
                 if bom:
-                    bom_product_infos = bom_obj.read(cr, uid, [bom], ['child_complete_ids', 'product_qty'], context=context)[0]
+                    bom_product_infos = bom_obj.read(cr, uid, [bom], ['child_complete_ids', 'product_qty', 'product_uom'], context=context)[0]
                     bom_child_product_infos = bom_obj.read(cr, uid, bom_product_infos['child_complete_ids'], ['product_id', 'product_qty', 'product_uom'], context=context)
                     bom_child_product_ids = [p['product_id'][0] for p in bom_child_product_infos]
                     bom_child_product_qty = {bom_p['product_id'][0]: ({'product_qty': bom_p['product_qty'], 'product_uom': bom_p['product_uom'][0]}) for bom_p in bom_child_product_infos}
-                    min_qty = 999999999999.0
+                    min_qty = False
                     for bom_product in self.browse(cr, uid, bom_child_product_ids, context=context):
                         # qty of stock product available with bom uom
-                        qty_avail = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, bom_product.virtual_available, bom_child_product_qty[bom_product['id']].get('product_uom'))
-                        # qty we can make with qty of available product
-                        qty_avail = rounding((qty_avail / bom_child_product_qty[bom_product['id']].get('product_qty')) * bom_product_infos['product_qty'], bom_product.uom_id.rounding)
-                        if qty_avail < min_qty:
+                        stock_product_qty = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, bom_product.virtual_available, bom_child_product_qty[bom_product['id']].get('product_uom'))
+                        # qty we can make with qty of available product on bom uom
+                        qty_avail_bom_uom = rounding((stock_product_qty / bom_child_product_qty[bom_product['id']].get('product_qty')) * bom_product_infos['product_qty'], bom_product.uom_id.rounding)
+                        # convert on stock product uom
+                        qty_avail = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, qty_avail_bom_uom, bom_product_infos['product_uom'][0])
+                        if min_qty is False:
                             min_qty = qty_avail
-                    bom_available[product] = min_qty
+                        elif qty_avail < min_qty:
+                            min_qty = qty_avail
+                    if min_qty:
+                        bom_available[product] = min_qty
 
             # Initialize the results
             for i in res.keys():
