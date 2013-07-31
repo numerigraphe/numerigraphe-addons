@@ -46,8 +46,10 @@ class product_product(osv.osv):
         res = super(product_product, self)._product_available(
             cr, uid, ids, field_names=field_names, arg=arg, context=context)
 
-        # Compute the quantities quoted/available to sale
-        if 'quoted_qty' in field_names or 'available_for_sale' in field_names:
+        # Compute the quantities quoted/potential/available for sale
+        if ('quoted_qty' in field_names
+            or 'available_for_sale' in field_names
+            or 'potential_qty' in field_names):
             # If we are in a context with dates, only consider the quotations to be delivered at these dates
             # If no delivery date was entered, use the order date instead
             from_date = context.get('from_date', False)
@@ -146,7 +148,7 @@ class product_product(osv.osv):
                 uoms_o[o.id] = o
 
             # compute available product from bom with n-1 available products
-            # Beware of product uom of source and destination
+            # XXX: what happens if there are several BoMs ?
             bom_obj = self.pool.get('mrp.bom')
             uom_obj = self.pool.get('product.uom')
             bom_available = {}
@@ -160,10 +162,13 @@ class product_product(osv.osv):
                     min_qty = False
                     for bom_product in self.browse(cr, uid, bom_child_product_ids, context=context):
                         # qty of stock product available with bom uom
+                        # XXX use _compute_qty_obj to ensure rounding
                         stock_product_qty = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, bom_product.virtual_available, bom_child_product_qty[bom_product['id']].get('product_uom'))
                         # qty we can make with qty of available product on bom uom
+                        # XXX use _compute_qty_obj to ensure rounding
                         qty_avail_bom_uom = rounding((stock_product_qty / bom_child_product_qty[bom_product['id']].get('product_qty')) * bom_product_infos['product_qty'], bom_product.uom_id.rounding)
                         # convert on stock product uom
+                        # XXX: this would be better done on final results, outside the loop
                         qty_avail = uom_obj._compute_qty(cr, uid, bom_product.uom_id.id, qty_avail_bom_uom, bom_product_infos['product_uom'][0])
                         if min_qty is False:
                             min_qty = qty_avail
@@ -172,7 +177,7 @@ class product_product(osv.osv):
                     if min_qty:
                         bom_available[product] = min_qty
 
-            # Initialize the results
+            # Compute the quoted quantity
             for i in res.keys():
                 if 'quoted_qty' in field_names:
                     res[i]['quoted_qty'] = 0.0
@@ -188,11 +193,15 @@ class product_product(osv.osv):
                     res[prod_id]['quoted_qty'] -= amount
                 if 'available_for_sale' in field_names:
                     res[prod_id]['available_for_sale'] -= amount
-
+            
+            # Compute the potential quantity
             for prod_id, qty_available in bom_available.iteritems():
                 if prod_id in res:
-                    res[prod_id]['available_for_sale'] += qty_available
-
+                    if 'available_for_sale' in field_names:
+                        res[prod_id]['available_for_sale'] += qty_available
+                    if 'potential_qty' in field_names:
+                        res[prod_id]['potential_qty'] += qty_available
+        
         return res
 
     _columns = {
@@ -200,18 +209,14 @@ class product_product(osv.osv):
             _product_available, method=True, multi='qty_available_for_sale',
             type='float', digits_compute=dp.get_precision('Product UoM'),
             string='Available for Sale',
-            help="Stock for this Product that has not yet been included in any "
-                 "Quotation (Draft Sale Order) (Computed as: Virtual Stock - "
-                 "Quoted).\n"
-                 "In a context with a single Shop, this includes the "
-                 "Quotation processed at this Shop.\n"
-                 "In a context with a single Warehouse, this includes "
-                 "Quotation processed in any Shop using this Warehouse.\n"
-                 "In a context with a single Stock Location, this includes "
-                 "Quotation processed at any shop using any Warehouse using "
-                 "this Location, or any of its children, as it's Stock "
-                 "Location.\n"
-                 "Otherwise, this includes every Quotation."),
+            help="Stock for this Product that can be safely proposed for sale to Customers. \n"
+                "Computed as: Virtual Stock + Potential - Quoted)."),
+        'potential_qty': fields.function(
+            _product_available, method=True, multi='qty_available_for_sale',
+            type='float', digits_compute=dp.get_precision('Product UoM'),
+            string='Potential',
+            help="Quantity of this Product that could be produced using "
+                 "the materials already at hand, following a single level of the Bills of Materials."),
         'quoted_qty': fields.function(
             _product_available, method=True, multi='qty_available_for_sale',
             type='float', digits_compute=dp.get_precision('Product UoM'),
@@ -229,5 +234,3 @@ class product_product(osv.osv):
                  "Otherwise, this includes every Quotation."),
     }
 product_product()
-
-#
