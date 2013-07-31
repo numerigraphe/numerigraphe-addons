@@ -32,7 +32,7 @@ msgstr "Voulez-vous continuer ?"
 
 #. module: stock_inventory_hierarchical_location
 #: constraint:stock.inventory:0
-msgid "Error: Some locations was on another inventories."
+msgid "Other Physical inventories are being conducted using the same Locations."
 msgstr "Erreur: certains emplacements sont déjà dans un autre inventaire."
 
 #. module: stock_inventory_hierarchical_location

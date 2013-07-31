@@ -70,8 +70,8 @@ msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
 
 #. module: stock_inventory_location
 #: constraint:stock.inventory:0
-msgid "Error: Some locations was on another inventories."
-msgstr "Erreur: Certains emplacements sont dans d'autres inventaires"
+msgid "Other Physical inventories are being conducted using the same Locations."
+msgstr "D'autres inventaires contiennent les mêmes emplacements"
 
 #. module: stock_inventory_location
 #: view:stock.inventory:0

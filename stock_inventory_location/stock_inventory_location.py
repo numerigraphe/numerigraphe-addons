@@ -51,9 +51,7 @@ For an exhaustive Inventory, in the state "Draft" you define the list of Locatio
         }
 
     def action_open(self, cr, uid, ids, context=None):
-        """ Open the inventory :
-        - open all locations, import and print inventory sheet become possible
-        """
+        """Open the inventory: open all locations, import and print inventory sheet become possible"""
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)
     
     # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
@@ -62,83 +60,83 @@ For an exhaustive Inventory, in the state "Draft" you define the list of Locatio
         }
 
     def _check_location_free_from_inventories(self, cr, uid, ids):
-        """ Verify if the location is free (exact id, not children).
-        """
+        """Verify that no other Inventory is being conducted on the location (exact id, not children)."""
         for inventory in self.browse(cr, uid, ids, context=None):
             if not inventory.inventory_type:
-                return True  # always accepted on partial inventories
-            inventory_date = self.read(cr, uid, ids, ['date'])[0]
+                continue  # always accepted on partial inventories
             location_ids = [location.id for location in inventory.location_ids]
             inv_ids = self.search(cr, uid, [('location_ids', 'in', location_ids),
                                             ('id', '!=', inventory.id),
-                                            ('date', '=', inventory_date['date']),
+                                            ('date', '=', inventory.date),
                                             ('inventory_type', '=', True), ])
             if inv_ids:
                 return False
         return True
 
-    _constraints = [(_check_location_free_from_inventories, 'Error: Some locations was on another inventories.', ['id'])]
+    _constraints = [(_check_location_free_from_inventories,
+                     'Other Physical inventories are being conducted using the same Locations.',
+                     ['location_ids', 'date', 'inventory_type'])]
 
     def _get_locations_open_inventories(self, cr, uid, context=None):
-        """ Search locations on open inventories, only if location_ids was added (complete inventory only) """
+        """Search for locations on open inventories (exhaustive inventory only), and their children """
         open_inventories_ids = self.search(cr, uid, [('state', '=', 'open'), ], context=context)
-        location_ids = []
+        location_ids = set()
         for open_inventory in self.browse(cr, uid, open_inventories_ids, context=context):
-            location_ids.extend([location.id for location in open_inventory.location_ids])
-        if location_ids:
-            location_ids = list(set(location_ids))
-            location_obj = self.pool.get('stock.location')
-            location_ids = location_obj.get_children(cr, uid, location_ids, context=context)
+            location_ids.update([location.id for location in open_inventory.location_ids])
+        # Extend to the children Locations
+        if location_ids: #XXX probably works even otherwise
+            location_ids = self.pool.get('stock.location').search(cr, uid,
+                [('location_id', 'child_of', location_ids), ('usage', '=', 'internal')],
+                context=context)
         return location_ids
-
 StockInventory()
 
 
 class StockInventoryLine(osv.osv):
+    """Only allow the Inventory's Locations"""
 
     _inherit = 'stock.inventory.line'
 
     def onchange_location_id(self, cr, uid, ids, inventory_id, location_id, context=None):
-        """ Raise exception if location_id not in locations list for this inventory """
-        inventory_obj = self.pool.get('stock.inventory')
+        """ Raise exception if Location is not internal, or location_id not in locations list for this inventory """
+        #XXX use browse() to make more readable?
         location_obj = self.pool.get('stock.location')
         location_infos = location_obj.read(cr, uid, [location_id], ['usage'], context=context)
+        #XXX return a warning
         if location_infos[0]['usage'] != 'internal':
             raise orm.except_orm(
                 _('Wrong location'),
                 _('You cannot add this type of location to inventory.'))
 
-        inventory_infos = inventory_obj.read(cr, uid, [inventory_id], ['location_ids', 'inventory_type'], context=context)
-        if not inventory_infos[0]['inventory_type']:
+        inventory_infos = self.pool.get('stock.inventory').read(cr, uid, [inventory_id], ['location_ids', 'inventory_type'], context=context)
+        if not inventory_infos[0]['inventory_type'] or not inventory_infos[0]['location_ids']:
             return True  # don't check if partial inventory
 
-        if inventory_infos[0]['location_ids']:
-            # search children of location
-            inventory_infos = location_obj.search(cr, uid, [('location_id',
-                           'child_of', inventory_infos[0]['location_ids'])], context=context)
-        if location_id not in inventory_infos:
+        # search children of location
+        location_ids = location_obj.search(cr, uid, [('location_id',
+                       'child_of', inventory_infos[0]['location_ids'])], context=context)
+        if location_id not in location_ids:
             return {'value': {'location_id': False},
                     'warning': {'title': _('Warning: Wrong location'),
                                 'message': _("You cannot add this location to inventory line.\n"
                                              "You must add this location on the locations list")}
                     }
-        else:
-            return True
+        return True
 
+    #XXX use parent.location_ids and parent.inventory_type instead?
     _defaults = {
                 'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
                 }
-
 StockInventoryLine()
 
 
 class StockLocation(osv.osv):
-	"""Refuse changes during exhaustive Inventories"""
+    """Refuse changes during exhaustive Inventories"""
     _inherit = 'stock.location'
     _order = 'name'
 
     def _check_inventory(self, cr, uid, ids, context=None):
-        """Raise an error if the Location is being inventoried"""
+        """Raise an error if an exhaustive Inventory is being conducted on this Location"""
         inventory_obj = self.pool.get('stock.inventory')
         location_inventory_open_ids = inventory_obj._get_locations_open_inventories(cr, uid, context=context)
         if not isinstance(ids, Iterable):
@@ -146,9 +144,10 @@ class StockLocation(osv.osv):
         for id in ids:
             if id in location_inventory_open_ids:
                 raise osv.except_osv(_('Error! Location on inventory'),
-                                     _('This location is being inventoried'))
+                                     _('A Physical Inventory is being conducted on this location'))
         return True
 
+    # XXX copy inline, remove function
     def get_children(self, cr, uid, ids, context=None):
         """ Get all children locations of inventory
         and return the location.id list of all children.
@@ -156,7 +155,7 @@ class StockLocation(osv.osv):
         return self.search(cr, uid, [('location_id', 'child_of', ids), ('usage', '=', 'internal')], context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        """Refuse write if the location is being inventoried"""
+        """Refuse write if an inventory is being conducted"""
         self._check_inventory(cr, uid, ids, context=context)
         if not isinstance(ids, Iterable):
             ids = [ids]
@@ -168,12 +167,12 @@ class StockLocation(osv.osv):
         return super(StockLocation, self).write(cr, uid, ids, vals, context=context)
 
     def create(self, cr, uid, vals, context=None):
-        """Refuse create if the parent location is being inventoried"""
+        """Refuse create if an inventory is being conducted at the parent"""
         self._check_inventory(cr, uid, vals.get('location_id'), context=context)
         return super(StockLocation, self).create(cr, uid, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
-        """Refuse unlink if the location is being inventoried"""
+        """Refuse unlink if an inventory is being conducted"""
         self._check_inventory(cr, uid, ids, context=context)
         return super(StockLocation, self).unlink(cr, uid, ids, context=context)
 StockLocation()
@@ -208,6 +207,6 @@ class StockMove(osv.osv):
 
     _constraints = [
                     (_check_open_inventory_location,
-                     "This location is being inventoried", ['location_id', 'location_dest_id']),
+                     "A Physical Inventory is being conducted on this location", ['location_id', 'location_dest_id']),
                    ]
 StockMove()
