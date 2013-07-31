@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-1
 ##############################################################################
 #
 #    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
@@ -17,7 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 
 import stock_fill_location_inventory
 import stock_confirm_uninventoried_location

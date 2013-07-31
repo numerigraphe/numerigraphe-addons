@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,13 +24,30 @@ from osv import osv, orm, fields
 from tools.translate import _
 
 
-class stock_inventory_location(osv.osv):
+class StockInventory(osv.osv):
+    """Add locations to the inventories"""
     _inherit = 'stock.inventory'
     _columns = {
+        # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
         'state': fields.selection((('draft', 'Draft'), ('open', 'Open'), ('done', 'Done'), ('confirm', 'Confirmed'), ('cancel', 'Cancelled')), 'State', readonly=True, select=True),
+        # Make the inventory lines read-only in all states except "Open", to ensure that no unwanted Location can be inserted
         'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventory lines', readonly=True, states={'open': [('readonly', False)]}),
-        'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel', 'location_id', 'inventory_id', 'Locations', readonly=True, states={'draft': [('readonly', False)]}),
-        'inventory_type': fields.boolean('Complete', help="Check the box if the inventory is complete.\nLet the box unchecked if the inventory is partial."),
+        'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel',
+                                         'location_id', 'inventory_id',
+                                         'Locations',
+                                         readonly=True, states={'draft': [('readonly', False)]},
+                                         help="""This is the list of the Stock Locations that you want to count the goods in.
+Only these Locations can be entered in the Inventory Lines.
+If some of them have not been entered in the Inventory Lines, OpenERP will warn you when you confirm the Inventory."""),
+        #XXX: "complete" could mean "done" or "finished": change field name and string to "exhaustive"
+        'inventory_type': fields.boolean('Complete',
+                                         help="""Check the box if you are conducting an exhaustive Inventory.
+Leave the box unchecked if you are conducting a standard Inventory (partial inventory for example).
+For an exhaustive Inventory, in the state "Draft" you define the list of Locations where goods must be counted.
+ - a new Inventory status ("Open") lets you indicate that the list of Locations is definitive and you are now counting the goods. In that status, no Stock Moves can be recorded in/out of the Inventory's Locations.
+ - if some of the Inventory's Locations have not been entered in the Inventory Lines, OpenERP warns you when you confirm the Inventory
+ - only the Inventory's Locations can be entered in the Inventory Lines
+ - every good that is not in the Inventory Lines is considered lost, and gets moved out of the stock when you confirm the Inventory"""),
         }
 
     def action_open(self, cr, uid, ids, context=None):
@@ -38,7 +55,8 @@ class stock_inventory_location(osv.osv):
         - open all locations, import and print inventory sheet become possible
         """
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)
-
+    
+    # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
     _defaults = {
         'state': lambda *a: 'draft',
         }
@@ -73,10 +91,10 @@ class stock_inventory_location(osv.osv):
             location_ids = location_obj.get_children(cr, uid, location_ids, context=context)
         return location_ids
 
-stock_inventory_location()
+StockInventory()
 
 
-class stock_inventory_line(osv.osv):
+class StockInventoryLine(osv.osv):
 
     _inherit = 'stock.inventory.line'
 
@@ -111,10 +129,11 @@ class stock_inventory_line(osv.osv):
                 'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
                 }
 
-stock_inventory_line()
+StockInventoryLine()
 
 
-class stock_location(osv.osv):
+class StockLocation(osv.osv):
+	"""Refuse changes during exhaustive Inventories"""
     _inherit = 'stock.location'
     _order = 'name'
 
@@ -146,21 +165,22 @@ class stock_location(osv.osv):
         if  vals.get('location_id'):
             ids_to_check.append(vals['location_id'])
         self._check_inventory(cr, uid, ids_to_check, context=context)
-        return super(stock_location, self).write(cr, uid, ids, vals, context=context)
+        return super(StockLocation, self).write(cr, uid, ids, vals, context=context)
 
     def create(self, cr, uid, vals, context=None):
         """Refuse create if the parent location is being inventoried"""
         self._check_inventory(cr, uid, vals.get('location_id'), context=context)
-        return super(stock_location, self).create(cr, uid, vals, context=context)
+        return super(StockLocation, self).create(cr, uid, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         """Refuse unlink if the location is being inventoried"""
         self._check_inventory(cr, uid, ids, context=context)
-        return super(stock_location, self).unlink(cr, uid, ids, context=context)
-stock_location()
+        return super(StockLocation, self).unlink(cr, uid, ids, context=context)
+StockLocation()
 
 
-class stock_move_lock(osv.osv):
+class StockMove(osv.osv):
+    """Refuse Moves during exhaustive Inventories"""
 
     _inherit = 'stock.move'
 
@@ -190,5 +210,4 @@ class stock_move_lock(osv.osv):
                     (_check_open_inventory_location,
                      "This location is being inventoried", ['location_id', 'location_dest_id']),
                    ]
-
-stock_move_lock()
+StockMove()
