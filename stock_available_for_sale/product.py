@@ -154,8 +154,8 @@ class product_product(osv.osv):
                     for final_product in bom_obj.browse(cr, uid, [bom_id], context=context):
                         for component in final_product.child_complete_ids:
                             stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
-                            receipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
-                            stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, receipe_uom_qty, final_product.product_id.uom_id)
+                            recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
+                            stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
                             if min_qty is False:
                                 min_qty = stock_product_uom_qty
                             elif stock_product_uom_qty < min_qty:
