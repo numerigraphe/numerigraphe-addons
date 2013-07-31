@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+        <record model="ir.ui.view" id="stock_inventory_hierarchical_location_form_view">
+            <field name="name">hierarchical.inventory.location.form</field>
+            <field name="model">stock.inventory</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_inventory_form" />
+            <field name="arch" type="xml">
+
+                 <xpath expr="//form[@string='Physical Inventory']/field[@name='inventory_type']" position="attributes">
+                    <attribute name="attrs">{'readonly':[('parent_id', '!=', False)]}</attribute>                    
+                </xpath>
+ 
+                <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='location_ids']" position="replace">           
+                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" 
+                            attrs="{'invisible':[('inventory_type','!=',True)]}"
+                            on_change="check_location(location_ids, name)">
+                        <tree string="Locations" editable="bottom">                                                                                                       
+                            <field name="name"/> 
+                        </tree>                                    
+                    </field>           
+                </xpath>
+                
+                <!-- replace action_open button to open wizard missing locations -->
+                <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_open']" position="replace">
+                     <button name="open_missing_location_wizard"
+                      string="Open Inventory" type="object" states="draft" icon="gtk-apply"/>                    
+                </xpath>                 
+                
+            </field>
+        </record>
+
+	</data>
+</openerp>

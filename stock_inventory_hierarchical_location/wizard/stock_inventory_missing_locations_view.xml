@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+ 
+        <record id="action_view_stock_inventory_missing_location" model="ir.actions.act_window">
+            <field name="name">Confirm missing location</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.inventory.missing.location</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_confirm_missing_location" model="ir.ui.view">
+            <field name="name">Confirm missing location</field>
+            <field name="model">stock.inventory.missing.location</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Confirm missing locations">
+                    <group colspan="4" col="1">
+                        <field name="location_ids" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                            </tree>
+                        </field>                        
+                    </group>
+                    <group colspan="4" col="2">
+                        <label string="This is the list of missing locations."/>
+                        <label string="Do you want to continue ?"/>
+                        <separator string="" colspan="4" />
+                        <button special="cancel" string="_Cancel" icon='gtk-cancel'/>
+                        <button name="confirm_missing_locations" string="_Confirm missing locations" type="object" icon="gtk-ok"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
