@@ -10,13 +10,13 @@
             <field name="arch" type="xml">                                                               
                 <!-- Add type of inventory : partial or complete. -->                
                 <xpath expr="//form[@string='Physical Inventory']/field[@name='date']" position="after">
-                    <field name="inventory_type"/>
+                    <field name="exhaustive"/>
                 </xpath>
 
                 <!-- Add some features like control of location on change... -->
                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']" position="replace">
                     <!-- Add the locations list  for inventory -->                    
-                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('inventory_type','!=',True)]}">
+                    <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('exhaustive','!=',True)]}">
                         <tree string="Locations" editable="bottom">                                                                                                       
                             <field name="name"/> 
                         </tree>                                    
@@ -77,7 +77,7 @@
             <field name="inherit_id" ref="stock.view_inventory_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="before">
-                    <filter icon="terp-check" name="complete_inventories" string="Complete inventories" domain="[('inventory_type', '=', True)]" help="Only select inventories that have no parents." />
+                    <filter icon="terp-check" name="complete_inventories" string="Complete inventories" domain="[('exhaustive', '=', True)]" help="Only select inventories that have no parents." />
                     <separator orientation="vertical"/>
                 </xpath>
             </field>

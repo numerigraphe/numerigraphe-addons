@@ -38,7 +38,7 @@ class inventory_hierarchical_location(osv.osv):
                     raise osv.except_osv(_('Warning !'), _('One of the parent inventories are not open.'))
         return super(inventory_hierarchical_location, self).action_open(cr, uid, ids, context=context)
 
-    field_to_propagate = ['inventory_type', 'date']
+    field_to_propagate = ['exhaustive', 'date']
 
     def check_location(self, cr, uid, ids, location_ids, name, context=None):
         """ Check if location is a children of parent inventory location """
