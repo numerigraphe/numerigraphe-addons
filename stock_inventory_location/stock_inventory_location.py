@@ -39,7 +39,7 @@ class StockInventory(osv.osv):
                                          help="""This is the list of the Stock Locations that you want to count the goods in.
 Only these Locations can be entered in the Inventory Lines.
 If some of them have not been entered in the Inventory Lines, OpenERP will warn you when you confirm the Inventory."""),
-        'exhaustive': fields.boolean('Exhaustive',
+        'exhaustive': fields.boolean('Exhaustive', readonly=True, states={'draft': [('readonly', False)]},
                                          help="""Check the box if you are conducting an exhaustive Inventory.
 Leave the box unchecked if you are conducting a standard Inventory (partial inventory for example).
 For an exhaustive Inventory, in the state "Draft" you define the list of Locations where goods must be counted.
@@ -96,25 +96,15 @@ class StockInventoryLine(osv.osv):
 
     _inherit = 'stock.inventory.line'
 
-    def onchange_location_id(self, cr, uid, ids, inventory_id, location_id, context=None):
+    def onchange_location_id(self, cr, uid, ids, location_ids, exhaustive, location_id, context=None):
         """ Raise exception if Location is not internal, or location_id not in locations list for this inventory """
-        location_obj = self.pool.get('stock.location')
-        if not isinstance(location_id, list):
-            location_id = [location_id]
-        location_infos = location_obj.read(cr, uid, location_id, ['usage'], context=context)
-        if location_infos[0]['usage'] != 'internal':
-            return {'value': {'location_id': False},
-                    'warning': {'title': _('Wrong location'),
-                                'message': _("You cannot add this type of location to inventory.")}
-                    }
-
-        inventory_infos = self.pool.get('stock.inventory').read(cr, uid, [inventory_id], ['location_ids', 'exhaustive'], context=context)
-        if not inventory_infos[0]['exhaustive'] or not inventory_infos[0]['location_ids']:
+        location_ids = location_ids[0][2]
+        if not exhaustive or not location_ids:
             return True  # don't check if partial inventory
 
         # search children of location
-        location_ids = location_obj.search(cr, uid, [('location_id',
-                       'child_of', inventory_infos[0]['location_ids'])], context=context)
+        location_ids = self.pool.get('stock.location').search(cr, uid,
+                        [('location_id', 'child_of', location_ids)], context=context)
         if location_id not in location_ids:
             return {'value': {'location_id': False},
                     'warning': {'title': _('Warning: Wrong location'),
@@ -123,10 +113,6 @@ class StockInventoryLine(osv.osv):
                     }
         return True
 
-    #XXX use parent.location_ids and parent.exhaustive instead?
-    _defaults = {
-                'inventory_id': lambda self, cr, uid, context: context.get('inventory_id', False),
-                }
 StockInventoryLine()
 
 
@@ -146,13 +132,6 @@ class StockLocation(osv.osv):
                 raise osv.except_osv(_('Error! Location on inventory'),
                                      _('A Physical Inventory is being conducted at this location'))
         return True
-
-    # XXX copy inline, remove function
-    def get_children(self, cr, uid, ids, context=None):
-        """ Get all children locations of inventory
-        and return the location.id list of all children.
-        """
-        return self.search(cr, uid, [('location_id', 'child_of', ids), ('usage', '=', 'internal')], context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
         """Refuse write if an inventory is being conducted"""

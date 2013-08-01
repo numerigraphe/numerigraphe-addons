@@ -141,7 +141,6 @@ class product_product(osv.osv):
                 uoms_o[o.id] = o
 
             # compute potential quantity from BoMs with components available
-            # XXX: what happens if there are several BoMs ?
             bom_obj = self.pool.get('mrp.bom')
             uom_obj = self.pool.get('product.uom')
             bom_available = {}

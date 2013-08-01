@@ -73,14 +73,14 @@ class stock_fill_location_inventory(osv.osv_memory):
         inventory_obj = self.pool.get('stock.inventory')
         location_obj = self.pool.get('stock.location')
 
-        location_ids = inventory_obj.read(cr, uid, [context.get('active_id')], ['location_ids'])
+        location_ids = inventory_obj.read(cr, uid, [context.get('active_id')], ['location_ids'])[0]
         options = {'recursive': False, 'set_stock_zero': False}
 
         if fill_inventory.recursive:
-            location_ids = location_obj.get_children(cr, uid, location_ids[0].get('location_ids'), context=context)
+            location_ids = location_obj.search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
             options['recursive'] = True
         else:
-            location_ids = location_ids[0].get('location_ids')
+            location_ids = location_ids['location_ids']
 
         location_ids = list(OrderedDict.fromkeys(location_ids))
 
