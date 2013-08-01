@@ -140,17 +140,18 @@ class product_product(osv.osv):
             for o in uoms:
                 uoms_o[o.id] = o
 
-            # compute available product from bom with n-1 available products
+            # compute potential quantity from BoMs with components available
             bom_obj = self.pool.get('mrp.bom')
             uom_obj = self.pool.get('product.uom')
             bom_available = {}
             for product, uom in product2uom.iteritems():
-                # _bom_find function return only the id (int) of the oldest bom write date for the product if several BoMs..
+                # _bom_find() returns a single BoM id. We will not check any other BoM for this product
                 # uom is not used by the function, but needed to call her.
                 bom_id = bom_obj._bom_find(cr, uid, product, uom)
                 if bom_id:
                     min_qty = False
                     for final_product in bom_obj.browse(cr, uid, [bom_id], context=context):
+                        # XXX takes all the children into account, probably we should limit to the first level of BoM
                         for component in final_product.child_complete_ids:
                             stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
                             recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty

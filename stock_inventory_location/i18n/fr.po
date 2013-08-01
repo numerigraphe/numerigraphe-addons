@@ -29,13 +29,13 @@ msgstr "Coche la case en cas d'inventaire exhaustif.\n"
 
 #. module: stock_inventory_location
 #: field:stock.inventory,inventory_type:0
-msgid "Complete"
+msgid "Exhaustive"
 msgstr "Exhaustif"
 
 #. module: stock_inventory_location
 #: view:stock.inventory:0
-msgid "Complete inventories"
-msgstr "Inventaire exhaustif"
+msgid "Exhaustive Inventories"
+msgstr "Inventaires exhaustifs"
 
 #. module: stock_inventory_location
 #: view:stock.inventory:0

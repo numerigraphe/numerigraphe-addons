@@ -39,7 +39,7 @@ class StockInventory(osv.osv):
                                          help="""This is the list of the Stock Locations that you want to count the goods in.
 Only these Locations can be entered in the Inventory Lines.
 If some of them have not been entered in the Inventory Lines, OpenERP will warn you when you confirm the Inventory."""),
-        'exhaustive': fields.boolean('Complete', readonly=True, states={'draft': [('readonly', False)]},
+        'exhaustive': fields.boolean('Exhaustive', readonly=True, states={'draft': [('readonly', False)]},
                                          help="""Check the box if you are conducting an exhaustive Inventory.
 Leave the box unchecked if you are conducting a standard Inventory (partial inventory for example).
 For an exhaustive Inventory, in the state "Draft" you define the list of Locations where goods must be counted.
@@ -130,7 +130,7 @@ class StockLocation(osv.osv):
         for id in ids:
             if id in location_inventory_open_ids:
                 raise osv.except_osv(_('Error! Location on inventory'),
-                                     _('A Physical Inventory is being conducted on this location'))
+                                     _('A Physical Inventory is being conducted at this location'))
         return True
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -139,7 +139,7 @@ class StockLocation(osv.osv):
         if not isinstance(ids, Iterable):
             ids = [ids]
         ids_to_check = ids
-        # If we are changing the parent, it must not be being inventoried
+        # If we are changing the parent, there must be no inventory must conducted there either
         if  vals.get('location_id'):
             ids_to_check.append(vals['location_id'])
         self._check_inventory(cr, uid, ids_to_check, context=context)
@@ -186,6 +186,6 @@ class StockMove(osv.osv):
 
     _constraints = [
                     (_check_open_inventory_location,
-                     "A Physical Inventory is being conducted on this location", ['location_id', 'location_dest_id']),
+                     "A Physical Inventory is being conducted at this location", ['location_id', 'location_dest_id']),
                    ]
 StockMove()
