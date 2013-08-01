@@ -90,4 +90,6 @@ class stock_fill_location_inventory(osv.osv_memory):
         self._fill_location_lines(cr, uid, location_ids, options, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
+    #FIXME overload inventory confirmation to delete the stock of the uninventories locations
+
 stock_fill_location_inventory()

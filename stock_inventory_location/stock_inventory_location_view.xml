@@ -9,7 +9,7 @@
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
                 <!-- Add type of inventory : partial or complete. -->
-                <xpath expr="/form/field[@name='date']" position="after">
+                <xpath expr="/form//field[@name='date']" position="after">
                     <field name="exhaustive"/>
                 </xpath>
 
@@ -56,6 +56,8 @@
                     </field>
                 </xpath>
                 
+                <!-- #XXX change the attributes  instead and add the button -->
+                <!-- #XXX enlarge the group's colspan? -->
                 <!-- Add button to open an inventory. Call wizard on confirm inventory -->
                 <xpath expr="/form//button[@name='action_cancel_inventary']" position="replace">
                     <button name="action_cancel_inventary" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>
@@ -63,6 +65,7 @@
                 </xpath>
                 
                 <!-- replace action_confirm button  -->
+                <!-- #XXX change the attributes instead -->
                 <xpath expr="/form//button[@name='action_confirm']" position="replace">
                     <button name="%(action_view_stock_inventory_uninventoried_location)d"
                         string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
@@ -77,7 +80,7 @@
             <field name="type">search</field>
             <field name="inherit_id" ref="stock.view_inventory_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="/form//field[@name='name']" position="before">
+                <xpath expr="//field[@name='name']" position="before">
                     <filter icon="terp-check" name="exhaustive" string="Exhaustive" domain="[('exhaustive', '=', True)]" help="Only select inventories that have no parents." />
                     <separator orientation="vertical"/>
                 </xpath>

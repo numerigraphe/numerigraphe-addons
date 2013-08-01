@@ -42,10 +42,11 @@ If some of them have not been entered in the Inventory Lines, OpenERP will warn 
         'exhaustive': fields.boolean('Exhaustive', readonly=True, states={'draft': [('readonly', False)]},
                                          help="""Check the box if you are conducting an exhaustive Inventory.
 Leave the box unchecked if you are conducting a standard Inventory (partial inventory for example).
-For an exhaustive Inventory, in the state "Draft" you define the list of Locations where goods must be counted.
- - a new Inventory status ("Open") lets you indicate that the list of Locations is definitive and you are now counting the goods. In that status, no Stock Moves can be recorded in/out of the Inventory's Locations.
- - if some of the Inventory's Locations have not been entered in the Inventory Lines, OpenERP warns you when you confirm the Inventory
+For an exhaustive Inventory:
+ - the status "Draft" lets you define the list of Locations where goods must be counted
+ - the status "Open" indicates that the list of Locations is definitive and you are now counting the goods. In that status, no Stock Moves can be recorded in/out of the Inventory's Locations
  - only the Inventory's Locations can be entered in the Inventory Lines
+ - if some of the Inventory's Locations have not been entered in the Inventory Lines, OpenERP warns you when you confirm the Inventory
  - every good that is not in the Inventory Lines is considered lost, and gets moved out of the stock when you confirm the Inventory"""),
         }
 
@@ -88,6 +89,9 @@ For an exhaustive Inventory, in the state "Draft" you define the list of Locatio
                 [('location_id', 'child_of', location_ids), ('usage', '=', 'internal')],
                 context=context)
         return location_ids
+    
+    #FIXME overload inventory confirmation to delete the stock of the uninventories locations
+    
 StockInventory()
 
 
