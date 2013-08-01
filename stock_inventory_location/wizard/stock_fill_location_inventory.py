@@ -29,18 +29,18 @@ class stock_fill_location_inventory(osv.osv_memory):
 
     _columns = {
          'location_id': fields.many2one('stock.location', 'Location'),
-         'inventory_type': fields.boolean('stock.inventory', 'Type'),
+         'exhaustive': fields.boolean('stock.inventory', 'Type'),
          }
 
     def get_inventory_type(self, cr, uid, context=None):
         if context.get('active_id', False):
             inventory_obj = self.pool.get('stock.inventory')
-            inventory_type = inventory_obj.read(cr, uid, [context.get('active_id')], ['inventory_type'], context=context)[0]['inventory_type']
-            return inventory_type
+            exhaustive = inventory_obj.read(cr, uid, [context.get('active_id')], ['exhaustive'], context=context)[0]['exhaustive']
+            return exhaustive
         return False
 
     _defaults = {
-        'inventory_type': get_inventory_type,
+        'exhaustive': get_inventory_type,
         }
 
     def view_init(self, cr, uid, fields_list, context=None):
@@ -67,7 +67,7 @@ class stock_fill_location_inventory(osv.osv_memory):
             context = {}
 
         fill_inventory = self.browse(cr, uid, ids[0], context=context)
-        if not fill_inventory.inventory_type:
+        if not fill_inventory.exhaustive:
             return super(stock_fill_location_inventory, self).fill_inventory(cr, uid, ids, context=context)  # call standard wizard
 
         inventory_obj = self.pool.get('stock.inventory')

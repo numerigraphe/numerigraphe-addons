@@ -9,13 +9,13 @@
             <field name="inherit_id" ref="stock.view_inventory_form" />
             <field name="arch" type="xml">
 
-                 <xpath expr="//form[@string='Physical Inventory']/field[@name='inventory_type']" position="attributes">
+                 <xpath expr="//form[@string='Physical Inventory']/field[@name='exhaustive']" position="attributes">
                     <attribute name="attrs">{'readonly':[('parent_id', '!=', False)]}</attribute>                    
                 </xpath>
  
                 <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='location_ids']" position="replace">           
                     <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" 
-                            attrs="{'invisible':[('inventory_type','!=',True)]}"
+                            attrs="{'invisible':[('exhaustive','!=',True)]}"
                             on_change="check_location(location_ids, name)">
                         <tree string="Locations" editable="bottom">                                                                                                       
                             <field name="name"/> 
