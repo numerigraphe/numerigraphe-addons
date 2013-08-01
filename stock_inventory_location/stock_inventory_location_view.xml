@@ -13,47 +13,33 @@
                     <field name="exhaustive"/>
                 </xpath>
 
-                <!-- Add some features like control of location on change... -->
-                <xpath expr="/form//field[@name='inventory_line_id']" position="replace">
+                <!-- Add the list of Locations on exhaustive inventories --> 
+                <xpath expr="/form//field[@name='inventory_line_id']" position="before">
                     <!-- Add the locations list for inventory -->
                     <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('exhaustive','!=',True)]}">
                         <tree string="Locations" editable="bottom">
                             <field name="name"/>
                         </tree>
                     </field>
+                </xpath>                    
 
-                    <!-- #FIXME probably not needed anymore -->
-                    <!-- Modify the default view to add inventory_id (needed for on_change method call) -->
-                    <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list">                    
-                        <tree string="Products" editable="bottom">
-                            <field name="inventory_id" invisible="1"/>
-                            <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(parent.location_ids, parent.exhaustive, location_id)"/>
-                            <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
-                            <field name="product_qty"/>
-                            <field name="product_uom"/>
-                            <field name="prod_lot_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" />
-                            <button name="%(stock.action_view_stock_inventory_line_split)d"
-                                string="Split inventory lines" groups="base.group_extended"
-                                type="action" icon="terp-stock_effects-object-colorize" states="draft,open,confirm"/>
-                            <field name="state" invisible="True"/>
-                            <field name = "id" invisible="1"/>
-                        </tree>
-                        <form string="Products ">
-                             <field name="inventory_id" invisible="1"/>
-                            <field domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(parent.location_ids, parent.exhaustive, location_id)"/>
-                            <newline/>
-                            <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
-                            <field name="product_qty"/>
-                            <field name="product_uom"/>
-                            <group colspan="2" col="4">
-                            <field name="prod_lot_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" />
-                                <button name="%(stock.action_view_stock_inventory_line_split)d"
-                                    string="Split inventory lines" groups="base.group_extended"
-                                    type="action" icon="terp-stock_effects-object-colorize"/>
-                            <field name = "id" invisible="1"/>
-                            </group>
-                        </form>
-                    </field>
+                <!-- Reduce the colspan of the lines to make room for the Locations-->
+                <xpath expr="/form//field[@name='inventory_line_id']" position="attributes">
+                    <attribute name="colspan">3</attribute>
+                </xpath>                
+
+                <!-- Control locations added by user on inventory line -->  
+                <xpath expr="/form//field[@name='inventory_line_id']/tree/field[@name='location_id']" position="attributes">
+                    <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
+                </xpath>
+                <xpath expr="/form//field[@name='inventory_line_id']/form/field[@name='location_id']" position="attributes">
+                    <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
+                </xpath>
+                
+				<!-- XXX: does not work: there is no state on inventory lines -->
+                <!-- Change states when the button is available --> 
+                <xpath expr="/form//field/tree/button" position="attributes">
+                    <attribute name="states">open</attribute>
                 </xpath>
                 
                 <!-- #XXX change the attributes  instead and add the button -->

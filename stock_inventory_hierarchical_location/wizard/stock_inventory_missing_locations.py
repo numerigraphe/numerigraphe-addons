@@ -37,16 +37,14 @@ class inventory_missing_location(osv.osv_memory):
 
     def confirm_missing_locations(self, cr, uid, ids, context=None):
         """ Call action open method from stock.inventory """
-        stock_inventory_obj = self.pool.get('stock.inventory')
         ids = context['active_ids']
-        stock_inventory_obj.action_open(cr, uid, ids, context=context)
+        self.pool.get('stock.inventory').action_open(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
     def inventories(self, cr, uid, inventory_parent_id):
         """ Iterator of children inventories.
         """
-        inventory_obj = self.pool.get('stock.inventory')
-        children_ids = inventory_obj.search(cr, uid, [('parent_id', 'child_of', inventory_parent_id)])
+        children_ids = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', inventory_parent_id)])
         for inventory_id in children_ids:
             if inventory_id == inventory_parent_id:
                 continue  # pass the parent inventory
@@ -54,12 +52,12 @@ class inventory_missing_location(osv.osv_memory):
 
     def get_locations_from_children(self, cr, uid, inventory_id, context=None):
         """ Get all locations through inventory tree. """
-        inventory_obj = self.pool.get('stock.inventory')
-        location_obj = self.pool.get('stock.location')
         list_inventories_locations_ids = []
         for i_id in self.inventories(cr, uid, inventory_id):
-            location_ids = inventory_obj.read(cr, uid, [i_id], ['location_ids'], context=context)[0]
-            location_ids = location_obj.search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
+            location_ids = self.pool.get('stock.inventory').read(cr, uid, [i_id], ['location_ids'], context=context)[0]
+            location_ids = self.pool.get('stock.location').search(cr, uid, [
+                                            ('location_id', 'child_of', location_ids['location_ids']),
+                                            ('usage', '=', 'internal')], context=context)
             list_inventories_locations_ids = list(set(list_inventories_locations_ids + location_ids))
         return list_inventories_locations_ids
 
@@ -69,16 +67,13 @@ class inventory_missing_location(osv.osv_memory):
         if context is None:
             context = {}
 
-        inventory_obj = self.pool.get('stock.inventory')
-        location_obj = self.pool.get('stock.location')
-
         # get children locations for parent/current inventory
-        parent_location_ids = inventory_obj.read(cr, uid, [context['active_id']], ['location_ids'], context=context)[0]
-        parent_location_ids = location_obj.search(cr, uid, [('location_id', 'child_of', parent_location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
-
+        parent_location_ids = self.pool.get('stock.inventory').read(cr, uid, [context['active_id']], ['location_ids'], context=context)[0]
+        parent_location_ids = self.pool.get('stock.location').search(cr, uid, [
+                                        ('location_id', 'child_of', parent_location_ids['location_ids']),
+                                        ('usage', '=', 'internal')], context=context)
         # get locations for each sub-inventory
         location_ids = self.get_locations_from_children(cr, uid, context['active_id'])
-
         list_missing_ids = [_id for _id in parent_location_ids if _id not in location_ids]
         return list_missing_ids
 

@@ -36,10 +36,10 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
     def get_locations(self, cr, uid, inventory_id, context=None):
         """ Get all locations from inventory. """
-        inventory_obj = self.pool.get('stock.inventory')
-        location_obj = self.pool.get('stock.location')
-        location_ids = inventory_obj.read(cr, uid, [inventory_id], ['location_ids'], context=context)[0]
-        return location_obj.search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
+        location_ids = self.pool.get('stock.inventory').read(cr, uid, [inventory_id], ['location_ids'], context=context)[0]
+        return self.pool.get('stock.location').search(cr, uid, [
+                        ('location_id', 'child_of', location_ids['location_ids']),
+                        ('usage', '=', 'internal')], context=context)
 
     def get_locations_inventoried(self, cr, uid, inventory_id, location_ids, context=None):
         """ Get all locations on inventory lines. """
@@ -55,7 +55,6 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
         """
         if context is None:
             context = {}
-
         location_ids = self.get_locations(cr, uid, context['active_id'])
         inventory_line_locations_ids = self.get_locations_inventoried(cr, uid, context['active_id'], location_ids)
         return  [_id for _id in location_ids if _id not in inventory_line_locations_ids]
@@ -66,9 +65,8 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
     def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """
-        stock_inventory_obj = self.pool.get('stock.inventory')
         ids = context['active_ids']
-        stock_inventory_obj.action_confirm(cr, uid, ids, context=context)
+        self.pool.get('stock.inventory').action_confirm(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
 stock_inventory_uninventoried_location()
