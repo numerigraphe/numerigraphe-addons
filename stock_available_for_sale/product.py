@@ -141,12 +141,11 @@ class product_product(osv.osv):
                 uoms_o[o.id] = o
 
             # compute available product from bom with n-1 available products
-            # XXX: what happens if there are several BoMs ?
             bom_obj = self.pool.get('mrp.bom')
             uom_obj = self.pool.get('product.uom')
             bom_available = {}
             for product, uom in product2uom.iteritems():
-                # _bom_find function return only the id (int) of the oldest bom write date for the product.
+                # _bom_find function return only the id (int) of the oldest bom write date for the product if several BoMs..
                 # uom is not used by the function, but needed to call her.
                 bom_id = bom_obj._bom_find(cr, uid, product, uom)
                 if bom_id:

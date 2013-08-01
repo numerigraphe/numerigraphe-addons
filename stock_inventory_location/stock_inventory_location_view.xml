@@ -23,10 +23,10 @@
                     </field>
 
                     <!-- Modify the default view to add inventory_id (needed for on_change method call) -->
-                    <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list" context="{'inventory_id':active_id}">
+                    <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list">                    
                         <tree string="Products" editable="bottom">
                             <field name="inventory_id" invisible="1"/>
-                            <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(inventory_id, location_id)"/>
+                            <field colspan="4" domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(parent.location_ids, parent.exhaustive, location_id)"/>
                             <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
                             <field name="product_qty"/>
                             <field name="product_uom"/>
@@ -39,7 +39,7 @@
                         </tree>
                         <form string="Products ">
                              <field name="inventory_id" invisible="1"/>
-                            <field domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(inventory_id, location_id)"/>
+                            <field domain="[('usage','=','internal')]" name="location_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="onchange_location_id(parent.location_ids, parent.exhaustive, location_id)"/>
                             <newline/>
                             <field context="location=location_id,uom=product_uom,to_date=parent.date" name="product_id" attrs="{'readonly': [('id','&lt;&gt;',False)]}" on_change="on_change_product_id(location_id,product_id,product_uom,parent.date)"  domain="[('type','&lt;&gt;','service')]"/>
                             <field name="product_qty"/>

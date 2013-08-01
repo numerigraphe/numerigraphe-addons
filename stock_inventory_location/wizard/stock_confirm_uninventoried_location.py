@@ -39,7 +39,7 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
         inventory_obj = self.pool.get('stock.inventory')
         location_obj = self.pool.get('stock.location')
         location_ids = inventory_obj.read(cr, uid, [inventory_id], ['location_ids'], context=context)[0]
-        return location_obj.get_children(cr, uid, location_ids['location_ids'], context=None)
+        return location_obj.search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
 
     def get_locations_inventoried(self, cr, uid, inventory_id, location_ids, context=None):
         """ Get all locations on inventory lines. """
