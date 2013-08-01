@@ -55,7 +55,6 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
         """
         if context is None:
             context = {}
-
         location_ids = self.get_locations(cr, uid, context['active_id'])
         inventory_line_locations_ids = self.get_locations_inventoried(cr, uid, context['active_id'], location_ids)
         return  [_id for _id in location_ids if _id not in inventory_line_locations_ids]
@@ -66,9 +65,8 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
     def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """
-        stock_inventory_obj = self.pool.get('stock.inventory')
         ids = context['active_ids']
-        stock_inventory_obj.action_confirm(cr, uid, ids, context=context)
+        self.pool.get('stock.inventory').action_confirm(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
 stock_inventory_uninventoried_location()

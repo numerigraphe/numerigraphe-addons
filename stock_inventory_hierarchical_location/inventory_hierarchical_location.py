@@ -42,13 +42,12 @@ class inventory_hierarchical_location(osv.osv):
 
     def check_location(self, cr, uid, ids, location_ids, name, context=None):
         """ Check if location is a children of parent inventory location """
-        location_obj = self.pool.get('stock.location')
         res_location_ids = location_ids[0][2]
         nbr_location_ids = len(res_location_ids)
         for inventory in self.browse(cr, uid, ids, context=None):
             if inventory.parent_id.id:
                 parent_locations = self.read(cr, uid, [inventory.parent_id.id], ['location_ids'])
-                parent_children_locations = location_obj.search(cr, uid, [('location_id', 'child_of', parent_locations[0]['location_ids'])])
+                parent_children_locations = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', parent_locations[0]['location_ids'])])
                 for location_id in res_location_ids:
                     if location_id not in parent_children_locations:
                         res_location_ids.remove(location_id)
@@ -62,8 +61,7 @@ class inventory_hierarchical_location(osv.osv):
 
     def open_missing_location_wizard(self, cr, uid, ids, context=None):
         """ Open wizard if inventory have children. """
-        inventory_obj = self.pool.get('stock.inventory')
-        children_count = inventory_obj.search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
+        children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
         if children_count == 1:
             return self.action_open(cr, uid, ids, context)
         else:
@@ -89,8 +87,7 @@ class stock_inventory_hierarchical_uninventoried_location(osv.osv_memory):
         """ Iterator of children inventories.
         return inventory_id;
         """
-        inventory_obj = self.pool.get('stock.inventory')
-        children_ids = inventory_obj.search(cr, uid, [('parent_id', 'child_of', inventory_parent_id)])
+        children_ids = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', inventory_parent_id)])
         for inventory_id in children_ids:
             yield inventory_id
 
@@ -113,8 +110,7 @@ class stock_inventory_hierarchical_uninventoried_location(osv.osv_memory):
     def default_locations(self, cr, uid, context=None):
         """ Do something only if children state are confirm or done.
         """
-        inventory_obj = self.pool.get('stock.inventory')
-        children_count = inventory_obj.search(cr, uid, [('parent_id', 'child_of', context['active_id']),
+        children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', context['active_id']),
                                              ('state', 'not in', ['confirm', 'done'])], context=context, count=True)
         if children_count > 1:
             raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not confirmed.'))
