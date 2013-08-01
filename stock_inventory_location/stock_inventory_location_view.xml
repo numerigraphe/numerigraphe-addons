@@ -9,19 +9,20 @@
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
                 <!-- Add type of inventory : partial or complete. -->
-                <xpath expr="//form[@string='Physical Inventory']/field[@name='date']" position="after">
+                <xpath expr="/form/field[@name='date']" position="after">
                     <field name="exhaustive"/>
                 </xpath>
 
                 <!-- Add some features like control of location on change... -->
-                <xpath expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']/field[@name='inventory_line_id']" position="replace">
-                    <!-- Add the locations list  for inventory -->
+                <xpath expr="/form//field[@name='inventory_line_id']" position="replace">
+                    <!-- Add the locations list for inventory -->
                     <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('exhaustive','!=',True)]}">
                         <tree string="Locations" editable="bottom">
                             <field name="name"/>
                         </tree>
                     </field>
 
+                    <!-- #FIXME probably not needed anymore -->
                     <!-- Modify the default view to add inventory_id (needed for on_change method call) -->
                     <field colspan="3" name="inventory_line_id" nolabel="1" widget="one2many_list">                    
                         <tree string="Products" editable="bottom">
@@ -56,13 +57,13 @@
                 </xpath>
                 
                 <!-- Add button to open an inventory. Call wizard on confirm inventory -->
-                <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_cancel_inventary']" position="replace">
+                <xpath expr="/form//button[@name='action_cancel_inventary']" position="replace">
                     <button name="action_cancel_inventary" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>
                     <button name="action_open" states="draft" string="Open Inventory" type="object" icon="gtk-go-forward"/>
                 </xpath>
                 
                 <!-- replace action_confirm button  -->
-                <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_confirm']" position="replace">
+                <xpath expr="/form//button[@name='action_confirm']" position="replace">
                     <button name="%(action_view_stock_inventory_uninventoried_location)d"
                         string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
                 </xpath>
@@ -76,11 +77,16 @@
             <field name="type">search</field>
             <field name="inherit_id" ref="stock.view_inventory_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="before">
-                    <filter icon="terp-check" name="complete_inventories" string="Exhaustive Inventories" domain="[('exhaustive', '=', True)]" help="Only select inventories that have no parents." />
+                <xpath expr="/form//field[@name='name']" position="before">
+                    <filter icon="terp-check" name="exhaustive" string="Exhaustive" domain="[('exhaustive', '=', True)]" help="Only select inventories that have no parents." />
                     <separator orientation="vertical"/>
                 </xpath>
             </field>
+        </record>
+        
+        <!-- Show exhaustive inventories by default -->
+        <record id="stock.action_inventory_form" model="ir.actions.act_window">
+            <field name="context">{'full':'1', 'search_default_exhaustive':1}</field>
         </record>
 
 	</data>

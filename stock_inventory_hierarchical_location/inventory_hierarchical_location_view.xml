@@ -32,5 +32,9 @@
             </field>
         </record>
 
+        <!-- Show exhaustive inventories by default -->
+        <record id="stock.action_inventory_form" model="ir.actions.act_window">
+            <field name="context">{'full':'1', 'search_default_exhaustive':1, 'search_default_main_inventories':1}</field>
+        </record>
 	</data>
 </openerp>
