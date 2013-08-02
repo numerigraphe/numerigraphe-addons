@@ -25,12 +25,15 @@
     "author": "Numérigraphe",
     "category": "stock inventory",
     "description": """
-    This module have the following features :
-        - hierarchical structure of inventory and Sub-inventories,
-        - a location can be linked with only one Sub-inventory during inventory,
-        - check empty locations,
-        - prepare paper inventory filled with formations about products and location, but empty quantity,
-        - prepare paper inventory filled with empty locations to check only,
-    """,
+Hierarchical structure for Physical Inventories and sub-Inventories
+===================================================================
+
+This module adds a parent-child relationship between Physical Inventories, to help users
+manage complex inventories.
+Using several inventories, you can distribute the counting to several persons
+and still keep a clear overview of global Inventory's status.
+
+OpenERP will make sure the status of the Inventory and it's sub-Inventories are consistent.
+""",
     "update_xml": ["hierarchical_inventory_view.xml"],
 }
