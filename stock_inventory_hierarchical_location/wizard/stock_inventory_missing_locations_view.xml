@@ -11,6 +11,10 @@
             <field name="target">new</field>
         </record>
 
+        <!-- The view definition is similar with stock_inventory_location/wizard/stock_confirm_uninventoried_location.xml, 
+        but the code is different. 
+        This wizard compare the locations of inventory with locations declared on parent inventory to 
+        to present to user the missing locations. -->
         <record id="view_confirm_missing_location" model="ir.ui.view">
             <field name="name">Confirm missing location</field>
             <field name="model">stock.inventory.missing.location</field>

@@ -20,7 +20,6 @@
 
 from osv import fields, osv
 from tools.translate import _
-from product._common import rounding
 from collections import OrderedDict
 
 
@@ -70,26 +69,26 @@ class stock_fill_location_inventory(osv.osv_memory):
         if not fill_inventory.exhaustive:
             return super(stock_fill_location_inventory, self).fill_inventory(cr, uid, ids, context=context)  # call standard wizard
 
-        inventory_obj = self.pool.get('stock.inventory')
-        location_obj = self.pool.get('stock.location')
-
-        location_ids = inventory_obj.read(cr, uid, [context.get('active_id')], ['location_ids'])[0]
-        options = {'recursive': False, 'set_stock_zero': False}
+        location_ids = self.pool.get('stock.inventory').read(cr, uid, [context.get('active_id')], ['location_ids'])[0]
 
         if fill_inventory.recursive:
-            location_ids = location_obj.search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']), ('usage', '=', 'internal')], context=context)
-            options['recursive'] = True
+            location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']),
+                                                                            ('usage', '=', 'internal')], context=context)
         else:
             location_ids = location_ids['location_ids']
 
         location_ids = list(OrderedDict.fromkeys(location_ids))
 
-        if fill_inventory.set_stock_zero:
-            options['set_stock_zero'] = True
+        inventory_obj = self.pool.get('stock.inventory')
+        lines = inventory_obj._fill_location_lines(cr, uid,
+                                                   context['active_ids'][0],
+                                                   location_ids,
+                                                   fill_inventory.set_stock_zero,
+                                                   context=context)
 
-        self._fill_location_lines(cr, uid, location_ids, options, context=context)
+        inventory_lines_obj = self.pool.get('stock.inventory.line')
+        for line in lines:
+            inventory_lines_obj.create(cr, uid, line, context=context)
         return {'type': 'ir.actions.act_window_close'}
-
-    #FIXME overload inventory confirmation to delete the stock of the uninventories locations
 
 stock_fill_location_inventory()
