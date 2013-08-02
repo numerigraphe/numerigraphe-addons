@@ -22,26 +22,28 @@ from osv import osv
 from tools.translate import _
 
 
-class inventory_hierarchical_location(osv.osv):
+class StockInventory(osv.osv):
     _inherit = 'stock.inventory'
 
+    def __init__(self, pool, cr):
+        """Propagate the "exhaustive" field from inventories to sub-inventories"""
+        s = super(StockInventory, self)
+        s.PARENT_VALUES.append('exhaustive')
+        return s.__init__(pool, cr)
+    
     def action_open(self, cr, uid, ids, context=None):
-        """ Open the inventory :
-        Before opening, if missing locations, ask to user to validate the opening without these locations.
-        Open only if all the parents are Open.
-        """
+        """Open only if all the parents are Open."""
+        #XXX the dosctring used to say this but it's not implemented, normal? --> "Before opening, if locations are  missing, ask the user to validate the opening without these locations."
         inventories = self.browse(cr, uid, ids, context=context)
         for inventory in inventories:
             while inventory.parent_id:
                 inventory = inventory.parent_id
                 if inventory.state != 'open':
                     raise osv.except_osv(_('Warning !'), _('One of the parent inventories are not open.'))
-        return super(inventory_hierarchical_location, self).action_open(cr, uid, ids, context=context)
-
-    field_to_propagate = ['exhaustive', 'date']
+        return super(StockInventory, self).action_open(cr, uid, ids, context=context)
 
     def check_location(self, cr, uid, ids, location_ids, name, context=None):
-        """ Check if location is a children of parent inventory location """
+        """Check if location is a child of parent inventory location"""
         res_location_ids = location_ids[0][2]
         nbr_location_ids = len(res_location_ids)
         for inventory in self.browse(cr, uid, ids, context=None):
@@ -60,7 +62,7 @@ class inventory_hierarchical_location(osv.osv):
         return res
 
     def open_missing_location_wizard(self, cr, uid, ids, context=None):
-        """ Open wizard if inventory have children. """
+        """Open wizard if inventory have children."""
         children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
         if children_count == 1:
             return self.action_open(cr, uid, ids, context)
@@ -76,48 +78,46 @@ class inventory_hierarchical_location(osv.osv):
                 'context': context,
                 'nodestroy': True,
                 }
+StockInventory()
 
-inventory_hierarchical_location()
 
-
-class stock_inventory_hierarchical_uninventoried_location(osv.osv_memory):
+# XXX: move to /wizard
+class StockInventoryUninventoriedLocation(osv.osv_memory):
     _inherit = 'stock.inventory.uninventoried.locations'
 
     def inventories(self, cr, uid, inventory_parent_id):
-        """ Iterator of children inventories.
+        """Iterator of children inventories.
         return inventory_id;
-        """
+       """
         children_ids = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', inventory_parent_id)])
         for inventory_id in children_ids:
             yield inventory_id
 
     def get_locations(self, cr, uid, inventory_id, context=None):
-        """ Get all locations through inventory tree. """
+        """Get all locations through inventory tree."""
         list_inventories_locations_ids = []
         for i_id in self.inventories(cr, uid, inventory_id):
-            location_ids = super(stock_inventory_hierarchical_uninventoried_location, self).get_locations(cr, uid, i_id, context=context)
+            location_ids = super(StockInventoryUninventoriedLocation, self).get_locations(cr, uid, i_id, context=context)
             list_inventories_locations_ids = list(set(list_inventories_locations_ids + location_ids))
         return list_inventories_locations_ids
 
     def get_locations_inventoried(self, cr, uid, inventory_id, location_ids, context=None):
-        """ Get all locations on inventory lines through inventory tree. """
+        """Get all locations on inventory lines through inventory tree."""
         list_all_inventoried_location_ids = []
         for i_id in self.inventories(cr, uid, inventory_id):
-            list_loc_ids = super(stock_inventory_hierarchical_uninventoried_location, self).get_locations_inventoried(cr, uid, i_id, location_ids, context=context)
+            list_loc_ids = super(StockInventoryUninventoriedLocation, self).get_locations_inventoried(cr, uid, i_id, location_ids, context=context)
             list_all_inventoried_location_ids = list(set(list_all_inventoried_location_ids + list_loc_ids))
         return list_all_inventoried_location_ids
 
     def default_locations(self, cr, uid, context=None):
-        """ Do something only if children state are confirm or done.
-        """
+        """Do something only if children state are confirm or done."""
         children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', context['active_id']),
                                              ('state', 'not in', ['confirm', 'done'])], context=context, count=True)
         if children_count > 1:
             raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not confirmed.'))
-        return super(stock_inventory_hierarchical_uninventoried_location, self).default_locations(cr, uid, context=context)
+        return super(StockInventoryUninventoriedLocation, self).default_locations(cr, uid, context=context)
 
     _defaults = {
         'location_ids': default_locations,
         }
-
-stock_inventory_hierarchical_uninventoried_location()
+StockInventoryUninventoriedLocation()
