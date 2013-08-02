@@ -89,9 +89,25 @@ For an exhaustive Inventory:
                 [('location_id', 'child_of', location_ids), ('usage', '=', 'internal')],
                 context=context)
         return location_ids
-    
-    #FIXME overload inventory confirmation to delete the stock of the uninventories locations
-    
+
+    def confirm_uninventoried_location_wizard(self, cr, uid, ids, context=None):
+        """ Open wizard if inventory is exhautive """
+        for inventory in self.browse(cr, uid, ids, context=context):
+            if not inventory.exhaustive:
+                return self.action_confirm(cr, uid, ids, context=context)
+            else:
+                context['active_ids'] = ids
+                context['active_id'] = ids[0]
+                return {
+                    'type': 'ir.actions.act_window',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'stock.inventory.uninventoried.locations',
+                    'target': 'new',
+                    'context': context,
+                    'nodestroy': True,
+                    }
+
 StockInventory()
 
 

@@ -65,8 +65,28 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
     def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """
-        ids = context['active_ids']
-        self.pool.get('stock.inventory').action_confirm(cr, uid, ids, context=context)
+        inventory_ids = context['active_ids']
+        # call the wizard to add lines for uninventoried locations with zero quantity
+        inventory_obj = self.pool.get('stock.inventory')
+        if not isinstance(inventory_ids, list):
+            inventory_ids = [inventory_ids]
+
+        for inventory in inventory_obj.browse(cr, uid, inventory_ids, context=context):
+            if inventory.exhaustive:
+                location_ids = [i.id for i in inventory.location_ids]
+                # search for children
+                location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids),
+                                                                                ('usage', '=', 'internal')], context=context)
+                lines = inventory_obj._fill_location_lines(cr, uid,
+                                                           inventory.id,
+                                                           location_ids,
+                                                           True,
+                                                           context=context)
+                inventory_lines_obj = self.pool.get('stock.inventory.line')
+                for line in lines:
+                    inventory_lines_obj.create(cr, uid, line, context=context)
+
+        inventory_obj.action_confirm(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
 stock_inventory_uninventoried_location()

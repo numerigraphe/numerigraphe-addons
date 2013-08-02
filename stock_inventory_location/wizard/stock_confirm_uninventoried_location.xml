@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
-        <record id="action_view_stock_inventory_uninventoried_location" model="ir.actions.act_window">
-            <field name="name">Confirm uninventoried location</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">stock.inventory.uninventoried.locations</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
-
+        <!-- The view definition is similar with stock_inventory_hierarchical_location/wizard/stock_inventory_missing_locations_view.xml, 
+        but the code is different. 
+        This wizard compare declared locations with locations on inventory lines to present the uninventoried (empty) locations to user. -->
         <record id="view_confirm_uninventoried_location" model="ir.ui.view">
             <field name="name">stock.inventory.uninventoried.locations.form</field>
             <field name="model">stock.inventory.uninventoried.locations</field>
@@ -30,7 +23,7 @@
                     </group>
                     <group colspan="4" col="2">
                         <button special="cancel" string="Cancel" icon="gtk-cancel" default_focus="1" />
-                        <button name="confirm_uninventoried_locations" string="Purge contents and confirm Inventory" type="object" icon="gtk-ok"/>
+                        <button name="confirm_uninventoried_locations" string="Purge contents and confirm Inventory" type="object" icon="gtk-ok"/>                        
                     </group>
                 </form>
             </field>
