@@ -20,14 +20,14 @@
 
 
 {
-    "name": "Stock Inventory Location",
+    "name": "Exhaustive Stock Inventories",
     "version": "1.0",
     "depends": ["stock"],
     "author": u"Numérigraphe",
     "category": "Inventory",
     "description": """
-Add the list of locations to the definition of the Physical Inventories
-=======================================================================
+Let users choose between standard and exhaustive Inventories
+============================================================
 
 Standard Physical Inventories in OpenERP only contain a generic list of products by locations,
 which is well suited to partial Inventories and simple warehouses.

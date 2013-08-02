@@ -24,7 +24,7 @@ from tools.translate import _
 
 class stock_inventory_uninventoried_location(osv.osv_memory):
     _name = 'stock.inventory.uninventoried.locations'
-    _description = 'Ask to user to confirm the uninventoried locations.'
+    _description = 'Confirm the uninventoried Locations.'
 
     _columns = {
                 'location_ids': fields.many2many('stock.location',

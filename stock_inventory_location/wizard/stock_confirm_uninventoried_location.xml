@@ -12,24 +12,25 @@
         </record>
 
         <record id="view_confirm_uninventoried_location" model="ir.ui.view">
-            <field name="name">Confirm uninventoried location</field>
+            <field name="name">stock.inventory.uninventoried.locations.form</field>
             <field name="model">stock.inventory.uninventoried.locations</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Confirm uninventoried locations">
                     <group colspan="4" col="1">
+                        <label string="The following Stock Locations are part of the current Physical Inventory, but not Inventory Line has been recorded for them."/>
                         <field name="location_ids" nolabel="1">
                             <tree>
                                 <field name="name"/>
                             </tree>
-                        </field>                        
+                        </field>
+                        <label string="It could either mean that the Locations are empty, or that the Inventory is not yet complete."/>
+                        <label string="If you confirm the Inventory, these Locations will be considered empty and their content will be purged."/>
+                        <separator string=""/>
                     </group>
                     <group colspan="4" col="2">
-                        <label string="This is the list of uninventoried locations."/>
-                        <label string="Do you want to continue ?"/>
-                        <separator string="" colspan="4" />
-                        <button special="cancel" string="_Cancel" icon='gtk-cancel'/>
-                        <button name="confirm_uninventoried_locations" string="Confirm uninventoried locations" type="object" icon="gtk-ok"/>
+                        <button special="cancel" string="Cancel" icon="gtk-cancel" default_focus="1" />
+                        <button name="confirm_uninventoried_locations" string="Purge contents and confirm Inventory" type="object" icon="gtk-ok"/>
                     </group>
                 </form>
             </field>

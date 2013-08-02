@@ -19,13 +19,18 @@
 ##############################################################################
 
 {
-    "name": "Inventory Hierarchical location",
+    "name": "Exhaustive and hierachical Stock Inventories",
     "version": "1.0",
     "depends": ["stock_inventory_hierarchical", "stock_inventory_location"],
     "author": u"Numérigraphe",
     "category": "stock inventory",
     "description": """
-        Add locations to hierarchical inventories.
+This module makes exhaustive Inventories aware of their Sub-Inventories.
+========================================================================
+
+It must be installed if both modules "stock_inventory_location" and "stock_inventory_hierarchical" are installed.
+
+This module allows an inventory to contain a general Location, and it's sub-inventories to contain some of it's sub-Locations.
     """,
     "init_xml": [],
     "update_xml": [

@@ -9,11 +9,11 @@
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
                 <!-- Add type of inventory : partial or complete. -->
-                <xpath expr="/form/field[@name='date']" position="after">
+                <xpath expr="/form//field[@name='date']" position="after">
                     <field name="exhaustive"/>
                 </xpath>
 
-                <!-- Add panel of locations to be inventoried on exhaustive inventory --> 
+                <!-- Add the list of Locations on exhaustive inventories --> 
                 <xpath expr="/form//field[@name='inventory_line_id']" position="before">
                     <!-- Add the locations list for inventory -->
                     <field colspan="1" nolabel="1" name="location_ids" domain="[('usage','in',('view', 'internal'))]" attrs="{'invisible':[('exhaustive','!=',True)]}">
@@ -23,24 +23,27 @@
                     </field>
                 </xpath>                    
 
-                <!-- Reorganize the screen colspan -->                                    
+                <!-- Reduce the colspan of the lines to make room for the Locations-->
                 <xpath expr="/form//field[@name='inventory_line_id']" position="attributes">
                     <attribute name="colspan">3</attribute>
                 </xpath>                
 
                 <!-- Control locations added by user on inventory line -->  
-                <xpath expr="/form//field/tree/field[@name='location_id']" position="attributes">
+                <xpath expr="/form//field[@name='inventory_line_id']/tree/field[@name='location_id']" position="attributes">
                     <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
                 </xpath>
-                <xpath expr="/form//field/form/field[@name='location_id']" position="attributes">
+                <xpath expr="/form//field[@name='inventory_line_id']/form/field[@name='location_id']" position="attributes">
                     <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
                 </xpath>
-                    
+                
+				<!-- XXX: does not work: there is no state on inventory lines -->
                 <!-- Change states when the button is available --> 
                 <xpath expr="/form//field/tree/button" position="attributes">
                     <attribute name="states">open</attribute>
                 </xpath>
                 
+                <!-- #XXX change the attributes  instead and add the button -->
+                <!-- #XXX enlarge the group's colspan? -->
                 <!-- Add button to open an inventory. Call wizard on confirm inventory -->
                 <xpath expr="/form//button[@name='action_cancel_inventary']" position="replace">
                     <button name="action_cancel_inventary" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>
@@ -48,6 +51,7 @@
                 </xpath>
                 
                 <!-- replace action_confirm button  -->
+                <!-- #XXX change the attributes instead -->
                 <xpath expr="/form//button[@name='action_confirm']" position="replace">
                     <button name="%(action_view_stock_inventory_uninventoried_location)d"
                         string="Confirm Inventory" type="action" states="open" icon="gtk-apply"/>
