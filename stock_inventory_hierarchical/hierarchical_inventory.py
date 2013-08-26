@@ -100,6 +100,7 @@ class stock_inventory_hierarchical(osv.osv):
                 if current_id == id:
                     return False
         return True
+    
     # XXX: use this in v7
     # _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     _constraints = [
