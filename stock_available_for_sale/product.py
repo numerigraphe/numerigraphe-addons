@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,12 +27,23 @@ class product_product(osv.osv):
     _inherit = 'product.product'
 
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
-        """Compute the quantities available for sale and quantities in Quotations"""
-        if not field_names:
+        """Compute the quantities available for sale and quantities in Quotations
+        
+        @param context: if the context 'virtual_is_available_for_sale' is True, then
+                        the value of virtual_available will be replaced with that of 
+                        available_for_sale. This lets you change the basis for some
+                        computations without changing too much business code.
+                        See sale_stock.py for an example.
+        """
+        if field_names is None:
             field_names = []
+        if context is None:
+            context = {}
+        # Does the context require us to replace the virtual available quantity with the quantity available for sale?
+        replace_virtual = context.get('virtual_is_available_for_sale', False)
         
         # We need the virtual_available quantities in order to compute the quantities available for sale
-        if 'available_for_sale' in field_names and not 'virtual_available' in field_names:
+        if ('available_for_sale' in field_names or replace_virtual) and not 'virtual_available' in field_names:
             field_names.append('virtual_available')
         
         # Compute the core quantities
@@ -42,7 +53,8 @@ class product_product(osv.osv):
         # Compute the quantities quoted/potential/available for sale
         if ('quoted_qty' in field_names
             or 'available_for_sale' in field_names
-            or 'potential_qty' in field_names):
+            or 'potential_qty' in field_names
+            or replace_virtual):
             # If we are in a context with dates, only consider the quotations to be delivered at these dates
             # If no delivery date was entered, use the order date instead
             from_date = context.get('from_date', False)
@@ -162,34 +174,52 @@ class product_product(osv.osv):
                                 min_qty = stock_product_uom_qty
                     if min_qty:
                         bom_available[product] = min_qty
-
-            # Compute the quoted quantity
+            
+            # Initialize the fields before we actually compute the values
             for i in res.keys():
                 if 'quoted_qty' in field_names:
                     res[i]['quoted_qty'] = 0.0
-                if 'available_for_sale' in field_names:
+                if 'potential_qty' in field_names:
+                    res[i]['potential_qty'] = 0.0
+                if 'available_for_sale' in field_names or replace_virtual:
                     res[i]['available_for_sale'] = res[i]['virtual_available']
-
+            
+            # Compute the quoted quantity
             for (amount, prod_id, prod_uom) in results:
                 # Convert the amount in the reporting UoM
                 amount = uom_obj._compute_qty_obj(cr, uid, uoms_o[prod_uom], amount,
                         uoms_o[context.get('uom', False) or product2uom[prod_id]])
-
                 if 'quoted_qty' in field_names:
                     res[prod_id]['quoted_qty'] -= amount
-                if 'available_for_sale' in field_names:
+                if 'available_for_sale' in field_names or replace_virtual:
                     res[prod_id]['available_for_sale'] -= amount
-
+            
             # Compute the potential quantity
             for prod_id, qty_available in bom_available.iteritems():
                 if prod_id in res:
-                    if 'available_for_sale' in field_names:
+                    if 'available_for_sale' in field_names or replace_virtual:
                         res[prod_id]['available_for_sale'] += qty_available
                     if 'potential_qty' in field_names:
                         res[prod_id]['potential_qty'] += qty_available
-
+            
+            # If required by the context, replace the virtual available quantity with the quantity available for sale
+            if replace_virtual:
+                for i in res.keys():
+                    res[i]['virtual_available'] = res[i]['available_for_sale']
         return res
-
+ 
+    def __init__(self, pool, cr):
+        """Use the new function to compute the quantity available.
+        
+        Depending on the context, we may change the value of qty_available, but this field is not defined here.
+        So we must change the function that computes it. Doing it in __init__ is cleaner than copying and pasting
+        the field definition in _columns and should be compatible with future/customized versions.
+        """
+        s = super(product_product, self)
+        res = s.__init__(pool, cr)
+        self._columns['virtual_available']._fnct = self._columns['available_for_sale']._fnct
+        return res
+    
     _columns = {
         'available_for_sale': fields.function(
             _product_available, method=True, multi='qty_available_for_sale',
@@ -220,3 +250,4 @@ class product_product(osv.osv):
                  "Otherwise, this includes every Quotation."),
     }
 product_product()
+
