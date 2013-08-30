@@ -38,12 +38,12 @@
                 
 				<!-- XXX: does not work: there is no state on inventory lines / work only on Loic version mode -->
                 <!-- Change states when the button is available --> 
-                <xpath expr="/form//field/tree/button[@name='%(stock.action_view_stock_inventory_line_split)d']" position="attributes">
+                <!-- <xpath expr="/form//field/tree/button[@name='%(stock.action_view_stock_inventory_line_split)d']" position="attributes">
                     <attribute name="states">open</attribute>
                 </xpath>                
                 <xpath expr="/form//field/form/button[@name='%(stock.action_view_stock_inventory_line_split)d']" position="attributes">
                     <attribute name="states">open</attribute>
-                </xpath>                
+                </xpath> -->                
                 
                 <!-- #XXX change the attributes  instead and add the button -->
                 <!-- #XXX enlarge the group's colspan? -->
