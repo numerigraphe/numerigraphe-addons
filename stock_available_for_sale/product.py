@@ -29,11 +29,12 @@ class product_product(osv.osv):
     def _product_available(self, cr, uid, ids, field_names=None, arg=False, context=None):
         """Compute the quantities available for sale and quantities in Quotations
         
-        @param context: if the context 'virtual_is_available_for_sale' is True, then
+        @param context: 'virtual_is_available_for_sale': if this key is True, then
                         the value of virtual_available will be replaced with that of 
                         available_for_sale. This lets you change the basis for some
                         computations without changing too much business code.
                         See sale_stock.py for an example.
+                        'uom': id of the UoM the quantity will be reported in
         """
         if field_names is None:
             field_names = []
@@ -41,6 +42,10 @@ class product_product(osv.osv):
             context = {}
         # Does the context require us to replace the virtual available quantity with the quantity available for sale?
         replace_virtual = context.get('virtual_is_available_for_sale', False)
+        if replace_virtual:
+            # We still want the virtual stock to mean virtual stock *inside* this method (otherwise the results would be wrong, browse() would recurse endlessly)
+            context = context.copy()
+            del context['virtual_is_available_for_sale']
         
         # We need the virtual_available quantities in order to compute the quantities available for sale
         if ('available_for_sale' in field_names or replace_virtual) and not 'virtual_available' in field_names:
@@ -163,7 +168,8 @@ class product_product(osv.osv):
                 if bom_id:
                     min_qty = False
                     for final_product in bom_obj.browse(cr, uid, [bom_id], context=context):
-                        # XXX takes all the children into account, probably we should limit to the first level of BoM
+                        # FIXME takes all the children into account, probably we should limit to the first level of BoM
+                        # FIXME Convert the amount in the reporting UoM
                         for component in final_product.child_complete_ids:
                             stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
                             recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
