@@ -36,8 +36,6 @@ class product_product(osv.osv):
                         See sale_stock.py for an example.
                         'uom': id of the UoM the quantity will be reported in
         """
-        if field_names is None:
-            field_names = []
         if context is None:
             context = {}
         # Does the context require us to replace the virtual available quantity with the quantity available for sale?
@@ -47,6 +45,8 @@ class product_product(osv.osv):
             context = context.copy()
             del context['virtual_is_available_for_sale']
         
+        if field_names is None:
+            field_names = []
         # We need the virtual_available quantities in order to compute the quantities available for sale
         if ('available_for_sale' in field_names or replace_virtual) and not 'virtual_available' in field_names:
             field_names.append('virtual_available')
@@ -54,7 +54,9 @@ class product_product(osv.osv):
         # Compute the core quantities
         res = super(product_product, self)._product_available(
             cr, uid, ids, field_names=field_names, arg=arg, context=context)
-
+        
+        # XXX del context['uom'] here to avoid impossible conversions in BoMs, and then convert at the end ? 
+        
         # Compute the quantities quoted/potential/available for sale
         if ('quoted_qty' in field_names
             or 'available_for_sale' in field_names
@@ -138,7 +140,7 @@ class product_product(osv.osv):
                 "         product_uom",
                 (tuple(ids),) + date_args + shop_args)
             results = cr.fetchall()
-    
+            
             # Get the UoM resources we'll need for conversion
             # UoMs from the products
             uoms_o = {}
@@ -156,29 +158,6 @@ class product_product(osv.osv):
                 uoms = uom_obj.browse(cr, uid, list(set(uoms)), context=context)
             for o in uoms:
                 uoms_o[o.id] = o
-
-            # compute potential quantity from BoMs with components available
-            bom_obj = self.pool.get('mrp.bom')
-            uom_obj = self.pool.get('product.uom')
-            bom_available = {}
-            for product, uom in product2uom.iteritems():
-                # _bom_find() returns a single BoM id. We will not check any other BoM for this product
-                # uom is not used by the function, but needed to call her.
-                bom_id = bom_obj._bom_find(cr, uid, product, uom)
-                if bom_id:
-                    min_qty = False
-                    final_product = bom_obj.browse(cr, uid, [bom_id], context=context)[0]
-                    # FIXME Convert the amount in the reporting UoM
-                    for component in final_product.bom_lines:
-                        stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
-                        recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
-                        stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
-                        if min_qty is False:
-                            min_qty = stock_product_uom_qty
-                        elif stock_product_uom_qty < min_qty:
-                            min_qty = stock_product_uom_qty
-                    if min_qty:
-                        bom_available[product] = min_qty
             
             # Initialize the fields before we actually compute the values
             for i in res.keys():
@@ -199,13 +178,34 @@ class product_product(osv.osv):
                 if 'available_for_sale' in field_names or replace_virtual:
                     res[prod_id]['available_for_sale'] -= amount
             
-            # Compute the potential quantity
-            for prod_id, qty_available in bom_available.iteritems():
-                if prod_id in res:
+            # Compute the potential quantity from BoMs with components available
+            bom_obj = self.pool.get('mrp.bom')
+            bom_available = {}
+            for product, uom in product2uom.iteritems():
+                # _bom_find() returns a single BoM id. We will not check any other BoM for this product
+                # uom is not used by the function, but needed to call her.
+                bom_id = bom_obj._bom_find(cr, uid, product, uom)
+                if bom_id:
+                    min_qty = False
+                    final_product = bom_obj.browse(cr, uid, [bom_id], context=context)[0]
+                    for component in final_product.bom_lines:
+                        # qty available in BOM line's UoM
+                        # XXX use context['uom'] instead?
+                        stock_component_qty = uom_obj._compute_qty_obj(cr, uid,
+                            component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
+                        # qty we can produce with this component, in the BoM's UoM
+                        recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
+                        # Convert back to the product's default UoM
+                        # FIXME Convert to the context's UoM instead if defined
+                        stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
+                        if min_qty is False:
+                            min_qty = stock_product_uom_qty
+                        elif stock_product_uom_qty < min_qty:
+                            min_qty = stock_product_uom_qty
                     if 'available_for_sale' in field_names or replace_virtual:
-                        res[prod_id]['available_for_sale'] += qty_available
+                        res[prod_id]['available_for_sale'] += min_qty
                     if 'potential_qty' in field_names:
-                        res[prod_id]['potential_qty'] += qty_available
+                        res[prod_id]['potential_qty'] += min_qty
             
             # If required by the context, replace the virtual available quantity with the quantity available for sale
             if replace_virtual:
