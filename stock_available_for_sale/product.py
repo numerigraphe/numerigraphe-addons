@@ -167,17 +167,17 @@ class product_product(osv.osv):
                 bom_id = bom_obj._bom_find(cr, uid, product, uom)
                 if bom_id:
                     min_qty = False
-                    for final_product in bom_obj.browse(cr, uid, [bom_id], context=context):
-                        # FIXME takes all the children into account, probably we should limit to the first level of BoM
-                        # FIXME Convert the amount in the reporting UoM
-                        for component in final_product.child_complete_ids:
-                            stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
-                            recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
-                            stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
-                            if min_qty is False:
-                                min_qty = stock_product_uom_qty
-                            elif stock_product_uom_qty < min_qty:
-                                min_qty = stock_product_uom_qty
+                    final_product = bom_obj.browse(cr, uid, [bom_id], context=context)[0]
+                    # FIXME takes all the children into account, probably we should limit to the first level of BoM
+                    # FIXME Convert the amount in the reporting UoM
+                    for component in final_product.child_complete_ids:
+                        stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
+                        recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
+                        stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
+                        if min_qty is False:
+                            min_qty = stock_product_uom_qty
+                        elif stock_product_uom_qty < min_qty:
+                            min_qty = stock_product_uom_qty
                     if min_qty:
                         bom_available[product] = min_qty
             
