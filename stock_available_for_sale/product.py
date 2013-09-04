@@ -36,6 +36,7 @@ class product_product(osv.osv):
                         See sale_stock.py for an example.
                         'uom': id of the UoM the quantity will be reported in
         """
+        # Check the context
         if context is None:
             context = {}
         # Does the context require us to replace the virtual available quantity with the quantity available for sale?
@@ -44,6 +45,12 @@ class product_product(osv.osv):
             # We still want the virtual stock to mean virtual stock *inside* this method (otherwise the results would be wrong, browse() would recurse endlessly)
             context = context.copy()
             del context['virtual_is_available_for_sale']
+        # Prepare an alternative context without 'uom', to avoid cross-category conversions when reading the available stock of components
+        if 'uom' in context:
+            context_wo_uom = context.copy()
+            del context_wo_uom['uom']
+        else:
+            context_wo_uom = context
         
         if field_names is None:
             field_names = []
@@ -54,8 +61,6 @@ class product_product(osv.osv):
         # Compute the core quantities
         res = super(product_product, self)._product_available(
             cr, uid, ids, field_names=field_names, arg=arg, context=context)
-        
-        # XXX del context['uom'] here to avoid impossible conversions in BoMs, and then convert at the end ? 
         
         # Compute the quantities quoted/potential/available for sale
         if ('quoted_qty' in field_names
@@ -187,7 +192,8 @@ class product_product(osv.osv):
                 bom_id = bom_obj._bom_find(cr, uid, product, uom)
                 if bom_id:
                     min_qty = False
-                    final_product = bom_obj.browse(cr, uid, [bom_id], context=context)[0]
+                    # Browse ignoring the initial context's UoM to avoid cross-category conversions
+                    final_product = bom_obj.browse(cr, uid, [bom_id], context=context_wo_uom)[0]
                     for component in final_product.bom_lines:
                         # qty available in BOM line's UoM
                         # XXX use context['uom'] instead?
