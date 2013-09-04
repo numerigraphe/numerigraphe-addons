@@ -26,6 +26,7 @@
     'depends' : [
                  'sale', 'stock',  # FIXME in v7: depend upon 'sale_stock' instead
                  'sale_order_dates',
+                 'mrp',
                  ],
     'description': """
 This module computes and displays the quantities available for sale for Products in a given context.
