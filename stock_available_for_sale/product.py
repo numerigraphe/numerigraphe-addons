@@ -195,9 +195,10 @@ class product_product(osv.osv):
                             component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
                         # qty we can produce with this component, in the BoM's UoM
                         recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
-                        # Convert back to the product's default UoM
-                        # FIXME Convert to the context's UoM instead if defined
-                        stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
+                        # Convert back to the reporting default UoM
+                        stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid,
+                             final_product.product_uom, recipe_uom_qty,
+                             context.get('uom', False) and uoms_o[context['uom']] or final_product.product_id.uom_id)
                         if min_qty is False:
                             min_qty = stock_product_uom_qty
                         elif stock_product_uom_qty < min_qty:
