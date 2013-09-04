@@ -168,9 +168,8 @@ class product_product(osv.osv):
                 if bom_id:
                     min_qty = False
                     final_product = bom_obj.browse(cr, uid, [bom_id], context=context)[0]
-                    # FIXME takes all the children into account, probably we should limit to the first level of BoM
                     # FIXME Convert the amount in the reporting UoM
-                    for component in final_product.child_complete_ids:
+                    for component in final_product.bom_lines:
                         stock_component_qty = uom_obj._compute_qty_obj(cr, uid, component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
                         recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
                         stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid, final_product.product_uom, recipe_uom_qty, final_product.product_id.uom_id)
