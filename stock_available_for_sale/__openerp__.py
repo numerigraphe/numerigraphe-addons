@@ -24,10 +24,10 @@
     'author' : u'Numérigraphe SÀRL',
     'category' : 'Stock',
     'depends' : [
-                 'sale', 'stock',  # FIXME in v7: depend upon 'sale_stock' instead
-                 'sale_order_dates',
-                 'mrp',
-                 ],
+        'sale', 'stock',  # FIXME in v7: depend upon 'sale_stock' instead
+        'sale_order_dates',
+        'mrp',
+    ],
     'description': """
 This module computes and displays the quantities available for sale for Products in a given context.
 
@@ -40,7 +40,13 @@ When entering sale orders with this module installed, the salesperson gets warne
 is insufficient, instead of the virtual available quantity.
 For technical reasons, this later feature works only in v6.1 and later unless you patch the standard addons.""",
     'update_xml' : [
-                    'product_view.xml',
-                    ],
+        'product_view.xml',
+    ],
+    'test': [
+         'test/potential_qty.yml',
+         'test/quoted_qty.yml',
+         'test/uom_conversions.yml',
+         'test/virtual_is_available_for_sale.yml'
+     ],
     'license' : 'GPL-3',
 }
