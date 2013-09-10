@@ -1,0 +1,4 @@
+- TODO Find a product with a multi-component BoM and no Quotations
+- TODO Scrap all components stock and check that the potential is 0
+- TODO Receive one component and check that the potential is still 0 and 
+- TODO Receive all components and check that the potential is correct
