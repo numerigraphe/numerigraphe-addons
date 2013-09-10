@@ -1,0 +1,8 @@
+- Create a UoM in the category of PCE
+- XXX remove this in v7.0, the demo dataset includes a similar record
+- !record {model: product.uom, id: thousand}:
+    name: Thousand
+    factor: 0.001
+    rounding: 0.001
+    uom_type: bigger
+    category_id: product.product_uom_categ_unit
