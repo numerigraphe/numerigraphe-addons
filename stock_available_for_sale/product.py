@@ -200,7 +200,7 @@ class product_product(osv.osv):
                         stock_component_qty = uom_obj._compute_qty_obj(cr, uid,
                             component.product_id.uom_id, component.product_id.virtual_available, component.product_uom)
                         # qty we can produce with this component, in the BoM's UoM
-                        recipe_uom_qty = (stock_component_qty / component.product_qty) * final_product.product_qty
+                        recipe_uom_qty = (stock_component_qty // component.product_qty) * final_product.product_qty
                         # Convert back to the reporting default UoM
                         stock_product_uom_qty = uom_obj._compute_qty_obj(cr, uid,
                              final_product.product_uom, recipe_uom_qty,
