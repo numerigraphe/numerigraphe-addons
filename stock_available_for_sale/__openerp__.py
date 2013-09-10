@@ -42,11 +42,13 @@ For technical reasons, this later feature works only in v6.1 and later unless yo
     'update_xml' : [
         'product_view.xml',
     ],
+    'demo': [
+        'product_demo.yml',
+    ],
     'test': [
-         'test/potential_qty.yml',
-         'test/quoted_qty.yml',
-         'test/uom_conversions.yml',
-         'test/virtual_is_available_for_sale.yml'
+        'test/potential_qty.yml',
+        'test/quoted_qty.yml',
+        'test/available_for_sale.yml'
      ],
     'license' : 'GPL-3',
 }

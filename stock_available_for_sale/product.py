@@ -186,10 +186,10 @@ class product_product(osv.osv):
             # Compute the potential quantity from BoMs with components available
             bom_obj = self.pool.get('mrp.bom')
             bom_available = {}
-            for product, uom in product2uom.iteritems():
+            for product_id, uom in product2uom.iteritems():
                 # _bom_find() returns a single BoM id. We will not check any other BoM for this product
                 # uom is not used by the function, but needed to call her.
-                bom_id = bom_obj._bom_find(cr, uid, product, uom)
+                bom_id = bom_obj._bom_find(cr, uid, product_id, uom)
                 if bom_id:
                     min_qty = False
                     # Browse ignoring the initial context's UoM to avoid cross-category conversions
@@ -210,9 +210,9 @@ class product_product(osv.osv):
                         elif stock_product_uom_qty < min_qty:
                             min_qty = stock_product_uom_qty
                     if 'available_for_sale' in field_names or replace_virtual:
-                        res[prod_id]['available_for_sale'] += min_qty
+                        res[product_id]['available_for_sale'] += min_qty
                     if 'potential_qty' in field_names:
-                        res[prod_id]['potential_qty'] += min_qty
+                        res[product_id]['potential_qty'] += min_qty
             
             # If required by the context, replace the virtual available quantity with the quantity available for sale
             if replace_virtual:
