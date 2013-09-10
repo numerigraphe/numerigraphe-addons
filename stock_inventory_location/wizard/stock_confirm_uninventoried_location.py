@@ -86,7 +86,7 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
                 for line in lines:
                     inventory_lines_obj.create(cr, uid, line, context=context)
 
-        inventory_obj.action_confirm(cr, uid, ids, context=context)
+        inventory_obj.action_confirm(cr, uid, inventory_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
 stock_inventory_uninventoried_location()
