@@ -81,8 +81,9 @@ class StockMoveConstraint(osv.osv):
             if inv_ids:
                 # Make a message string with the names of the Inventories
                 inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
-                msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
-                                 for i in inventories])
+                tab_inventories = {i.id: i.name for i in inventories}
+                msg = "\n".join([_("- %s (ID %d)") % (name, i)
+                                for (i, name) in tab_inventories.iteritems()])
                 raise orm.except_orm(
                     _('Wrong Stock Moves'),
                     _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
@@ -130,8 +131,9 @@ class StockMoveConstraint(osv.osv):
         if inv_ids:
             # Make a message string with the names of the Inventories
             inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
-            msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
-                             for i in inventories])
+            tab_inventories = {i.id: i.name for i in inventories}
+            msg = "\n".join([_("- %s (ID %d)") % (name, i)
+                            for (i, name) in tab_inventories.iteritems()])
             raise orm.except_orm(
                 _('Wrong Stock Moves'),
                 _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
