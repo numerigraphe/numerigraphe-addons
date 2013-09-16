@@ -73,15 +73,23 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
         for inventory in inventory_obj.browse(cr, uid, inventory_ids, context=context):
             if inventory.exhaustive:
-                location_ids = [i.id for i in inventory.location_ids]
+                # get the locations that have not been entered into any line
+                location_ids = [i for i in self.default_locations(cr, uid, context=context)]
                 # search for children
                 location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids),
                                                                                 ('usage', '=', 'internal')], context=context)
-                lines = inventory_obj._fill_location_lines(cr, uid,
-                                                           inventory.id,
-                                                           location_ids,
-                                                           True,
-                                                           context=context)
+                # _fill_location_lines() may raise an exception if the locaiton is empty
+                lines = []
+                try:
+                    lines = inventory_obj._fill_location_lines(cr, uid,
+                                                               inventory.id,
+                                                               location_ids,
+                                                               True,
+                                                               context=context)
+                except osv.except_osv as e:
+                    pass
+                
+                # create inventory lines with zero qty
                 inventory_lines_obj = self.pool.get('stock.inventory.line')
                 for line in lines:
                     inventory_lines_obj.create(cr, uid, line, context=context)
