@@ -101,7 +101,6 @@ class PurchaseOrder (osv.osv):
         return orders_ok or {
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.budget.wizard',
-            'name': _("Budget warning"),
             'view_type': 'form',
             'view_mode': 'form',
             'target': 'new',

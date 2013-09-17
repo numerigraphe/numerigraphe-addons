@@ -19,15 +19,19 @@
 ##############################################################################
 
 {
-    'name' : "Warn when a Purchase Order goes beyond a Budget line",
-    'version' : '1.0',
-    'author' : u'Numérigraphe SARL',
+    'name': "Warn when a Purchase Order goes beyond a Budget line",
+    'version': '1.0',
+    'author': u'Numérigraphe SARL',
     'category': 'Generic Modules/Accounting',
     'description': '''This will display a warning when validating a purchase order if the remaining budget from a Budget Line is not sufficient to pay the expected invoice.''',
     'depends' : ['account_budget', 'purchase'],
-    'update_xml' : [
-                    'purchase_workflow.xml',
-                    'purchase_view.xml',
-                    'wizard/purchase_budget_view.xml'
-                    ]
+    'data': [
+        'purchase_workflow.xml',
+        'purchase_view.xml',
+        'wizard/purchase_budget_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    'test': [
+        # FIXME
+    ]
 }

@@ -6,7 +6,7 @@
             <field name="model">purchase.budget.wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Budget warning">
                     <label
                         string="The following Budget Lines will be exhausted if you confirm the Purchase Order: you may have dificulties paying the Supplier Invoice."
                         colspan="4" />
