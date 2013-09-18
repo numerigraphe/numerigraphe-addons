@@ -57,6 +57,7 @@ For an exhaustive Inventory:
     # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
     _defaults = {
         'state': lambda *a: 'draft',
+        'exhaustive': lambda *a: False,
         }
 
     def _check_location_free_from_inventories(self, cr, uid, ids):
