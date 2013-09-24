@@ -75,11 +75,13 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
             if inventory.exhaustive:
                 location_ids = [i for i in self.default_locations(cr, uid, context=context)]
                 # search for children
-                location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids),
-                                                                                ('usage', '=', 'internal')], context=context)
+                if location_ids:
+                    location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids),
+                                                                                    ('usage', '=', 'internal')], context=context)
                 # get stock inventory lines
                 lines = []
                 try:
+                    # create inventory lines with zero qty
                     lines = inventory_obj._fill_location_lines(cr, uid,
                                                                inventory.id,
                                                                location_ids,
@@ -87,7 +89,6 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
                                                                context=context)
                 except osv.except_osv as e:
                     pass
-                # create inventory lines with zero qty
 
                 inventory_lines_obj = self.pool.get('stock.inventory.line')
                 for line in lines:

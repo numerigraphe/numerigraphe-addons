@@ -15,30 +15,30 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:134
 #: constraint:stock.move:0
+#. module: stock_inventory_location
 #, python-format
 msgid "A Physical Inventory is being conducted at this location"
 msgstr "Un inventaire est déjà en cours à cet emplacement"
 
-#. module: stock_inventory_location
 #: model:ir.model,name:stock_inventory_location.model_stock_inventory_uninventoried_locations
+#. module: stock_inventory_location
 msgid "Confirm the uninventoried Locations"
 msgstr "Confirmez les emplacements non-inventoriés"
 
-#. module: stock_inventory_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "Cancel"
 msgstr "Annuler"
 
-#. module: stock_inventory_location
 #: view:stock.inventory:0
+#. module: stock_inventory_location
 msgid "Cancel Inventory"
 msgstr "Annuler l'inventaire"
 
-#. module: stock_inventory_location
 #: help:stock.inventory,exhaustive:0
+#. module: stock_inventory_location
 msgid "Check the box if you are conducting an exhaustive Inventory.\n"
 "Leave the box unchecked if you are conducting a standard Inventory (partial inventory for example).\n"
 "For an exhaustive Inventory:\n"
@@ -56,133 +56,132 @@ msgstr "Cochez la case si vous effectuez un inventaire exhaustif.\n"
 " - si certains emplacements sont absent des lignes d'inventaire, OpenERP vous en avertit lors de la confirmation de l'inventaire\n"
 " - toutes les marchandises qui ne sont pas dans les lignes d'inventaire sont considérées comme perdues, et sont supprimées lors de la confirmation de l'inventaire"
 
-#. module: stock_inventory_location
 #: view:stock.inventory:0
+#. module: stock_inventory_location
 msgid "Confirm Inventory"
 msgstr "Confirmer l'inventaire"
 
-#. module: stock_inventory_location
 #: model:ir.actions.act_window,name:stock_inventory_location.action_view_stock_inventory_uninventoried_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "Confirm uninventoried locations"
 msgstr "Confirmez les emplacements non-inventoriés"
 
-#. module: stock_inventory_location
 #: model:ir.model,name:stock_inventory_location.model_stock_location
+#. module: stock_inventory_location
 msgid "Emplacement"
 msgstr "Emplacement"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:55
+#. module: stock_inventory_location
 #, python-format
 msgid "Error !"
 msgstr "Erreur !"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:133
 #: code:addons/stock_inventory_location/stock_inventory_location.py:184
+#. module: stock_inventory_location
 #, python-format
 msgid "Error! Location on inventory"
 msgstr "Erreur! emplacement en inventaire"
 
-#. module: stock_inventory_location
 #: view:stock.inventory:0
 #: field:stock.inventory,exhaustive:0
+#. module: stock_inventory_location
 msgid "Exhaustive"
 msgstr "Exhaustif"
 
-#. module: stock_inventory_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "If you confirm the Inventory, these Locations will be considered empty and their content will be purged."
 msgstr "Si vous confirmez l'inventaire, ces emplacements seront considérés comme vides et leur contenu sera supprimé."
 
-#. module: stock_inventory_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "It could either mean that the Locations are empty, or that the Inventory is not yet complete."
 msgstr "Cela peut vouloir dire soit que l'inventaire n'est pas terminé, soit que ces emplacements sont effectivement vides."
 
-
-#. module: stock_inventory_location
 #: view:stock.inventory:0
 #: field:stock.inventory,location_ids:0
+#. module: stock_inventory_location
 msgid "Locations"
 msgstr "Emplacements"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:59
+#. module: stock_inventory_location
 #, python-format
 msgid "No locations found for the inventory."
 msgstr "Pas d'emplacement trouvé pour cet inventaire."
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:185
+#. module: stock_inventory_location
 #, python-format
 msgid "One or more locations are inventoried :\n"
 "%s"
 msgstr "Un ou plusieurs emplacements sont en inventaire :\n"
 "%s"
 
-#. module: stock_inventory_location
 #: view:stock.inventory:0
+#. module: stock_inventory_location
 msgid "Open Inventory"
 msgstr "Ouvrir l'inventaire"
 
-#. module: stock_inventory_location
 #: constraint:stock.inventory:0
+#. module: stock_inventory_location
 msgid "Other Physical inventories are being conducted using the same Locations."
 msgstr "D'autres inventaires contiennent les mêmes emplacements"
 
-#. module: stock_inventory_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "Purge contents and confirm Inventory"
 msgstr "Supprimer le contenu et confirmer l'inventaire"
 
-#. module: stock_inventory_location
 #: view:stock.inventory:0
+#. module: stock_inventory_location
 msgid "Split inventory lines"
 msgstr "Diviser les lignes d'inventaire"
 
-#. module: stock_inventory_location
 #: view:stock.inventory.uninventoried.locations:0
+#. module: stock_inventory_location
 msgid "The following Stock Locations are part of the current Physical Inventory, but not Inventory Line has been recorded for them."
 msgstr "Les emplacements suivants font partie de l'inventaire en cours, mais aucune ligne d'inventaire les concernant n'a été enregistrée."
 
-#. module: stock_inventory_location
 #: help:stock.inventory,location_ids:0
+#. module: stock_inventory_location
 msgid "This is the list of the Stock Locations that you want to count the goods in.\n"
 "Only these Locations can be entered in the Inventory Lines.\n"
 "If some of them have not been entered in the Inventory Lines, OpenERP will warn you when you confirm the Inventory."
-msgstr "Ceci est la liste des emplacements dont vous voulez compteer la marchandise.\n"
+msgstr "Ceci est la liste des emplacements dont vous voulez compter la marchandise.\n"
 "Seuls ces emplacements peuvent être enregistrés dans les lignes d'inventaire.\n"
 "Si certains ne sont enregistrés sur aucune ligne d'inventaire, OpenERP vous avertit lors de la confirmation de l'inventaire."
 
-#. module: stock_inventory_location
 #: field:stock.inventory.uninventoried.locations,location_ids:0
+#. module: stock_inventory_location
 msgid "Uninventoried location"
 msgstr "Emplacements non inventoriés"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:59
+#. module: stock_inventory_location
 #, python-format
 msgid "Warning !"
 msgstr "Attention !"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:111
+#. module: stock_inventory_location
 #, python-format
 msgid "Warning: Wrong location"
 msgstr "Attention: emplacement incorrect"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:112
+#. module: stock_inventory_location
 #, python-format
 msgid "You cannot add this location to inventory line.\n"
 "You must add this location on the locations list"
 msgstr "Vous ne pouvez pas ajouter cet emplacement.\n"
 "Il ne fait pas partie de la liste des emplacements à inventorier"
 
-#. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:55
+#. module: stock_inventory_location
 #, python-format
 msgid "the inventory must be in \"Open\" state."
 msgstr "l'inventaire doit etre \"Ouvert\"."

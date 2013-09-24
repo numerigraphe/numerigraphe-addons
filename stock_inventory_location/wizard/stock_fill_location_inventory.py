@@ -71,6 +71,9 @@ class stock_fill_location_inventory(osv.osv_memory):
 
         location_ids = self.pool.get('stock.inventory').read(cr, uid, [context.get('active_id')], ['location_ids'])[0]
 
+        if not location_ids['location_ids']:
+            raise osv.except_osv(_('Error : Empty location !'), _('No location to import.\nYou must add a location on the locations list.'))
+
         if fill_inventory.recursive:
             location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']),
                                                                             ('usage', '=', 'internal')], context=context)

@@ -52,8 +52,13 @@ For an exhaustive Inventory:
 
     def action_open(self, cr, uid, ids, context=None):
         """Open the inventory: open all locations, import and print inventory sheet become possible"""
+        # verify if exhaustive inventory have locations before open inventory
+        for inventory in self.browse(cr, uid, ids, context=None):
+            if inventory.exhaustive:
+                if not inventory.location_ids:
+                    raise osv.except_osv(_('Warning !'), _('Location missing for this inventory.'))
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)
-    
+
     # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
     _defaults = {
         'state': lambda *a: 'draft',
@@ -108,6 +113,79 @@ For an exhaustive Inventory:
                     'context': context,
                     'nodestroy': True,
                     }
+
+    # XXX : get from stock.py v6.0 patch. Waiting for integration on standard by openerp ... 
+    def _fill_location_lines(self, cr, uid, inventory_id, location_ids, set_stock_zero, context=None):
+        """ To Import stock inventory according to products available in the selected locations.
+        @param self: The object pointer.
+        @param cr: A database cursor
+        @param uid: ID of the user currently logged in
+        @param location_ids: the location ID or list of location IDs if we want more than one
+        @param inventory_id: the inventory ID
+        @param set_stock_zero: indicate if all the lines will be imported with zero quantity
+        @param context: A standard dictionary
+        @return:
+        """
+        inventory_line_obj = self.pool.get('stock.inventory.line')
+        move_obj = self.pool.get('stock.move')
+        uom_obj = self.pool.get('product.uom')
+        res = []
+        flag = False
+        for location in location_ids:
+            datas = {}
+            move_ids = move_obj.search(cr, uid, ['|', ('location_dest_id', '=', location),
+                                                      ('location_id', '=', location),
+                                                      ('state', '=', 'done')], context=context)
+            for move in move_obj.browse(cr, uid, move_ids, context=context):
+                if move.location_dest_id.id == move.location_id.id:
+                    continue
+                lot_id = move.prodlot_id.id
+                prod_id = move.product_id.id
+                if move.location_dest_id.id == location:
+                    qty = uom_obj._compute_qty(cr, uid, move.product_uom.id, move.product_qty, move.product_id.uom_id.id)
+                else:
+                    qty = -uom_obj._compute_qty(cr, uid, move.product_uom.id, move.product_qty, move.product_id.uom_id.id)
+                if datas.get((prod_id, lot_id)):
+                    qty = qty + datas[(prod_id, lot_id)]['product_qty']
+
+                datas[(prod_id, lot_id)] = {'product_id': prod_id,
+                                            'location_id': location,
+                                            # Floating point sum could introduce some tiny rounding errors. The uom are the same on input and output to use api for rounding.
+                                            'product_qty': uom_obj._compute_qty_obj(cr, uid, move.product_id.uom_id, qty, move.product_id.uom_id),
+                                            'product_uom': move.product_id.uom_id.id,
+                                            'prod_lot_id': lot_id,
+                                            'default_code': move.product_id.default_code,
+                                            'prodlot_name': move.prodlot_id.name}
+            if datas:
+                flag = True
+                res.append(datas)
+        if not flag:
+            raise osv.except_osv(_('Warning !'), _('No product in this location.'))
+
+        stock_moves = []
+        for stock_move in res:
+            prod_lots = sorted(stock_move, key=lambda k: (stock_move[k]['default_code'], stock_move[k]['prodlot_name']))
+            for prod_lot in prod_lots:
+                stock_move_details = stock_move.get(prod_lot)
+
+                if stock_move_details['product_qty'] == 0:
+                    continue  # ignore product if stock equal 0
+
+                stock_move_details.update({'inventory_id': inventory_id})
+
+                if set_stock_zero:
+                    stock_move_details.update({'product_qty': 0})
+
+                domain = [(field, '=', stock_move_details[field])
+                           for field in ['location_id',
+                                         'product_id',
+                                         'prod_lot_id',
+                                         'inventory_id']
+                          ]
+                line_ids = inventory_line_obj.search(cr, uid, domain, context=context)
+                if not line_ids:
+                    stock_moves.append(stock_move_details)
+        return stock_moves
 
 StockInventory()
 
@@ -185,7 +263,7 @@ class StockMove(osv.osv):
 
     def _check_open_inventory_location(self, cr, uid, ids, context=None):
         """ Check if location is not in opened inventory
-        Don't check on partial inventory (checkbox "Complete" not checked).
+        Don't check on partial inventory (checkbox "Exhaustive" not checked).
         """
         message = ""
         inventory_obj = self.pool.get('stock.inventory')
