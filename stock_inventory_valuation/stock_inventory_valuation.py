@@ -23,24 +23,69 @@ import decimal_precision as dp
 from tools.translate import _
 
 class stock_inventory_valuation(osv.osv):
-    """ Save products informations (quantity, standard price) when inventory is confirmed.
-    """
+    """Save products informations (quantity, standard price) when inventory is confirmed."""
     _name = 'stock.inventory.valuation'
     _description = 'Stock inventory valuation'
-
+    def _get_total_valuation(self, cr, uid, ids, fields, arg, context=None):
+        valuations = self.browse(cr, uid, ids, context=context)
+        return {v.id: v.standard_price * v.product_qty for v in valuations}
+    
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        """Cancel the client action if there is no valuation to display"""
+        if context is None:
+            context = {}
+        id = context.get('active_id', False)
+        model = context.get('active_model')
+        if id and model == 'stock.inventory':
+            inventory = self.pool.get(model).browse(cr, uid, id, context=context)
+            if not inventory.valuation_ids:
+                raise osv.except_osv(_('No valuation'), _('No valuation was recorded for this Physical Inventory.'))
+        return super(stock_inventory_valuation, self).fields_view_get(
+            cr, uid, view_id=view_id, view_type=view_type, context=context, toolbar=toolbar, submenu=submenu)
+    
     _columns = {
         'name': fields.char('name', size=64, required=True, select=True),
-        'inventory_id': fields.many2one('stock.inventory', 'Inventory', ondelete='cascade', readonly=True),
-        'product_id': fields.many2one('product.product', 'Product', ondelete='restrict', readonly=True),
-        'product_qty': fields.float('Inventory Quantity', digits_compute=dp.get_precision('Product UoM')),
-        'product_uom': fields.many2one('product.uom', 'Unit of Measure', readonly=True, help="unit of measure of product."),
-        'standard_price': fields.float('Cost Price', required=True, digits_compute=dp.get_precision('Product Price'), help="Product's cost for accounting stock valuation. It is the base price for the supplier price."),
+        'inventory_id': fields.many2one('stock.inventory', 'Inventory',
+                                        ondelete='cascade', readonly=True),
+        'date': fields.related('inventory_id', 'date',
+                                       relation='stock.inventory', type='date',
+                                       readonly=True, store=True,
+                                       string='Date'),
+        'product_id': fields.many2one('product.product', 'Product', ondelete='restrict',
+                                      readonly=True),
+        'category_id':  fields.related('product_id', 'categ_id',
+                                       relation='product.category', type='many2one',
+                                       readonly=True, store=True,
+                                       string='Product Category'),
+        'label_ids':  fields.related('product_id', 'label_ids',
+                                       relation='product.label', type='many2many',
+                                       readonly=True,
+                                       string='Product Labels'),
+        'product_qty': fields.float('Inventory Quantity',
+                                    digits_compute=dp.get_precision('Product UoM'),
+                                    readonly=True),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure',
+                                       readonly=True,
+                                       help="unit of measure of product."),
+        # XXX avg is pretty lame since it's not weighted by quantity
+        'standard_price': fields.float('Unit Price',
+                                       digits_compute=dp.get_precision('Product Price'),
+                                       group_operator='min',
+                                       help="Unit Cost Price of the Product at the date when the Inventory was confirmed."),
+        # XXX should store that to get totals in the GUI
+        'total_valuation': fields.function(_get_total_valuation, method=True,
+            type="float", string='Total Valuation',
+            digits_compute=dp.get_precision('Account'),
+            store={'stock.inventory.valuation': (
+                lambda self, cr, uid, ids, context=None: ids,
+                ['standard_price'], 10), },
+            readonly=True),
     }
 
 stock_inventory_valuation()
 
 class stock_inventory(osv.osv):
-    """ This class make link between stock_inventory object and stock_inventory_valuation object """
+    """Add valuation to the physical inventory"""
     _inherit = 'stock.inventory'
     _columns = {
         'valuation_ids': fields.one2many('stock.inventory.valuation', 'inventory_id', 'Product Valuations',
@@ -105,5 +150,4 @@ class stock_inventory(osv.osv):
         default = default and default.copy() or {}
         default['valuation_ids'] = []
         return super(stock_inventory, self).copy_data(cr, uid, id, default=default, context=context)
-    
 stock_inventory()

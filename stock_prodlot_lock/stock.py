@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
@@ -85,7 +85,7 @@ class stock_production_lot(osv.osv):
         values = super(stock_production_lot, self).write(cr, uid, ids, vals, context=context)
         if 'locked' in vals:
             msg = vals['locked'] and _('Lot was locked') or _('Lot was unlocked')
-            if type(ids) != list:
+            if not isinstance(ids, list):
                 ids = [ids]
             for id in ids:
                 self.pool.get("stock.production.lot.revision").create(cr, uid,

@@ -1,0 +1,49 @@
+
+- The stock available for sale should be the virtual stock - quoted quantity + potential
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check available_for_sale"}:
+    - available_for_sale == virtual_available - quoted_qty + potential_qty
+- Ask for the virtual stock to mean the stock available for sale
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check virtual_available", context: "{'virtual_is_available_for_sale': True}"}:
+    - virtual_available == available_for_sale
+
+- Enter a Quotation
+- !record {model: sale.order, id: order1}:
+    order_line:
+      - name: Quotation for BoM
+        product_uom: product.product_uom_unit
+        product_uom_qty: 472.0
+        state: draft
+        product_id: product.product_product_cpu_gen
+    partner_id: base.res_partner_agrolait
+    partner_invoice_id: base.res_partner_address_8
+    partner_order_id: base.res_partner_address_8
+    partner_shipping_id: base.res_partner_address_8
+    pricelist_id: product.list0
+    shop_id: sale.shop
+- Check again
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check available_for_sale"}:
+    - available_for_sale == virtual_available - quoted_qty + potential_qty
+- Ask for the virtual stock to mean the stock available for sale
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check virtual_available", context: "{'virtual_is_available_for_sale': True}"}:
+    - virtual_available == available_for_sale
+
+- Receive all the components
+- !python {model: mrp.bom}: |
+    bom = self.browse(cr, uid, [ref('mrp.mrp_bom_0')])[0]
+    initial_qty = bom.product_id.potential_qty
+    for component in bom.bom_lines:
+      self.pool.get('stock.move').create(cr, uid, {
+        'name': 'Receive all components',
+        'product_id': component.product_id.id,
+        'product_qty': 28.0,
+        'product_uom': ref('product.product_uom_unit'),
+        'location_id': ref('stock.stock_location_suppliers'),
+        'location_dest_id': ref('stock.stock_location_stock'),
+        'state': 'done',
+        })
+- Check again
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check available_for_sale"}:
+    - available_for_sale == virtual_available - quoted_qty + potential_qty
+- Ask for the virtual stock to mean the stock available for sale
+- !assert {model: product.product, id: product.product_product_cpu_gen, string: "Check virtual_available", context: "{'virtual_is_available_for_sale': True}"}:
+    - virtual_available == available_for_sale

@@ -10,7 +10,7 @@
             <field name="field_parent">inventory_ids</field>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="replace">
-                    <field name="complete_name" />
+                    <field name="complete_name"/>
                 </xpath>
                 <xpath expr="//field[@name='state']" position="after">
                     <field name="confirmed_rate" widget="progressbar" />

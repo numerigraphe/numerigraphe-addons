@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2009 Numérigraphe SARL.
@@ -29,5 +29,5 @@
     'update_xml': ['stock_view.xml'],
     'description': """Adds a new field to the packings to let users key in the effective weight of deliveries.""",
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
 

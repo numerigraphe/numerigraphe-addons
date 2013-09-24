@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2009 Numérigraphe SARL.
@@ -92,4 +92,4 @@ class sale_order_line(osv.osv):
         ),
     }
 sale_order_line()
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

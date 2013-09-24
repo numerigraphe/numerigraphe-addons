@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-06-19 13:23+0000\n"
-"PO-Revision-Date: 2013-06-19 13:23+0000\n"
+"POT-Creation-Date: 2013-09-24 09:37+0000\n"
+"PO-Revision-Date: 2013-09-24 09:37+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_inventory_valuation
-#: field:stock.inventory.valuation,standard_price:0
-msgid "Cost Price"
-msgstr "Prix standard"
+#: field:stock.inventory.valuation,date:0
+msgid "Date"
+msgstr "Date"
 
 #. module: stock_inventory_valuation
 #: view:stock.inventory.valuation:0
@@ -26,16 +26,12 @@ msgid "Details"
 msgstr "Détails"
 
 #. module: stock_inventory_valuation
-#: constraint:stock.inventory:0
-msgid "Error! You can not create recursive inventories."
-msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
+#: view:stock.inventory.valuation:0
+msgid "Group By..."
+msgstr "Grouper par..."
 
 #. module: stock_inventory_valuation
-#: model:ir.model,name:stock_inventory_valuation.model_stock_inventory
-msgid "Gestion des stocks"
-msgstr "Gestion des stocks"
-
-#. module: stock_inventory_valuation
+#: view:stock.inventory.valuation:0
 #: field:stock.inventory.valuation,inventory_id:0
 msgid "Inventory"
 msgstr "Inventaire"
@@ -46,9 +42,42 @@ msgid "Inventory Quantity"
 msgstr "Quantité"
 
 #. module: stock_inventory_valuation
+#: view:stock.inventory.valuation:0
+msgid "Inventory Valuation"
+msgstr "Valorisation d'inventaire"
+
+#. module: stock_inventory_valuation
+#: view:stock.inventory.valuation:0
+msgid "Labels"
+msgstr "Labels"
+
+#. module: stock_inventory_valuation
+#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:42
+#, python-format
+msgid "No valuation"
+msgstr "Aucune valorisation"
+
+#. module: stock_inventory_valuation
+#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:42
+#, python-format
+msgid "No valuation was recorded for this Physical Inventory."
+msgstr "Aucune valorisation n'a été enregistrée pour cet inventaire pĥysique."
+
+#. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,product_id:0
 msgid "Product"
 msgstr "Produit"
+
+#. module: stock_inventory_valuation
+#: view:stock.inventory.valuation:0
+#: field:stock.inventory.valuation,category_id:0
+msgid "Product Category"
+msgstr "Catégorie de produit"
+
+#. module: stock_inventory_valuation
+#: field:stock.inventory.valuation,label_ids:0
+msgid "Product Labels"
+msgstr "Labels produit"
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory,valuation_ids:0
@@ -56,15 +85,10 @@ msgid "Product Valuations"
 msgstr "Produits valorisés"
 
 #. module: stock_inventory_valuation
-#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:81
+#: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:134
 #, python-format
 msgid "Product valuation for '%s' is done"
 msgstr "La valorisation de \"%s\" est terminée."
-
-#. module: stock_inventory_valuation
-#: help:stock.inventory.valuation,standard_price:0
-msgid "Product's cost for accounting stock valuation. It is the base price for the supplier price."
-msgstr "Coût du produit comptable en stock. Il s'agit du prix de base pour le tarif founisseur."
 
 #. module: stock_inventory_valuation
 #: model:ir.model,name:stock_inventory_valuation.model_stock_inventory_valuation
@@ -72,14 +96,30 @@ msgid "Stock inventory valuation"
 msgstr "Valorisation du stock"
 
 #. module: stock_inventory_valuation
+#: field:stock.inventory.valuation,total_valuation:0
+msgid "Total Valuation"
+msgstr "Valorisation totale"
+
+#. module: stock_inventory_valuation
+#: help:stock.inventory.valuation,standard_price:0
+msgid "Unit Cost Price of the Product at the date when the Inventory was confirmed."
+msgstr "Prix de revient du produit à la date à laquelle l'inventaire a été confirmé."
+
+#. module: stock_inventory_valuation
+#: field:stock.inventory.valuation,standard_price:0
+msgid "Unit Price"
+msgstr "Unit Price"
+
+#. module: stock_inventory_valuation
+#: view:stock.inventory.valuation:0
 #: field:stock.inventory.valuation,product_uom:0
 msgid "Unit of Measure"
 msgstr "Unité de mesure"
 
 #. module: stock_inventory_valuation
-#: view:stock.inventory:0
-msgid "Valuation of inventory"
-msgstr "Valorisation de l'inventaire"
+#: model:ir.actions.act_window,name:stock_inventory_valuation.action_inventory_valuation
+msgid "Valuation"
+msgstr "Valorisation"
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,name:0

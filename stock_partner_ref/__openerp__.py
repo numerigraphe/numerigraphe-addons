@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
@@ -42,4 +42,4 @@ It will also add the Partner's reference on any Product list when a Partner is i
 }
 
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
