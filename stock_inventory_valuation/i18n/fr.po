@@ -35,6 +35,7 @@ msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
 msgid "Gestion des stocks"
 msgstr "Gestion des stocks"
 
+
 #. module: stock_inventory_valuation
 #: view:stock.inventory.valuation:0
 #: field:stock.inventory.valuation,inventory_id:0
@@ -60,7 +61,8 @@ msgstr "Etiquettes"
 #: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:42
 #, python-format
 msgid "No valuation"
-msgstr "Pas de valorisation"
+msgstr "Aucune valorisation"
+
 
 #. module: stock_inventory_valuation
 #: code:addons/stock_inventory_valuation/stock_inventory_valuation.py:42
@@ -73,6 +75,7 @@ msgstr "Pas de valorisation enregistrée pour cet inventaire physique."
 msgid "Other Physical inventories are being conducted using the same Locations."
 msgstr "Erreur: certains emplacements sont déjà dans un autre inventaire."
 
+
 #. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,product_id:0
 msgid "Product"
@@ -83,6 +86,11 @@ msgstr "Produit"
 #: field:stock.inventory.valuation,category_id:0
 msgid "Product Category"
 msgstr "Catégorie de produit"
+
+#. module: stock_inventory_valuation
+#: field:stock.inventory.valuation,label_ids:0
+msgid "Product Labels"
+msgstr "Labels produit"
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory,valuation_ids:0
@@ -108,12 +116,14 @@ msgstr "Valorisation totale"
 #. module: stock_inventory_valuation
 #: help:stock.inventory.valuation,standard_price:0
 msgid "Unit Cost Price of the Product at the date when the Inventory was confirmed."
-msgstr "Prix ​​unitaire du produit à la date de confirmation de l'inventaire."
+msgstr "Prix de revient du produit à la date à laquelle l'inventaire a été confirmé."
+
 
 #. module: stock_inventory_valuation
 #: field:stock.inventory.valuation,standard_price:0
 msgid "Unit Price"
 msgstr "Prix unitaire"
+
 
 #. module: stock_inventory_valuation
 #: view:stock.inventory.valuation:0
