@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenERP Server 6.0.4\n"
 "Report-Msgid-Bugs-To: support@openerp.com\n"
-"POT-Creation-Date: 2013-06-11 13:20+0000\n"
-"PO-Revision-Date: 2013-06-11 13:20+0000\n"
+"POT-Creation-Date: 2013-09-25 13:34+0000\n"
+"PO-Revision-Date: 2013-09-25 13:34+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,13 +16,55 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_inventory_date_constraint
-#: code:addons/stock_inventory_date_constraint/stock.py:126
+#: code:addons/stock_inventory_date_constraint/stock.py:85
+#: code:addons/stock_inventory_date_constraint/stock.py:135
 #, python-format
 msgid "- %s (ID %d)"
 msgstr "- %s (Id. %d)"
 
 #. module: stock_inventory_date_constraint
-#: code:addons/stock_inventory_date_constraint/stock.py:130
+#: constraint:stock.move:0
+msgid "A Physical Inventory is being conducted at this location"
+msgstr "Un inventaire est déjà en cours à cet emplacement"
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.inventory:0
+msgid "Error! You can not create recursive inventories."
+msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.inventory.line:0
+msgid "Error: duplicates lines"
+msgstr "Erreur: lignes en double"
+
+#. module: stock_inventory_date_constraint
+#: model:ir.model,name:stock_inventory_date_constraint.model_stock_inventory
+msgid "Gestion des stocks"
+msgstr "Gestion des stocks"
+
+#. module: stock_inventory_date_constraint
+#: model:ir.model,name:stock_inventory_date_constraint.model_stock_inventory_line
+msgid "Ligne d'inventaire"
+msgstr "Ligne d'inventaire"
+
+#. module: stock_inventory_date_constraint
+#: model:ir.model,name:stock_inventory_date_constraint.model_stock_move
+msgid "Mouvement de stock"
+msgstr "Mouvement de stock"
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.move:0
+msgid "One or more lots are awaiting quality control and cannot be moved."
+msgstr "Un ou plusieurs lots sont en attente de contrôle qualité, et ne peuvent pas être déplacés."
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.inventory:0
+msgid "Other Physical inventories are being conducted using the same Locations."
+msgstr "Erreur: certains emplacements sont déjà dans un autre inventaire."
+
+#. module: stock_inventory_date_constraint
+#: code:addons/stock_inventory_date_constraint/stock.py:89
+#: code:addons/stock_inventory_date_constraint/stock.py:139
 #, python-format
 msgid "The changes cannot be made because they conflict the following Stock Inventories:\n"
 ""
@@ -30,7 +72,38 @@ msgstr "Les changements demandés sont impossibles car ils sont en conflit avec 
 ""
 
 #. module: stock_inventory_date_constraint
-#: code:addons/stock_inventory_date_constraint/stock.py:129
+#: code:addons/stock_inventory_date_constraint/stock.py:164
+#, python-format
+msgid "The following lines are duplicates and will be deleted :\n"
+"%s"
+msgstr "Les lignes suivantes sont en double et seront effacées :\n"
+"%s"
+
+#. module: stock_inventory_date_constraint
+#: code:addons/stock_inventory_date_constraint/stock.py:163
+#, python-format
+msgid "Warning : duplicates lines"
+msgstr "Attention : lignes en double"
+
+#. module: stock_inventory_date_constraint
+#: code:addons/stock_inventory_date_constraint/stock.py:88
+#: code:addons/stock_inventory_date_constraint/stock.py:138
 #, python-format
 msgid "Wrong Stock Moves"
 msgstr "Mouvements de stock incorrects"
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.move:0
+msgid "You must assign a production lot for this product"
+msgstr "Vous devez affecter un lot de fabrication à ce produit."
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.inventory.line:0
+msgid "You must not create same inventory line Product, Location, Lot on the same date"
+msgstr "Vous ne pouvez pas créer plusieurs lignes d'inventaires pour le même produit, lot, emplacement à la même date"
+
+#. module: stock_inventory_date_constraint
+#: constraint:stock.move:0
+msgid "You try to assign a lot which is not from the same product"
+msgstr "Vous essayez d'affecter un lot qui n'est pas pour ce produit."
+
