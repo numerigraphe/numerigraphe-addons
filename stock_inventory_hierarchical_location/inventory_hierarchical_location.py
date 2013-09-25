@@ -67,7 +67,7 @@ class StockInventory(osv.osv):
         for inventory in self.browse(cr, uid, children_ids, context=context):
             if inventory.exhaustive:
                 if not inventory.location_ids:
-                    raise osv.except_osv(_('Warning !'), _('Location missing for inventory "%s".' % inventory.name))
+                    raise osv.except_osv(_('Warning !'), _('Location missing for inventory "%s".') % inventory.name)
         children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
         if children_count == 1:
             return self.action_open(cr, uid, ids, context)
