@@ -1,0 +1,107 @@
+-
+  In this file, i check rules about hierarchical inventories.
+  children date must be the same of parent date for each state,
+  the state of parent and children can change only if conditions are true.
+  First, i'll create one children inventory of stock_inventory_parent inventory.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm                                          
+    self.child_1_id = self.create(cr, uid, {'parent_id': ref('stock_inventory_parent0'), 
+                                       'inventory_ids': [], 
+                                       'name': 'Children 1 test inventory'})
+    self.child_2_id = self.create(cr, uid, {'parent_id': ref('stock_inventory_parent0'), 
+                                       'inventory_ids': [], 
+                                       'name': 'Children 2 test inventory'})
+-
+  Check if date of children are the same than parent date.
+  I'll read the date for 2 children and compare them with parent inventory date.  
+-
+  !python {model: stock.inventory}: |
+    from osv import orm
+    parent_date = self.read(cr, uid, [ref('stock_inventory_parent0')], ['date'])[0]['date']
+    child_1_date = self.read(cr, uid, [self.child_1_id], ['date'])[0]['date']
+    assert child_1_date == parent_date, "Date are not equals : %s - %s" % (parent_date, child_1_date)
+           
+    child_2_date = self.read(cr, uid, [self.child_2_id], ['date'])[0]['date']    
+    assert child_2_date == parent_date, "Date are not equals : %s - %s" % (parent_date, child_2_date)
+
+-
+  Check if children cannot be canceled if the parent was not canceled.
+  I'll try to cancel both children inventory while parent inventory having "draft" state.
+  After, i'll verify the state of each inventory. 
+-
+  !python {model: stock.inventory}: |  
+    from osv import orm, osv    
+    try:
+      self.action_cancel_inventary(cr, uid, [self.child_1_id])      
+    except osv.except_osv as e:
+      log("Good ! The Inventory could not be canceled : %s" % e)
+    try:
+      self.action_cancel_inventary(cr, uid, [self.child_2_id])      
+    except osv.except_osv as e:
+      log("Good ! The Inventory could not be canceled : %s" % e)      
+    child_1_state = self.read(cr, uid, [self.child_1_id], ['state'])[0]['state']
+    assert child_1_state == 'draft', "Child inventory 1 have '%s' state. It should be 'draft'" % child_1_state
+    child_2_state = self.read(cr, uid, [self.child_2_id], ['state'])[0]['state']
+    assert child_2_state == 'draft', "Child inventory 2 have '%s' state. It should be 'draft'" % child_2_state
+
+-
+  Check if children inventory have confirm state before confirm parent inventory.
+  To check this, i'll try to confirm parent inventory when children inventory having "draft" state,
+  and i'll check if state is still 'draft'.
+-
+  !python {model: stock.inventory}: |  
+    from osv import orm, osv          
+    try:
+      self.action_confirm(cr, uid, [ref('stock_inventory_parent0')])    
+    except osv.except_osv as e:
+      log("Good, the inventory could not be confirm : %s", e)
+    parent_state = self.read(cr, uid, [ref('stock_inventory_parent0')], ['state'])[0]['state']
+    assert parent_state == 'draft', "Parent inventory have '%s' state. It should be 'draft'" % parent_state
+
+-
+  In order, i'll confirm the children inventories, and the parent inventory after.
+-
+  !python {model: stock.inventory}: |  
+    from osv import orm, osv
+    self.action_confirm(cr, uid, [self.child_1_id])
+    child_1_state = self.read(cr, uid, [self.child_1_id], ['state'])[0]['state']
+    assert child_1_state == 'confirm', "Child inventory 1 have '%s' state. It should be 'confirm'" % child_1_state
+    
+    self.action_confirm(cr, uid, [self.child_2_id])
+    child_2_state = self.read(cr, uid, [self.child_2_id], ['state'])[0]['state']
+    assert child_2_state == 'confirm', "Child inventory 2 have '%s' state. It should be 'confirm'" % child_2_state
+        
+    self.action_confirm(cr, uid, [ref('stock_inventory_parent0')])
+    parent_state = self.read(cr, uid, [ref('stock_inventory_parent0')], ['state'])[0]['state']
+    assert parent_state == 'confirm', "Parent inventory have '%s' state. It should be 'confirm'" % parent_state
+    
+-
+  Check if children inventory have done state before validate parent inventory.
+  I'll try to validate parent inventory before children. 
+-
+  !python {model: stock.inventory}: |  
+    from osv import orm, osv
+    try:
+      self.action_done(cr, uid, [ref('stock_inventory_parent0')])
+    except osv.except_osv as e:
+      log("Good, the inventory could not be validate : %s", e)
+    parent_state = self.read(cr, uid, [ref('stock_inventory_parent0')], ['state'])[0]['state']
+    assert parent_state == 'confirm', "Parent inventory have '%s' state. It should be 'confirm'" % parent_state
+
+-
+  Now, i'll validate all children inventory before validate the parent.
+-
+  !python {model: stock.inventory}: |  
+    from osv import orm, osv
+    self.action_done(cr, uid, [self.child_1_id])
+    child_1_state = self.read(cr, uid, [self.child_1_id], ['state'])[0]['state']
+    assert child_1_state == 'done', "Child inventory 1 have '%s' state. It should be 'done'" % child_1_state
+    
+    self.action_done(cr, uid, [self.child_2_id])
+    child_2_state = self.read(cr, uid, [self.child_2_id], ['state'])[0]['state']
+    assert child_2_state == 'done', "Child inventory 2 have '%s' state. It should be 'done'" % child_2_state
+        
+    self.action_done(cr, uid, [ref('stock_inventory_parent0')])
+    parent_state = self.read(cr, uid, [ref('stock_inventory_parent0')], ['state'])[0]['state']
+    assert parent_state == 'done', "Parent inventory have '%s' state. It should be 'done'" % parent_state    
