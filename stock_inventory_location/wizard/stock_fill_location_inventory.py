@@ -82,8 +82,7 @@ class stock_fill_location_inventory(osv.osv_memory):
 
         location_ids = list(OrderedDict.fromkeys(location_ids))
 
-        inventory_obj = self.pool.get('stock.inventory')
-        lines = inventory_obj._fill_location_lines(cr, uid,
+        lines = self.pool.get('stock.inventory')._fill_location_lines(cr, uid,
                                                    context['active_ids'][0],
                                                    location_ids,
                                                    fill_inventory.set_stock_zero,

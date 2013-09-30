@@ -1,0 +1,31 @@
+-
+  I will create children inventory.
+-
+  !python {model: stock.inventory}: |                                          
+    self.child_1_id = self.create(cr, uid, {'parent_id': ref('parent_inventory_location'), 
+                                       'inventory_ids': [], 
+                                       'name': 'Children 1 test inventory'})
+
+-
+  I will check if exhaustive information of parent inventory has been added to children.
+-
+  !python {model: stock.inventory}: |
+    exhaustive = self.read(cr, uid, [self.child_1_id], ['exhaustive'])[0]['exhaustive']
+    assert exhaustive == True, "Exhaustive information not added to children inventory"
+    
+-
+  I will check if i can't open children inventory while parent inventory is open. 
+-     
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+    try:
+      self.action_open(cr, uid, [self.child_1_id])
+    except osv.except_osv as e:
+      log("Good ! The Inventory could not be opened : %s" % e)        
+    child_1_state = self.read(cr, uid, [self.child_1_id], ['state'])[0]['state']
+    assert child_1_state == 'draft', "Child inventory 1 have '%s' state. It should be 'draft'" % child_1_state
+    
+    
+    
+    
+    

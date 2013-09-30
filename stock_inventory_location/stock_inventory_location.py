@@ -179,9 +179,15 @@ For an exhaustive Inventory:
                 domain = [(field, '=', stock_move_details[field])
                            for field in ['location_id',
                                          'product_id',
-                                         'prod_lot_id',
-                                         'inventory_id']
+                                         'prod_lot_id']
                           ]
+                # children_inventory_ids is present if stock_inventory_hierarchical_location module has been installed
+                inventory_ids = context.get('children_inventory_ids', False)
+                if inventory_ids:
+                    domain.append(('inventory_id', 'child_of', inventory_ids))
+                else:
+                    domain.append(('inventory_id', '=', stock_move_details['inventory_id']))
+
                 line_ids = inventory_line_obj.search(cr, uid, domain, context=context)
                 if not line_ids:
                     stock_moves.append(stock_move_details)
