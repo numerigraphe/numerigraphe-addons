@@ -1,0 +1,96 @@
+-
+  Create Physical children inventory for 1 products in 1 locations.
+  Qty for PC1 is 10 in shelf1, 0 in shelf2, 0 in parent location
+-
+  !record {model: stock.inventory, id: valuation_children_1}:
+    company_id: base.main_company
+    date: !eval time.strftime('%Y-%m-%d %H:%M:%S')
+    inventory_line_id:
+      - company_id: base.main_company
+        location_id: stock.stock_location_components
+        product_id: product.product_product_pc1
+        product_qty: 10.0
+        product_uom: product.product_uom_unit
+      - company_id: base.main_company
+        location_id: stock.stock_location_14
+        product_id: product.product_product_pc1
+        product_qty: 0.0
+        product_uom: product.product_uom_unit
+      - company_id: base.main_company
+        location_id: stock.stock_location_stock
+        product_id: product.product_product_pc1
+        product_qty: 0.0
+        product_uom: product.product_uom_unit
+    parent_id: hierarchical_inventory_valuation0 
+    inventory_ids: []
+    name: Initial Stock situation for quantity search tests 
+    state: draft    
+
+-
+  Create another Physical children Inventory for 1 products in 1 locations.
+  Qty for PC2 is 10 in shelf1, 20 in shelf2, 0 in parent location
+-
+  !record {model: stock.inventory, id: valuation_children_2}:
+    company_id: base.main_company
+    date: !eval time.strftime('%Y-%m-%d %H:%M:%S')
+    inventory_line_id:
+      - company_id: base.main_company
+        location_id: stock.stock_location_components
+        product_id: product.product_product_pc2
+        product_qty: 10.0
+        product_uom: product.product_uom_unit
+      - company_id: base.main_company
+        location_id: stock.stock_location_14
+        product_id: product.product_product_pc2
+        product_qty: 20.0
+        product_uom: product.product_uom_unit
+      - company_id: base.main_company
+        location_id: stock.stock_location_stock
+        product_id: product.product_product_pc2
+        product_qty: 0.0
+        product_uom: product.product_uom_unit
+    parent_id: hierarchical_inventory_valuation0 
+    inventory_ids: []        
+    name: Initial Stock situation for quantity search tests 
+    state: draft    
+        
+-
+  I will confirm inventory and validate both inventories.
+-
+  !python {model: stock.inventory}: |
+    self.action_confirm(cr,uid,[ref('valuation_children_1')])
+    self.action_done(cr,uid,[ref('valuation_children_1')])
+
+    self.action_confirm(cr,uid,[ref('valuation_children_2')])
+    self.action_done(cr,uid,[ref('valuation_children_2')])
+
+-
+  I will confirm and validate parent inventory.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+    self.action_confirm(cr,uid,[ref('hierarchical_inventory_valuation0')])
+    self.action_done(cr,uid,[ref('hierarchical_inventory_valuation0')])
+
+-
+  I will check valuation.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+
+    valorisation_id = self.pool.get('stock.inventory.valuation').search(cr, uid, [('inventory_id', '=', ref('hierarchical_inventory_valuation0'))])
+    valorisation_infos = self.pool.get('stock.inventory.valuation').read(cr, uid, valorisation_id, ['name', 'product_qty', 'product_id', 'total_valuation'])
+
+    assert valorisation_infos != False, "Valuation is not done !"
+    for valorisation in valorisation_infos:
+      if valorisation['product_id'][0] == ref('product.product_product_pc1'):
+        assert valorisation['product_qty'] == 10.0, "Product quantity is '%s', should be '10.0'" % valorisation[0]['product_qty']
+        assert valorisation['total_valuation'] == 3000.0, "Product valuation is '%s', should be '3000.0'"
+          
+      if valorisation['product_id'][0] == ref('product.product_product_pc2'):
+        assert valorisation['product_qty'] == 30.0, "Product quantity is '%s', should be '30.0'" % valorisation[0]['product_qty']
+        assert valorisation['total_valuation'] == 15000.0, "Product valuation is '%s', should be '15000.0'"
+      
+   
+
+

@@ -2,7 +2,7 @@
   In this file, i check rules about hierarchical inventories.
   children date must be the same of parent date for each state,
   the state of parent and children can change only if conditions are true.
-  First, i'll create one children inventory of stock_inventory_parent inventory.
+  First, i'll create two children inventory of stock_inventory_parent inventory.
 -
   !python {model: stock.inventory}: |
     from osv import orm                                          
