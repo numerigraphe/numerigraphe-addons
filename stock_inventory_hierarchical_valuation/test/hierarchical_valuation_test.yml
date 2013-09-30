@@ -90,7 +90,17 @@
       if valorisation['product_id'][0] == ref('product.product_product_pc2'):
         assert valorisation['product_qty'] == 30.0, "Product quantity is '%s', should be '30.0'" % valorisation[0]['product_qty']
         assert valorisation['total_valuation'] == 15000.0, "Product valuation is '%s', should be '15000.0'"
-      
-   
+
+-
+  I will check no valuation has been calculated for children inventory.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+
+    valorisation_id = self.pool.get('stock.inventory.valuation').search(cr, uid, [('inventory_id', '=', ref('valuation_children_1'))])
+    assert valorisation_id == [], "Valuation found for children inventory"
+    
+
+
 
 
