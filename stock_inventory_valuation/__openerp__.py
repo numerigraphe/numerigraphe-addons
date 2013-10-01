@@ -29,4 +29,6 @@
     """,
     "update_xml": ["stock_inventory_valuation_view.xml",
                    "security/ir.model.access.csv"],
+     "test": ["test/valuation_inventory_test.yml"],
+     "demo": ["stock_inventory_valuation_demo.xml"]
 }

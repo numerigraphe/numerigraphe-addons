@@ -27,6 +27,9 @@
     "description": """
         Perform valuation of inventory who have sub inventories recursively.
     """,
+     "test": ["test/hierarchical_valuation_test.yml"],
+     "demo": ["hierarchical_valuation_demo.xml"],
+
     # Will work with v6.1 and later
     "auto_install": True,
 }
