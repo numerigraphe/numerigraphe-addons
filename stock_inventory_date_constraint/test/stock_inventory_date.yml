@@ -5,7 +5,7 @@
 -
  !python {model: product.product}: |
   ctx = {'location': [ref('stock.stock_location_components')], 'to_date': '2099-01-01 13:10:34'}
-  products = self.read(cr, uid, [ref('product.product_product_pc1')], ['qty_available'], context=ctx)
+  products = self.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)
   assert products[0]['qty_available'] == 10.0, "Quantity is not equal to 10.0 before stock move : %s" % products[0]['qty_available']
 -
   To check that inventories are not made wrong by stock moves dated ealier,
