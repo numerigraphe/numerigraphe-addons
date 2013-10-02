@@ -18,9 +18,9 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import decimal_precision as dp
-from tools.translate import _
+from openerp.tools.translate import _
 
 class stock_inventory_valuation(osv.osv):
     """Save products informations (quantity, standard price) when inventory is confirmed."""
@@ -82,7 +82,7 @@ class stock_inventory_valuation(osv.osv):
             readonly=True),
     }
 
-stock_inventory_valuation()
+
 
 class stock_inventory(osv.osv):
     """Add valuation to the physical inventory"""
@@ -135,14 +135,14 @@ class stock_inventory(osv.osv):
                 self.log(cr, uid, inv.id, message)
         return super(stock_inventory, self).action_confirm(cr, uid, ids, context=context)
 
-    def action_cancel_inventary(self, cr, uid, ids, context=None):
+    def action_cancel_inventory(self, cr, uid, ids, context=None):
         """ to delete records valuation on database.
         """
         siv_obj = self.pool.get('stock.inventory.valuation')
         for inv in self.browse(cr, uid, ids, context=context):
             siv_line_ids = siv_obj.search(cr, uid, [('inventory_id', '=', inv.id)])
             siv_obj.unlink(cr, uid, siv_line_ids, context=context)
-        return super(stock_inventory, self).action_cancel_inventary(cr, uid, ids, context=context)
+        return super(stock_inventory, self).action_cancel_inventory(cr, uid, ids, context=context)
     
     # This is better done in copy_data() than copy() because copy_data() s called for related records too
     def copy_data(self, cr, uid, id, default=None, context=None):
@@ -150,4 +150,4 @@ class stock_inventory(osv.osv):
         default = default and default.copy() or {}
         default['valuation_ids'] = []
         return super(stock_inventory, self).copy_data(cr, uid, id, default=default, context=context)
-stock_inventory()
+

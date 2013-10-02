@@ -20,7 +20,7 @@
 
 """Compute the net weight of sale orders."""
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 class sale_order(osv.osv):
     """Add the total net weight to the object "Sale Order"."""
 
@@ -58,7 +58,7 @@ class sale_order(osv.osv):
             },
         ),
     }
-sale_order()
+
 
 class sale_order_line(osv.osv):
     """Add the net weight to the object "Sale Order Line"."""
@@ -91,5 +91,5 @@ class sale_order_line(osv.osv):
             },
         ),
     }
-sale_order_line()
+
 

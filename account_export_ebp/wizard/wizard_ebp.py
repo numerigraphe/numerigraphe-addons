@@ -22,11 +22,12 @@ import os
 import codecs
 import smbc
 
-import wizard
-import pooler
-import tools
-from tools.translate import _
-import netsvc
+# FIXME : Wizard is not supported by V7
+#import wizard
+from openerp import pooler
+from openerp import tools
+from openerp.tools.translate import _
+from openerp import netsvc
 
 # XXX We should write to a temporary file instead, for security and reliability.
 # XXX We should raise a clean exception if something goes wrong.

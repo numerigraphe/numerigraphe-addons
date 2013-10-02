@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 from collections import OrderedDict
 
 
@@ -28,7 +28,7 @@ class stock_fill_location_inventory(osv.osv_memory):
 
     _columns = {
          'location_id': fields.many2one('stock.location', 'Location'),
-         'exhaustive': fields.boolean('stock.inventory', 'Type'),
+         'exhaustive': fields.boolean('Type'),
          }
 
     def get_inventory_type(self, cr, uid, context=None):
@@ -71,6 +71,9 @@ class stock_fill_location_inventory(osv.osv_memory):
 
         location_ids = self.pool.get('stock.inventory').read(cr, uid, [context.get('active_id')], ['location_ids'])[0]
 
+        if not location_ids['location_ids']:
+            raise osv.except_osv(_('Error : Empty location !'), _('No location to import.\nYou must add a location on the locations list.'))
+
         if fill_inventory.recursive:
             location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids['location_ids']),
                                                                             ('usage', '=', 'internal')], context=context)
@@ -79,8 +82,7 @@ class stock_fill_location_inventory(osv.osv_memory):
 
         location_ids = list(OrderedDict.fromkeys(location_ids))
 
-        inventory_obj = self.pool.get('stock.inventory')
-        lines = inventory_obj._fill_location_lines(cr, uid,
+        lines = self.pool.get('stock.inventory')._fill_location_lines(cr, uid,
                                                    context['active_ids'][0],
                                                    location_ids,
                                                    fill_inventory.set_stock_zero,
@@ -90,5 +92,3 @@ class stock_fill_location_inventory(osv.osv_memory):
         for line in lines:
             inventory_lines_obj.create(cr, uid, line, context=context)
         return {'type': 'ir.actions.act_window_close'}
-
-stock_fill_location_inventory()

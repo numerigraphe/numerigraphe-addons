@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv
+from openerp.osv import osv
 
 class stock_inventory(osv.osv):
 
@@ -55,4 +55,4 @@ class stock_inventory(osv.osv):
         
         return res
 
-stock_inventory()
+

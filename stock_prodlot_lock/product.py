@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 class product_category(osv.osv):
 
@@ -55,7 +55,7 @@ class product_category(osv.osv):
                 # Recursively set need_quality to all the children
                 self.write(cr, uid, child_ids, {'need_quality': values['need_quality']}, context=context)
         return super(product_category, self).write(cr, uid, ids, values, context=context)
-product_category()
+
 
 class product_template(osv.osv):
     
@@ -69,7 +69,7 @@ class product_template(osv.osv):
             ('end','End of Lifecycle'),
             ('obsolete','Obsolete')], 'Status', help="Tells the user if he can use the product or not.")
     }
-product_template()
+
     
 class product_label(osv.osv):
 
@@ -107,4 +107,4 @@ class product_label(osv.osv):
                 # Recursively set need_quality to all the children
                 self.write(cr, uid, child_ids, {'need_quality': values['need_quality']}, context=context)
         return super(product_label, self).write(cr, uid, ids, values, context=context)
-product_label()
+

@@ -53,4 +53,9 @@ For an exhaustive Inventory, in the state "Draft" you define the list of Locatio
                    "stock_inventory_location_view.xml",
                    "wizard/stock_fill_location_inventory_view.xml",
                    ],
+     "test": ["test/location_inventory_test.yml",
+              "test/location_exhaustive_inventory_test.yml",
+              ],
+     "demo": ["stock_inventory_location_demo.xml"]
+
 }

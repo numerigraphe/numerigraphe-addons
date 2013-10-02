@@ -9,7 +9,7 @@
         <field name="inherit_id" ref="stock.view_inventory_form" />
         <field name="arch" type="xml">
             <xpath
-                expr="/form[@string='Physical Inventory']/group/button[@name='action_cancel_inventary']"
+                expr="/form[@string='Physical Inventory']//button[@name='action_cancel_inventory']"
                 position="attributes">
                     <attribute name="confirm">The inventory valuation will be deleted.
 Are you sure ?</attribute>
@@ -59,7 +59,7 @@ Are you sure ?</attribute>
         <field name="model">stock.inventory.valuation</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Details" version="7.0">
                 <group col="6" colspan="4">
                     <field name="product_id"/>
                     <field name="inventory_id"/>

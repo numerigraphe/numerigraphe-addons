@@ -20,7 +20,7 @@
 
 """Parameters for EBP export"""
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 
 class res_company(osv.osv):
     """Add parameters to export accounting moves to EBP's software"""
@@ -35,5 +35,5 @@ class res_company(osv.osv):
         'ebp_password': fields.char('EBP User Password', size=256,
             help="The password of the user to access the company's EBP folder."),
     }
-res_company()
+
 

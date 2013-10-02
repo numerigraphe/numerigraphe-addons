@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 
 class stock_location_product(osv.osv_memory):
     _name = 'stock.location.product'
@@ -46,6 +46,6 @@ class stock_location_product(osv.osv_memory):
         
         return result
             
-stock_location_product()
+
 
 

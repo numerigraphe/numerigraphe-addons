@@ -18,23 +18,23 @@
 #
 ##############################################################################
 
-from osv import osv, orm
-from tools.translate import _
+from openerp.osv import osv, orm
+from openerp.tools.translate import _
 
 class StockInventoryCancelable(osv.osv):
     """Make inventories cancelable despite the constraint on stock move dates""" 
     _inherit = "stock.inventory"
     
-    def action_cancel_inventary(self, cr, uid, ids, context=None):
+    def action_cancel_inventory(self, cr, uid, ids, context=None):
         """Inject a context key to not block the deletion of stock moves"""
         if context is None:
             context = {}
         else:
             context = context.copy()
         context['ignore_inventories'] = ids
-        return super(StockInventoryCancelable, self).action_cancel_inventary(
+        return super(StockInventoryCancelable, self).action_cancel_inventory(
             cr, uid, ids, context=context)
-StockInventoryCancelable()
+
 
 class StockMoveConstraint(osv.osv):
 
@@ -81,8 +81,9 @@ class StockMoveConstraint(osv.osv):
             if inv_ids:
                 # Make a message string with the names of the Inventories
                 inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
-                msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
-                                 for i in inventories])
+                tab_inventories = {i.id: i.name for i in inventories}
+                msg = "\n".join([_("- %s (ID %d)") % (name, i)
+                                for (i, name) in tab_inventories.iteritems()])
                 raise orm.except_orm(
                     _('Wrong Stock Moves'),
                     _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
@@ -130,13 +131,14 @@ class StockMoveConstraint(osv.osv):
         if inv_ids:
             # Make a message string with the names of the Inventories
             inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
-            msg = "\n".join([_("- %s (ID %d)") % (i.name, i.id)
-                             for i in inventories])
+            tab_inventories = {i.id: i.name for i in inventories}
+            msg = "\n".join([_("- %s (ID %d)") % (name, i)
+                            for (i, name) in tab_inventories.iteritems()])
             raise orm.except_orm(
                 _('Wrong Stock Moves'),
                 _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
         return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
-StockMoveConstraint()
+
 
 
 class stock_inventory_line(osv.osv):
@@ -164,4 +166,4 @@ class stock_inventory_line(osv.osv):
 
     _constraints = [(_check_duplicates_line, 'Error: duplicates lines', ['location_id', 'product_id', 'prod_lot_id']), ]
 
-stock_inventory_line()
+

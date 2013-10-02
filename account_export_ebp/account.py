@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 class account_fiscalyear(osv.osv):
     _inherit = "account.fiscalyear"
@@ -33,7 +33,7 @@ class account_fiscalyear(osv.osv):
     _defaults = {
         'ebp_nb': lambda * a: 0
     }
-account_fiscalyear()
+
 
 class account_move(osv.osv):
     _inherit = "account.move"
@@ -65,4 +65,4 @@ class account_move(osv.osv):
                                  _('You cannot delete exported moves: %s!')
                                      % ', '.join([m.name for m in exported_moves]))
         return super(account_move, self).unlink(cr, uid, ids, context)
-account_move()
+

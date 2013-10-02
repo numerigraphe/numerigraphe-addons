@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import fields, osv
+from openerp.osv import fields, osv
 import decimal_precision as dp
 
 class stock_picking(osv.osv):
@@ -37,6 +37,6 @@ class stock_picking(osv.osv):
         'weight_real': fields.float('Real Weight',
                                digits_compute=dp.get_precision('Stock Weight'))
     }
-stock_picking()
+
 
 

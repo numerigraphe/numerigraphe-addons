@@ -19,8 +19,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
     
 # XXX: this is used for checking various codes such as credit card numbers: should it be moved to tools.py?
@@ -91,6 +91,6 @@ class Partner(osv.osv):
                      "The SIREN or NIC number is incorrect.",
                      ["siren", "nic"]),
     ]
-Partner()
+
 
 

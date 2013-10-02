@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 
 class inventory_missing_location(osv.osv_memory):
@@ -81,4 +81,4 @@ class inventory_missing_location(osv.osv_memory):
         'location_ids': default_missing_locations,
         }
 
-inventory_missing_location()
+

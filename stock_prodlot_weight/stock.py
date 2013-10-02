@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 import decimal_precision as dp
 
 class product_template(osv.osv):
@@ -81,7 +81,7 @@ class product_template(osv.osv):
                  "weights and quantities of the Production Lots currently "
                  "in stock."),
     }
-product_template()
+
 
 class stock_production_lot(osv.osv):
     _inherit = 'stock.production.lot'
@@ -100,4 +100,4 @@ class stock_production_lot(osv.osv):
             default['weight_observed'] = 0.0
         return super(stock_production_lot, self).copy(cr, uid, id, default=default,
                                                       context=context)
-stock_production_lot()
+

@@ -18,12 +18,12 @@
 #
 ##############################################################################
 
-import wizard
-import tools
-import pooler
-import netsvc
-from osv import fields, osv
-from tools.translate import _
+
+from openerp import tools
+from openerp import pooler
+from openerp import netsvc
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 class wizard_copy_translations(osv.osv_memory):
     """Wizard to copy the translations from a language to en_US
@@ -123,4 +123,4 @@ class wizard_copy_translations(osv.osv_memory):
                  'state': lambda *a: 'choose',
                  'delete_bogus': lambda *a: False,
                 }
-wizard_copy_translations()
+

@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 class address(osv.osv):
     _inherit = 'res.partner.address'
@@ -26,5 +26,5 @@ class address(osv.osv):
         'hours': fields.char('Opening Hours', size=64),
         'day_off': fields.char('Day Off', size=64),
     }
-address()
+
 

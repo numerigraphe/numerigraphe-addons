@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 
 class stock_inventory_hierarchical(osv.osv):
@@ -170,7 +170,7 @@ class stock_inventory_hierarchical(osv.osv):
         ctx['norecurs'] = True  # needed to write children once.
         return self.write(cr, uid, children_ids, record, context=ctx)
 
-    def action_cancel_inventary(self, cr, uid, ids, context=None):
+    def action_cancel_inventory(self, cr, uid, ids, context=None):
         """Cancel inventory only if all the parents are canceled"""
         inventories = self.browse(cr, uid, ids, context=context)
         for inventory in inventories:
@@ -178,7 +178,7 @@ class stock_inventory_hierarchical(osv.osv):
                 inventory = inventory.parent_id
                 if inventory.state != 'cancel':
                     raise osv.except_osv(_('Warning !'), _('One of the parent Inventories is not canceled.'))
-        return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
+        return super(stock_inventory_hierarchical, self).action_cancel_inventory(cr, uid, ids, context=context)
 
     def action_confirm(self, cr, uid, ids, context=None):
         """Confirm inventory only if all the children are confirmed"""
@@ -195,5 +195,3 @@ class stock_inventory_hierarchical(osv.osv):
         if children_count > 1:
             raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not done.'))
         return super(stock_inventory_hierarchical, self).action_done(cr, uid, ids, context=context)
-
-stock_inventory_hierarchical()

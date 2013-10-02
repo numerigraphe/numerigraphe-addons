@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 
 class stock_inventory_uninventoried_location(osv.osv_memory):
@@ -73,20 +73,23 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
 
         for inventory in inventory_obj.browse(cr, uid, inventory_ids, context=context):
             if inventory.exhaustive:
-                location_ids = [i.id for i in inventory.location_ids]
-                # search for children
-                location_ids = self.pool.get('stock.location').search(cr, uid, [('location_id', 'child_of', location_ids),
-                                                                                ('usage', '=', 'internal')], context=context)
-                lines = inventory_obj._fill_location_lines(cr, uid,
-                                                           inventory.id,
-                                                           location_ids,
-                                                           True,
-                                                           context=context)
-                inventory_lines_obj = self.pool.get('stock.inventory.line')
-                for line in lines:
-                    inventory_lines_obj.create(cr, uid, line, context=context)
+                location_ids = self.get_locations(cr, uid, inventory.id, context=context)
+                # get stock inventory lines
+                lines = []
+                try:
+                    # create inventory lines with zero qty
+                    lines = inventory_obj._fill_location_lines(cr, uid,
+                                                               inventory.id,
+                                                               location_ids,
+                                                               True,
+                                                               context=context)
+                except osv.except_osv as e:
+                    pass
 
-        inventory_obj.action_confirm(cr, uid, ids, context=context)
+                for line in lines:
+                    self.pool.get('stock.inventory.line').create(cr, uid, line, context=context)
+
+        inventory_obj.action_confirm(cr, uid, inventory_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-stock_inventory_uninventoried_location()
+

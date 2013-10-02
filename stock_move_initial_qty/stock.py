@@ -19,7 +19,7 @@
 ##############################################################################
 
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import decimal_precision as dp
 
 class stock_move(osv.osv):
@@ -39,11 +39,10 @@ class stock_move(osv.osv):
         default['product_initial_qty']=0
         return super(stock_move, self).copy(cr, uid, id, default=default,
                                             context=context)
-        
     _columns = {
                 'product_initial_qty': fields.float('Initial quantity',
                     digits_compute=dp.get_precision('Product UoM'),
                     help='This is the quantity of product initially intended '
                          'for this Stock Move.'),
     }
-stock_move()
+

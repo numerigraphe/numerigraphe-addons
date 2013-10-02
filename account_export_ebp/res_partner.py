@@ -21,7 +21,7 @@
 import string
 import re
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 class partner(osv.osv):
     _inherit = 'res.partner'
@@ -32,4 +32,4 @@ class partner(osv.osv):
             help="When exporting Entries to EBP, this suffix will be appended "
                  "to the Account Number to make it a Partner Account.",),    }
 
-partner()
+

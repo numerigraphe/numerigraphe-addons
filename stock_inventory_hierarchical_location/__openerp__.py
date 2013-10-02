@@ -39,6 +39,10 @@ It will also prevent you from setting the Inventories and sub-Inventories in inc
                    "wizard/stock_inventory_missing_locations_view.xml",
                    "inventory_hierarchical_location_view.xml",
                    ],
+
+     "test": ["test/inventory_hierarchical_location_test.yml"],
+     "demo": ["inventory_hierarchical_location_demo.xml"],
+
     # Will work with v6.1 and later
     "auto_install": True,
 }

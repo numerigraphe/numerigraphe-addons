@@ -20,7 +20,7 @@
 
 """Allow searching invoices by partner category."""
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 class account_invoice(osv.osv):
     """Add the partner categories to the object "Invoice"."""
@@ -32,5 +32,5 @@ class account_invoice(osv.osv):
              type='many2many', relation='res.partner.category',
              string='Partner Categories'),
     }
-account_invoice()
+
 
