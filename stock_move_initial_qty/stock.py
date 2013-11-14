@@ -39,7 +39,6 @@ class stock_move(osv.osv):
         default['product_initial_qty']=0
         return super(stock_move, self).copy(cr, uid, id, default=default,
                                             context=context)
-        
     _columns = {
                 'product_initial_qty': fields.float('Initial quantity',
                     digits_compute=dp.get_precision('Product UoM'),

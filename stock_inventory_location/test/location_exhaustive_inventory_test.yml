@@ -1,0 +1,101 @@
+-
+  This file will test an exhaustive inventory.
+  I will call open_action method and check if state of inventories are 'open'.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv     
+    self.action_open(cr, uid, [ref('stock_inventory_location_1')])    
+    inventory_state = self.read(cr, uid, [ref('stock_inventory_location_1')], ['state'])[0]['state']
+    assert inventory_state == 'open', "Parent inventory have '%s' state. It should be 'open'" % inventory_state
+
+-
+  In order, i add products to exhaustive inventory.
+  Don't add mou(product.product_product_25) and keya (product.product_product_24) products.
+  Adding pc1.
+-    
+  !record {model: stock.inventory.line, id: lines_inventory_location_pc1}:
+    product_id: product.product_product_pc1
+    product_uom: product.product_uom_unit
+    company_id: base.main_company
+    inventory_id: stock_inventory_location_1    
+    product_qty: 18.0
+    location_id: stock.stock_location_14
+
+-
+  Adding pc3.
+-      
+  !record {model: stock.inventory.line, id: lines_inventory_location_pc3}:
+    product_id: product.product_product_pc3
+    product_uom: product.product_uom_unit
+    company_id: base.main_company
+    inventory_id: stock_inventory_location_1    
+    product_qty: 5.0
+    location_id: stock.stock_location_14    
+
+-
+  I will call the function _get_locations_open_inventories and check the result.
+  The function will return only the location_ids of the exhaustive inventory.
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+    locations = self._get_locations_open_inventories(cr, uid)    
+    assert len(locations) == 1, "Function return wrong results : %s" % locations
+    assert locations[0] == ref('stock.stock_location_14'), "Function '_get_locations_open_inventories' return wrong location_id. Should be '%s' : '%s'" % (stock.stock_location_14, locations[0]) 
+  
+-  
+  I will call the function onchange_location_id.
+  The function must to return true in the first case, and return a warning dictionnary in the second test.  
+-
+  !python {model: stock.inventory.line}: |
+    from osv import orm, osv
+    res = self.onchange_location_id(cr, uid, [], [(6,0,[ref('stock.stock_location_14')])], True, ref('stock.stock_location_14'))
+    assert res == True, "Exhaustive : The function 'onchange_location_id' should return True and return '%s'" % res    
+    res = self.onchange_location_id(cr, uid, [], [(6,0,[ref('stock.stock_location_14')])], True, ref('stock.stock_location_components'))
+    assert res.get('warning', False) != False , "Function 'onchange_location_id' : Warning not raise. ('%s)" % res    
+
+-
+  I will call _fill_location_lines to simulate confirmation for stock_confirm_uninventoried_location,
+  and create stock_moves
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv
+    ctx={'location': [ref('stock.stock_location_14')]}      
+    lines = self._fill_location_lines(cr, uid, ref('stock_inventory_location_1'), [ref('stock.stock_location_14')], True, context=ctx)
+    for line in lines:
+      self.pool.get('stock.inventory.line').create(cr, uid, line, context=context)    
+    
+-
+  I will confirm exhaustive inventory 
+-    
+  !python {model: stock.inventory}: |
+    from osv import orm, osv     
+    self.action_confirm(cr, uid, [ref('stock_inventory_location_1')])    
+    inventory_state = self.read(cr, uid, [ref('stock_inventory_location_1')], ['state'])[0]['state']
+    assert inventory_state == 'confirm', "Exhaustive inventory have '%s' state. It should be 'confirm'" % inventory_state
+              
+-
+  I will validate exhaustive inventory
+-
+  !python {model: stock.inventory}: |
+    from osv import orm, osv   
+    self.action_done(cr, uid, [ref('stock_inventory_location_1')])
+    inventory_state = self.read(cr, uid, [ref('stock_inventory_location_1')], ['state'])[0]['state']
+    assert inventory_state == 'done', "Exhaustive inventory have '%s' state. It should be 'done'" % inventory_state
+       
+-
+  I will verify the quantity for each products.
+-    
+  !python {model: product.product}: |
+    from osv import orm, osv 
+    ctx={'location': [ref('stock.stock_location_14')], 'to_date': '2020-12-31 23:59:59'} 
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_pc1')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 18.0, "The stock of PC1 was not set to 18.0 : %s" % prod_qty_avail
+    
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_pc3')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 5.0, "The stock of PC3 was not set to 5.0 : %s" % prod_qty_avail
+
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_24')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 0.0, "The stock of KEYA was not set to 0 : %s" % prod_qty_avail
+
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_25')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 0.0, "The stock of MOU was not set to 0 : %s" % prod_qty_avail

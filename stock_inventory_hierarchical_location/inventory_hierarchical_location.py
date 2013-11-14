@@ -30,12 +30,11 @@ class StockInventory(osv.osv):
         s = super(StockInventory, self)
         s.PARENT_VALUES.append('exhaustive')
         return s.__init__(pool, cr)
-    
+
     def action_open(self, cr, uid, ids, context=None):
         """Open only if all the parents are Open."""
         #XXX the dosctring used to say this but it's not implemented, normal? --> "Before opening, if locations are  missing, ask the user to validate the opening without these locations."
-        inventories = self.browse(cr, uid, ids, context=context)
-        for inventory in inventories:
+        for inventory in self.browse(cr, uid, ids, context=context):
             while inventory.parent_id:
                 inventory = inventory.parent_id
                 if inventory.state != 'open':
@@ -61,8 +60,20 @@ class StockInventory(osv.osv):
         res['value'] = {'location_ids': res_location_ids, }
         return res
 
+    def _fill_location_lines(self, cr, uid, inventory_id, location_ids, set_stock_zero, context=None):
+        """Add ids of children inventory into list """
+        children_inventory_ids = self.search(cr, uid, [('parent_id', 'child_of', inventory_id)])
+        context['children_inventory_ids'] = children_inventory_ids
+        return super(StockInventory, self)._fill_location_lines(cr, uid, inventory_id, location_ids, set_stock_zero, context=context)
+
     def open_missing_location_wizard(self, cr, uid, ids, context=None):
-        """Open wizard if inventory have children."""
+        """Open wizard if inventory have children.
+        Before, verify if all children of exhaustive inventory have at least one location."""
+        children_ids = self.search(cr, uid, [('parent_id', 'child_of', ids)], context=context)
+        for inventory in self.browse(cr, uid, children_ids, context=context):
+            if inventory.exhaustive:
+                if not inventory.location_ids:
+                    raise osv.except_osv(_('Warning !'), _('Location missing for inventory "%s".') % inventory.name)
         children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
         if children_count == 1:
             return self.action_open(cr, uid, ids, context)

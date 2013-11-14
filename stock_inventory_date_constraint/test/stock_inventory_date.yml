@@ -66,7 +66,7 @@
     except orm.except_orm as e:
       log("Good ! The Stock Move could not be 'done' : %s" % e)
 -
-  To check that confirmed Stock Moves can be canceled even before the inventoy,
+  To check that confirmed Stock Moves can be canceled even before the inventory,
   I create yet another Stock Move dated today, in 'draft' state.
 -
   !record {model: stock.move, id: draft_stock_move2}:
@@ -89,7 +89,7 @@
   !python {model: stock.move}: |
     self.action_cancel(cr, uid, [ref('draft_stock_move2')])
 -
-  To check that stock moves are allowed after the inventoy and not inhibited,
+  To check that stock moves are allowed after the inventory and not inhibited,
   I create a Stock Move in 'done' state after the inventory.
 -
   !record {model: stock.move, id: draft_stock_move}:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,17 +18,4 @@
 #
 ##############################################################################
 
-{
-    "name": "Stock inventory valuation",
-    "version": "1.0",
-    "depends": ["stock"],
-    "author": u"Numérigraphe",
-    "category": "Pricing",
-    "description": """
-        Store price, uom and quantity for each product on stock after an inventory.
-    """,
-    "update_xml": ["stock_inventory_valuation_view.xml",
-                   "security/ir.model.access.csv"],
-     "test": ["test/valuation_inventory_test.yml"],
-     "demo": ["stock_inventory_valuation_demo.xml"]
-}
+import purchase_budget

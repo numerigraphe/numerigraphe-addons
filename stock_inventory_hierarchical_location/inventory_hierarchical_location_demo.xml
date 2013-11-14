@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- Record inventories we can use in the tests. -->
+        <!-- We need them in the demo data because test data is rolled back 
+            whenever an exception is raised. -->
+        
+        <!-- Record an exhaustive inventory -->
+        <record id="parent_inventory_location" model="stock.inventory">
+            <field name="name">Hierarchical location exhaustive inventory</field>
+            <field name="state">draft</field>
+            <field name="date">2020-04-15 00:00:00</field>
+            <field name="exhaustive">True</field>          
+            <field name="location_ids"  model="stock.location" search="[('name', '=', 'Shelf 2')]" />
+        </record>
+    </data>
+</openerp>

@@ -36,4 +36,6 @@ and still keep a clear overview of global Inventory's status.
 OpenERP will make sure the status of the Inventory and it's sub-Inventories are consistent.
 """,
     "update_xml": ["hierarchical_inventory_view.xml"],
+     "test": ["test/hierarchical_inventory_test.yml"],
+     "demo": ["hierarchical_inventory_demo.xml"]
 }
