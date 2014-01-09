@@ -19,3 +19,4 @@
 ##############################################################################
 
 import stock_inventory_valuation
+import product
