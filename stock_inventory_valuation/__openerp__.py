@@ -20,14 +20,17 @@
 
 {
     "name": "Stock inventory valuation",
-    "version": "1.0",
+    "version": "1.1",
     "depends": ["stock"],
     "author": u"Numérigraphe",
     "category": "Pricing",
     "description": """
-        Store price, uom and quantity for each product on stock after an inventory.
+        Add an API to record the valuation of products by Product ID or by search domain.
+        Proposes a scheduled task to record the valuation once a week.
     """,
+    "init_xml": ["stock_inventory_valuation_data.xml"],
     "update_xml": ["stock_inventory_valuation_view.xml",
+                   "wizard/compute_stock_valuation_wizard_view.xml",
                    "security/ir.model.access.csv"],
      "test": ["test/valuation_inventory_test.yml"],
      "demo": ["stock_inventory_valuation_demo.xml"]

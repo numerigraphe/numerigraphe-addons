@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-
-    <!-- Ask for confirmation before canceling inventories -->
-    <record model="ir.ui.view" id="stock_inventory_valuation_form_view">
-        <field name="name">stock.inventory.valuation.form</field>
-        <field name="model">stock.inventory</field>
-        <field name="inherit_id" ref="stock.view_inventory_form" />
-        <field name="arch" type="xml">
-            <xpath
-                expr="/form[@string='Physical Inventory']/group/button[@name='action_cancel_inventary']"
-                position="attributes">
-                    <attribute name="confirm">The inventory valuation will be deleted.
-Are you sure ?</attribute>
-            </xpath>
-        </field>
-    </record>
-
+    <data>
     <!-- Inventory Valuation views -->
     <record model="ir.ui.view" id="view_inventory_valuation_filter">
         <field name="name">inventory.valuation.filter</field>
@@ -25,13 +9,15 @@ Are you sure ?</attribute>
         <field name="arch" type="xml">
             <search string="Inventory Valuation">
                 <group col="6" colspan="4">
+                    <field name="date"/>
+                    <separator/>
                     <field name="product_id"/>
                     <field name="category_id"/>
                     <field name="label_ids"/>
                 </group>
                 <newline/>
                 <group expand="0" string="Group By...">
-                    <filter name="inventory" string="Inventory" icon="terp-accessories-archiver" domain="[]" context="{'group_by' : 'inventory_id'}"/>
+                    <filter name="name" string="Title" icon="terp-go-month" domain="[]" context="{'group_by' : 'name'}"/>
                     <filter name="category" string="Product Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'category_id'}"/>
                     <filter name="uom" string="Unit of Measure" icon="terp-mrp" domain="[]" context="{'group_by':'product_uom'}"/>
                 </group>
@@ -44,7 +30,8 @@ Are you sure ?</attribute>
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Details" editable="bottom">
-                <field name="inventory_id"/>
+                <field name="name"/>
+                <field name="date"/>
                 <field name="category_id"/>
                 <field name="product_id"/>
                 <field name="product_qty"/>
@@ -61,8 +48,8 @@ Are you sure ?</attribute>
         <field name="arch" type="xml">
             <form>
                 <group col="6" colspan="4">
+                    <field name="name"/>
                     <field name="product_id"/>
-                    <field name="inventory_id"/>
                     <field name="date"/>
                 </group>
                 <group col="8" colspan="4">
@@ -80,13 +67,17 @@ Are you sure ?</attribute>
             </form>
         </field>
     </record>
-    <act_window id="action_inventory_valuation"
-        name="Valuation"
+    
+    <!-- Action to open the valuation from the menu -->
+    <act_window id="action_inventory_valuation_all"
+        name="Product Valuations"
         res_model="stock.inventory.valuation"
-        src_model="stock.inventory"
         view_mode="tree,form"
         view_type="form"
-        context="{'search_default_inventory':1, 'search_default_category':1, 'search_default_uom':1}"
-        domain="[('inventory_id', '=', active_id)]"/>
-	</data>
+        context="{'search_default_name':1, 'search_default_category':1, 'search_default_uom':1}" />
+    
+    <menuitem name="Product Valuations" id="menu_inventory_valuation_all"
+        parent="stock.menu_stock_product" action="action_inventory_valuation_all" />
+    </data>
+
 </openerp>
