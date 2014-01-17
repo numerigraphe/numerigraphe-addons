@@ -11,7 +11,7 @@
             <field eval="False" name="active"/>
             <field name="model">product.product</field>
             <field name="function">search_create_valuation</field>
-            <field name="args">([],)</field>
+            <field name="args">([('active', '=', True)], {'location': 1})</field>
         </record>
     </data>
 </openerp>
