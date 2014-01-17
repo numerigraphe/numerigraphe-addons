@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2014 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,20 +18,4 @@
 #
 ##############################################################################
 
-{
-    "name": "Stock inventory valuation",
-    "version": "1.1",
-    "depends": ["stock"],
-    "author": u"Numérigraphe",
-    "category": "Pricing",
-    "description": """
-        Add an API to record the valuation of products by Product ID or by search domain.
-        Proposes a scheduled task to record the valuation once a week.
-    """,
-    "init_xml": ["stock_inventory_valuation_data.xml"],
-    "update_xml": ["stock_inventory_valuation_view.xml",
-                   "wizard/compute_stock_valuation_wizard_view.xml",
-                   "security/ir.model.access.csv"],
-     "test": ["test/valuation_inventory_test.yml"],
-     "demo": ["stock_inventory_valuation_demo.xml"]
-}
+import compute_stock_valuation_wizard

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2014 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class stock_inventory_valuation(osv.osv):
         return {v.id: v.standard_price * v.product_qty for v in valuations}
         
     _columns = {
-        'name': fields.char('name', size=64, required=True, select=True),
+        'name': fields.char('Title', size=64, required=True, select=True),
         'date': fields.datetime('Date', readonly=True, required=True),
         'product_id': fields.many2one('product.product', 'Product', ondelete='restrict',
                                       readonly=True),

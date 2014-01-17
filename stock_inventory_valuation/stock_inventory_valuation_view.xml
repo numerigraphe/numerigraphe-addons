@@ -7,8 +7,9 @@
         <field name="model">stock.inventory.valuation</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
-            <search string="Inventory Valuation">
+            <search string="Stock Valuation">
                 <group col="6" colspan="4">
+                    <field name="name"/>
                     <field name="date"/>
                     <separator/>
                     <field name="product_id"/>
@@ -17,9 +18,9 @@
                 </group>
                 <newline/>
                 <group expand="0" string="Group By...">
-                    <filter name="name" string="Title" icon="terp-go-month" domain="[]" context="{'group_by' : 'name'}"/>
-                    <filter name="category" string="Product Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'category_id'}"/>
-                    <filter name="uom" string="Unit of Measure" icon="terp-mrp" domain="[]" context="{'group_by':'product_uom'}"/>
+                    <filter name="group_by_name" string="Title" icon="terp-go-month" domain="[]" context="{'group_by' : 'name'}"/>
+                    <filter name="group_by_category" string="Product Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'category_id'}"/>
+                    <filter name="group_by_uom" string="Unit of Measure" icon="terp-mrp" domain="[]" context="{'group_by':'product_uom'}"/>
                 </group>
             </search>
         </field>
@@ -70,13 +71,13 @@
     
     <!-- Action to open the valuation from the menu -->
     <act_window id="action_inventory_valuation_all"
-        name="Product Valuations"
+        name="Stock Valuations"
         res_model="stock.inventory.valuation"
         view_mode="tree,form"
         view_type="form"
-        context="{'search_default_name':1, 'search_default_category':1, 'search_default_uom':1}" />
+        context="{'search_default_group_by_name':1, 'search_default_group_by_category':1, 'search_default_group_by_uom':1}" />
     
     <menuitem name="Product Valuations" id="menu_inventory_valuation_all"
-        parent="stock.menu_stock_product" action="action_inventory_valuation_all" />
+        parent="stock.menu_stock_inventory_control" action="action_inventory_valuation_all" sequence="50"/>
     </data>
 </openerp>

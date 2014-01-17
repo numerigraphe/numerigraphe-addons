@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2014 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,9 +19,11 @@
 ##############################################################################
 
 import collections
+from datetime import datetime as dt
 
 from osv import osv, fields
 from tools.translate import _
+import tools
 
 class ProductProduct(osv.osv):
     """Add methods to record the valuation"""
@@ -46,10 +48,13 @@ class ProductProduct(osv.osv):
         
         valuation_ids = []
         val_obj = self.pool.get('stock.inventory.valuation')
+        # nom par défault
+        name = context.get("name", _("Valuation as of %s") % dt.strftime(dt.now(), tools.DEFAULT_SERVER_DATE_FORMAT))
+
         for product in self.browse(cr, uid, ids, context=context):
             default = {
                       'product_id': product.id,
-                      'name': context.get("name", product.name),
+                      'name': name,
                       'standard_price': product.standard_price,
                       'product_uom': context.get("uom", product.uom_id.id),
                       'product_qty': product.qty_available,
@@ -68,4 +73,5 @@ class ProductProduct(osv.osv):
         return self.create_valuation(cr, uid,
                                      self.search(cr, uid, args, context=context),
                                      context=context)
+
 ProductProduct()
