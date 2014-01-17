@@ -19,7 +19,7 @@
 ##############################################################################
 
 import collections
-from datetime import datetime as dt
+import time
 
 from osv import osv, fields
 from tools.translate import _
@@ -49,7 +49,7 @@ class ProductProduct(osv.osv):
         valuation_ids = []
         val_obj = self.pool.get('stock.inventory.valuation')
         # nom par défault
-        name = context.get("name", _("Valuation as of %s") % dt.strftime(dt.now(), tools.DEFAULT_SERVER_DATE_FORMAT))
+        name = context.get("name", _("Valuation as of %s") % time.strftime(tools.DEFAULT_SERVER_DATE_FORMAT))
 
         for product in self.browse(cr, uid, ids, context=context):
             default = {

@@ -30,7 +30,7 @@
         <field name="model">stock.inventory.valuation</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Details" editable="bottom">
+            <tree string="Stock Valuations">
                 <field name="name"/>
                 <field name="date"/>
                 <field name="category_id"/>
@@ -50,20 +50,21 @@
             <form>
                 <group col="6" colspan="4">
                     <field name="name"/>
-                    <field name="product_id"/>
                     <field name="date"/>
                 </group>
-                <group col="8" colspan="4">
+                <separator colspan="4"/>
+                <group col="4" colspan="4">
+                    <field name="product_id"/>
+                    <field name="category_id"/>
+                    <label string="Labels" colspan="4"/>
+                    <field name="label_ids" nolabel="1" colspan="4"/>
+                </group>
+                <separator colspan="4"/>
+                <group col="4" colspan="4">
                     <field name="product_qty"/>
                     <field name="product_uom"/>
                     <field name="standard_price"/>
                     <field name="total_valuation"/>
-                </group>
-                <group col="2" colspan="4">
-                    <separator colspan="2"/>
-                    <field name="category_id"/>
-                    <label string="Labels" colspan="2"/>
-                    <field name="label_ids" nolabel="1" colspan="2"/>
                 </group>
             </form>
         </field>
@@ -77,7 +78,7 @@
         view_type="form"
         context="{'search_default_group_by_name':1, 'search_default_group_by_category':1, 'search_default_group_by_uom':1}" />
     
-    <menuitem name="Product Valuations" id="menu_inventory_valuation_all"
+    <menuitem id="menu_inventory_valuation_all" name="Stock Valuations"
         parent="stock.menu_stock_inventory_control" action="action_inventory_valuation_all" sequence="50"/>
     </data>
 </openerp>

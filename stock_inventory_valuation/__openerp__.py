@@ -20,13 +20,15 @@
 
 {
     "name": "Stock inventory valuation",
-    "version": "1.1",
+    "version": "2.0",
     "depends": ["stock"],
     "author": u"Numérigraphe",
     "category": "Pricing",
     "description": """
-        Add an API to record the valuation of products by Product ID or by search domain.
-        Proposes a scheduled task to record the valuation once a week.
+Lets you record Stock Valuations.
+* Adds a wizard to record the current Stock Valuation of a location (with sub-locations)
+* Adds an API to record the Stock Valuation by Product ID or by search domain. The location, warehouse or shop can be set in the context.
+* Proposes a scheduled task to record the valuation once a week.
     """,
     "init_xml": ["stock_inventory_valuation_data.xml"],
     "update_xml": ["stock_inventory_valuation_view.xml",

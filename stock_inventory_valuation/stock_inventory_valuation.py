@@ -23,6 +23,7 @@ import time
 from osv import osv, fields
 import decimal_precision as dp
 from tools.translate import _
+import tools
 
 class stock_inventory_valuation(osv.osv):
     """
@@ -40,29 +41,40 @@ class stock_inventory_valuation(osv.osv):
         return {v.id: v.standard_price * v.product_qty for v in valuations}
         
     _columns = {
-        'name': fields.char('Title', size=64, required=True, select=True),
-        'date': fields.datetime('Date', readonly=True, required=True),
+        'name': fields.char('Title', size=64, required=True, select=True,
+                            help="The title of the Stock Valuations. "
+                                 "Use the same title for all Stock Valuations "
+                                 "that form a logical set: for example if you "
+                                 "record the Valuation of all products after a "
+                                 "Physical Inventory, you should set the title "
+                                 "of all those Stock Valuations to the name of "
+                                 "the Physical Inventory."),
+        'date': fields.datetime('Date', readonly=True, required=True,
+                                help="The date on which this Stock Valuation was recorded."),
         'product_id': fields.many2one('product.product', 'Product', ondelete='restrict',
                                       readonly=True),
         'category_id':  fields.related('product_id', 'categ_id',
                                        relation='product.category', type='many2one',
                                        readonly=True, store=True,
-                                       string='Product Category'),
+                                       string='Product Category',
+                                       help='This is the current Category of the Product.'),
         'label_ids':  fields.related('product_id', 'label_ids',
                                      relation='product.label', type='many2many',
                                      readonly=True,
-                                     string='Product Labels'),
+                                     string="Product Labels",
+                                     help='These are the labels currently attached to this Product.'),
         'product_qty': fields.float('Quantity',
                                     digits_compute=dp.get_precision('Product UoM'),
-                                    readonly=True),
+                                    readonly=True,
+                                    help="The Quantity of Product of this Stock Valuation."),
         'product_uom': fields.many2one('product.uom', 'Unit of Measure',
                                        readonly=True,
-                                       help="unit of measure of product."),
+                                       help="The Unit of Measure of this Stock Valuation."),
         # XXX avg is pretty lame since it's not weighted by quantity
-        'standard_price': fields.float('Unit Price',
+        'standard_price': fields.float('Valuation Price',
                                        digits_compute=dp.get_precision('Product Price'),
-                                       group_operator='min',
-                                       help="Unit Cost Price of the Product at the date the valuation was recorded."),
+                                       required=True, group_operator='min',
+                                       help="Unit Valuation Price of the Product at the date the Stock Valuation was recorded. You can change this price after it was recorded if you need to."),
         'total_valuation': fields.function(_get_total_valuation, method=True,
             type="float", string='Total Valuation',
             digits_compute=dp.get_precision('Account'),
@@ -72,7 +84,7 @@ class stock_inventory_valuation(osv.osv):
             readonly=True),
     }
     _defaults = {
-        'date': lambda *a: time.strftime('%Y-%m-%d'),
+        'date': lambda *a: time.strftime(tools.DEFAULT_SERVER_DATE_FORMAT),
     }
 
 stock_inventory_valuation()
