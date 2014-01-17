@@ -25,6 +25,6 @@
             <!-- Current stock quantity is 14.000 -->
             <field name="product_qty">25.0</field>
             <field name="location_id" ref="stock.stock_location_components" />
-        </record>              
+        </record>
     </data>
 </openerp>
