@@ -24,11 +24,6 @@ class AccountBudgetPosition (osv.osv):
     """Add purchase orders to budget positions"""
     _inherit = 'account.budget.post'
     
-    PURCHASE_SIGNS = [
-        ('+', 'Positive'),
-        ('-', 'Negative'),
-    ]
-    
     _columns = {
         'include_purchase': fields.boolean('Include Purchase Orders',
             help="Check this box to take Purchase orders into account.\n"
@@ -38,7 +33,9 @@ class AccountBudgetPosition (osv.osv):
                  "when dealing with suppliers who send their invoices late "
                  "(i.e. monthly invoices after reception).\n"
              ),
-        'purchase_sign': fields.selection(PURCHASE_SIGNS, "Sign",
+        # The values are immutable on purpose: different code matches each value
+        'purchase_sign': fields.selection(
+            (('+', 'Positive'), ('-', 'Negative')), "Sign",
             help="If you select 'Positive', the sum of all the "
                  "lines of Purchase Orders already confirmed but not yet "
                  "Invoiced will be added to the 'real amount' of all the "
@@ -54,9 +51,26 @@ class BudgetLine(osv.osv):
     
     _inherit = "crossovered.budget.lines"
     
-    def _prac(self, cr, uid, ids, name, args, context=None):
+    # This is done on _prac_amt() because _prac would need us to redefine the function field too
+    def _prac_amt(self, cr, uid, ids, context=None):
         """Optionally add/substract the amount of the Purchase Order Lines"""
-        # FIXME
-        pass
+        # Get the standard amounts
+        results = super(BudgetLine, self)._prac_amt(cr, uid, ids, context=context)
+        # Compute the total amount of current purchase order lines
+        po_obj = self.pool.get("purchase.order")
+        po_ids = po_obj.search(cr, uid,
+            [('invoiced', '=', False), ('state', 'in', ['confirmed', 'done'])],
+            context=context)
+        # FIXME missing rounding!
+        po_amount = sum([po.amount_untaxed * (100.0 - po.invoiced_rate) / 100.0
+                         for po in po_obj.browse(cr, uid, po_ids, context=context)])
+        # Add/substract that amount to/from lines
+        if po_amount is not None:
+            for line in self.browse(cr, uid, ids, context=context):
+                if line.general_budget_id.include_purchase:
+                    if line.general_budget_id.purchase_sign == '+':
+                        results[line.id] += po_amount
+                    elif line.general_budget_id.purchase_sign == '-':
+                        results[line.id] -= po_amount
+        return results
 BudgetLine()
-
