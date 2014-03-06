@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data>
-
-    <!-- Ask for confirmation before canceling inventories -->
-    <record model="ir.ui.view" id="stock_inventory_valuation_form_view">
-        <field name="name">stock.inventory.valuation.form</field>
-        <field name="model">stock.inventory</field>
-        <field name="inherit_id" ref="stock.view_inventory_form" />
-        <field name="arch" type="xml">
-            <xpath
-                expr="/form[@string='Physical Inventory']//button[@name='action_cancel_inventory']"
-                position="attributes">
-                    <attribute name="confirm">The inventory valuation will be deleted.
-Are you sure ?</attribute>
-            </xpath>
-        </field>
-    </record>
-
+    <data>
     <!-- Inventory Valuation views -->
     <record model="ir.ui.view" id="view_inventory_valuation_filter">
         <field name="name">inventory.valuation.filter</field>
