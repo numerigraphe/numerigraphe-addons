@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 
 class stock_inventory_hierarchical(osv.osv):
@@ -43,7 +43,7 @@ class stock_inventory_hierarchical(osv.osv):
                 name = record['parent_id'][1] + ' / ' + name
             res.append((record['id'], name))
         return res
-    
+
     def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
         """Allow search on value returned by name_get ("parent/ child")"""
         if not args:
@@ -72,7 +72,7 @@ class stock_inventory_hierarchical(osv.osv):
                                                  ('state', 'in', ('confirm', 'done'))], context=context, count=True)
             rates[id] = 100 * nb_confirmed / nb
         return rates
-    
+
     _columns = {
         # XXX remove "method=True" in v7 ?
         'complete_name': fields.function(_name_get_fnc, method=True, type="char", string='Complete reference'),
@@ -100,19 +100,18 @@ class stock_inventory_hierarchical(osv.osv):
                 if current_id == id:
                     return False
         return True
-    
+
     # XXX: use this in v7
     # _constraints = [(osv.osv._check_recursion, 'Error! You can not create recursive inventories.', ['parent_id']), ]
     _constraints = [
         (_check_recursion,
          _('Error! You can not create recursive inventories.'), ['parent_id']),
     ]
-    
+
     # This is the list of fields that must be forced from Inventories to Sub-Inventories 
     # TODO: propose this as a new feature of the ORM's API using (using a field named _parent_values for example)
     PARENT_VALUES = ['date']
-    
-    
+
 # XXX: Ideally we would have liked to have a button to open Sub-inventories,
 # but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
 # Maybe we may try that again with the new web client one day... 
@@ -170,30 +169,32 @@ class stock_inventory_hierarchical(osv.osv):
         ctx['norecurs'] = True  # needed to write children once.
         return self.write(cr, uid, children_ids, record, context=ctx)
 
-    def action_cancel_inventary(self, cr, uid, ids, context=None):
+    def action_cancel_inventory(self, cr, uid, ids, context=None):
         """Cancel inventory only if all the parents are canceled"""
         inventories = self.browse(cr, uid, ids, context=context)
         for inventory in inventories:
             while inventory.parent_id:
                 inventory = inventory.parent_id
                 if inventory.state != 'cancel':
-                    raise osv.except_osv(_('Warning !'), _('One of the parent Inventories is not canceled.'))
-        return super(stock_inventory_hierarchical, self).action_cancel_inventary(cr, uid, ids, context=context)
+                    raise osv.except_osv(_('Warning !'), 
+                                         _('One of the parent Inventories is not canceled.'))
+        return super(stock_inventory_hierarchical, self).action_cancel_inventory(cr, uid, ids, context=context)
 
     def action_confirm(self, cr, uid, ids, context=None):
         """Confirm inventory only if all the children are confirmed"""
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
                                              ('state', 'not in', ['confirm', 'done'])], context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not confirmed.'))
+            raise osv.except_osv(_('Warning !'),
+                                 _('Some Sub-inventories are not confirmed.'))
         return super(stock_inventory_hierarchical, self).action_confirm(cr, uid, ids, context=context)
 
     def action_done(self, cr, uid, ids, context=None):
         """Perform validation only if all the children states are 'done'."""
         children_count = self.search(cr, uid, [('parent_id', 'child_of', ids),
-                                             ('state', '!=', 'done')], context=context, count=True)
+                                               ('state', '!=', 'done')],
+                                               context=context, count=True)
         if children_count > 1:
-            raise osv.except_osv(_('Warning !'), _('Some Sub-inventories are not done.'))
+            raise osv.except_osv(_('Warning !'),
+                                 _('Some Sub-inventories are not done.'))
         return super(stock_inventory_hierarchical, self).action_done(cr, uid, ids, context=context)
-
-stock_inventory_hierarchical()

@@ -14,7 +14,7 @@
   Adding pc1.
 -    
   !record {model: stock.inventory.line, id: lines_inventory_location_pc1}:
-    product_id: product.product_product_pc1
+    product_id: product.product_product_10
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_1    
@@ -88,7 +88,7 @@
   !python {model: product.product}: |
     from osv import orm, osv 
     ctx={'location': [ref('stock.stock_location_14')], 'to_date': '2020-12-31 23:59:59'} 
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_pc1')], ['qty_available'], context=ctx)[0]['qty_available']
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)[0]['qty_available']
     assert prod_qty_avail == 18.0, "The stock of PC1 was not set to 18.0 : %s" % prod_qty_avail
     
     prod_qty_avail = self.read(cr, uid, [ref('product.product_product_pc3')], ['qty_available'], context=ctx)[0]['qty_available']

@@ -18,23 +18,24 @@
 #
 ##############################################################################
 
-from osv import osv, orm
-from tools.translate import _
+from openerp.osv import osv, orm
+from openerp.tools.translate import _
+
 
 class StockInventoryCancelable(osv.osv):
     """Make inventories cancelable despite the constraint on stock move dates""" 
     _inherit = "stock.inventory"
-    
-    def action_cancel_inventary(self, cr, uid, ids, context=None):
+
+    def action_cancel_inventory(self, cr, uid, ids, context=None):
         """Inject a context key to not block the deletion of stock moves"""
         if context is None:
             context = {}
         else:
             context = context.copy()
         context['ignore_inventories'] = ids
-        return super(StockInventoryCancelable, self).action_cancel_inventary(
+        return super(StockInventoryCancelable, self).action_cancel_inventory(
             cr, uid, ids, context=context)
-StockInventoryCancelable()
+
 
 class StockMoveConstraint(osv.osv):
 
@@ -62,7 +63,7 @@ class StockMoveConstraint(osv.osv):
                 cr, uid, [('id', 'in', inventory_ids),
                           ('state', '=', 'done'),
                           ('date', '>=', limit_date)], context=context)
-    
+
     def create(self, cr, uid, vals, context=None):
         """Make sure the Stock Move being created doesn't make a finished inventory wrong"""
         # Take default values into account
@@ -72,11 +73,12 @@ class StockMoveConstraint(osv.osv):
                                    'location_dest_id', 'date'],
                                   context=context)
         vals.update(old_vals)
-        
+
         if vals.get('state') == 'done':
             inv_ids = self._past_inventories(cr, uid, [vals.get('product_id')],
                                              [vals.get('prodlot_id')],
-                                             [vals.get('location_id'), vals.get('location_dest_id')],
+                                             [vals.get('location_id'),
+                                             vals.get('location_dest_id')],
                                              vals.get('date'), context=context)
             if inv_ids:
                 # Make a message string with the names of the Inventories
@@ -88,11 +90,12 @@ class StockMoveConstraint(osv.osv):
                     _('Wrong Stock Moves'),
                     _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
         return super(StockMoveConstraint, self).create(cr, uid, vals, context=context)
-    
+
     def write(self, cr, uid, ids, vals, context=None):
         """Make sure the changes being made to the Stock Moves don't make a finished inventory wrong"""
         # XXX: the logic here is not 100% proven and may still allow some corner cases
-        # The difficulty is that inventories can be changed by doing or undoing a move, changing it's date, product, prodlot etc.  
+        # The difficulty is that inventories can be changed by doing or undoing a move, 
+        # changing it's date, product, prodlot etc.
         inv_ids = []
         # Nothing to do if we change no value that can affect past inventories
         if ('state' not in vals
@@ -102,7 +105,7 @@ class StockMoveConstraint(osv.osv):
              and 'prodlot_id' not in vals
              and 'product_id' not in vals):
             return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
-        
+
         if not isinstance(ids, list):
             ids = [ids]
         for move in self.browse(cr, uid, ids, context=context):
@@ -119,7 +122,7 @@ class StockMoveConstraint(osv.osv):
                     limit_date = vals.get('date', move.date)
                 else:
                     continue
-            
+
             # Search for inventories conflicting the change
             inv_ids.extend(self._past_inventories(cr, uid,
                                       [vals.get('product_id'), move.product_id.id],
@@ -127,7 +130,7 @@ class StockMoveConstraint(osv.osv):
                                       [vals.get('location_id'), move.location_id.id,
                                        vals.get('location_dest_id'), move.location_dest_id.id],
                                       limit_date, context=context))
-        
+
         if inv_ids:
             # Make a message string with the names of the Inventories
             inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
@@ -138,7 +141,6 @@ class StockMoveConstraint(osv.osv):
                 _('Wrong Stock Moves'),
                 _('The changes cannot be made because they conflict the following Stock Inventories:\n') + msg)
         return super(StockMoveConstraint, self).write(cr, uid, ids, vals, context=context)
-StockMoveConstraint()
 
 
 class stock_inventory_line(osv.osv):
@@ -155,7 +157,7 @@ class stock_inventory_line(osv.osv):
                                                      ('product_id', '=', line.product_id.id),
                                                      ('prod_lot_id', '=', line.prod_lot_id.id),
                                                      ('inventory_id', '=', line.inventory_id.id)
-                                               ], context=context, count=True)
+                                                    ], context=context, count=True)
             if duplicates_count > 1:
                 message = '%s - %s - %s\n' % (line.location_id.name, line.prod_lot_id.name, line.product_id.name)
 
@@ -164,6 +166,5 @@ class stock_inventory_line(osv.osv):
                                  _('The following lines are duplicates and will be deleted :\n%s') % message)
         return True
 
-    _constraints = [(_check_duplicates_line, 'Error: duplicates lines', ['location_id', 'product_id', 'prod_lot_id']), ]
-
-stock_inventory_line()
+    _constraints = [(_check_duplicates_line, 'Error: duplicates lines',
+                     ['location_id', 'product_id', 'prod_lot_id']), ]

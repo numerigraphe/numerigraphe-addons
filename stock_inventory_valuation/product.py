@@ -74,4 +74,3 @@ class ProductProduct(osv.osv):
                                      self.search(cr, uid, args, context=context),
                                      context=context)
 
-ProductProduct()

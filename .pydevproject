@@ -8,6 +8,7 @@
 <path>/numerigraphe</path>
 </pydev_pathproperty>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>/home/loic/workspace/server/bin</path>
+<path>/home/loic/workspace_v7/server</path>
+<path>/home/loic/workspace_v7/server/openerp</path>
 </pydev_pathproperty>
 </pydev_project>

@@ -28,11 +28,15 @@
 This module makes exhaustive Inventories aware of their Sub-Inventories.
 ========================================================================
 
-It should be installed if both modules "stock_inventory_location" and "stock_inventory_hierarchical" are installed.
+It should be installed if both modules "stock_inventory_location"
+and "stock_inventory_hierarchical" are installed.
 
-This module allows an inventory to contain a general Location, and it's sub-inventories to contain some of it's sub-Locations.
-When you open an inventory, OpenERP will warn you if some of the sub-Locations of an inventory are absent from the sub-Inventories.
-It will also prevent you from setting the Inventories and sub-Inventories in inconsistent status.
+This module allows an inventory to contain a general Location,
+and it's sub-inventories to contain some of it's sub-Locations.
+When you open an inventory, OpenERP will warn you if some of the sub-Locations
+of an inventory are absent from the sub-Inventories.
+It will also prevent you from setting the Inventories and sub-Inventories 
+in inconsistent status.
     """,
     "init_xml": [],
     "update_xml": [

@@ -50,7 +50,7 @@
                     <attribute name="attrs">{'readonly':[('parent_id', '!=', False)]}</attribute>
                 </xpath>
                 <xpath
-                    expr="/form[@string='Physical Inventory']/notebook/page[@string='General Informations']"
+                    expr="//page[@string='General Information']"
                     position="after">
                     <page string="Sub-inventories">
                         <field name="parent_id" invisible="1" />
@@ -68,7 +68,7 @@
             <field name="type">tree</field>
             <field name="priority" eval="99" />
             <field name="arch" type="xml">
-                <tree string="Sub-inventories">
+                <tree string="Sub-inventories" version="7.0">
                     <field name="name" />
                     <field name="state" />
                     <field name="confirmed_rate" widget="progressbar" />
@@ -89,7 +89,7 @@
             <field name="type">form</field>
             <field name="priority" eval="99" />
             <field name="arch" type="xml">
-                <form>
+                <form string="Sub-inventories" version="7.0">
                     <group colspan="4" col="2">
                         <field name="name" default_focus="1"/>
                     </group>
@@ -99,8 +99,7 @@
                         <field name="state" />
                         <!-- XXX: Ideally we would have liked to have a button to open Sub-inventories,
                             but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
-                            Maybe we may try that again with the new web client one day... 
-                            
+                            Maybe we may try that again with the new web client one day...                             
                             <button string="View this inventory" type="object" name="open_sub_inventory"/>
                         -->
                     </group>

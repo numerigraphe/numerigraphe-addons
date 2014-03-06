@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    
+
         <record id="compute_stock_valuation_wizard_form" model="ir.ui.view">
             <field name="name">stock.inventory.valuation.wizard.wizard.form</field>
             <field name="model">stock.inventory.valuation.wizard</field>
@@ -17,8 +17,7 @@
                     <button name="action_ok" type="object" icon="gtk-ok" string="Ok" />
                 </form>
             </field>
-        </record>    
-    
+        </record>        
     
     <!-- Action to open the valuation from the menu -->
     <record id="action_compute_stock_valuation" model="ir.actions.act_window">
@@ -29,7 +28,7 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    
+
     <!-- Add menu entry -->
     <menuitem name="Record current Stock Valuation" id="menu_compute_stock_valuation"
         parent="stock.menu_stock_inventory_control" action="action_compute_stock_valuation" sequence="55"/>

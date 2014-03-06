@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 
 class partner(osv.osv):
     _inherit = 'res.partner'
@@ -33,6 +33,6 @@ class partner(osv.osv):
             help="The reference attributed by the partner to the current "
                  "company as a customer of theirs."),
     }
-partner()
+
 
 

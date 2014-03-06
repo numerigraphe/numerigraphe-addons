@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 
 class stock_inventory_uninventoried_location(osv.osv_memory):
@@ -92,4 +92,4 @@ class stock_inventory_uninventoried_location(osv.osv_memory):
         inventory_obj.action_confirm(cr, uid, inventory_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
-stock_inventory_uninventoried_location()
+

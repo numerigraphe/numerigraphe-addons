@@ -19,7 +19,7 @@
 ##############################################################################
 
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import decimal_precision as dp
 
 class stock_move(osv.osv):
@@ -45,4 +45,4 @@ class stock_move(osv.osv):
                     help='This is the quantity of product initially intended '
                          'for this Stock Move.'),
     }
-stock_move()
+

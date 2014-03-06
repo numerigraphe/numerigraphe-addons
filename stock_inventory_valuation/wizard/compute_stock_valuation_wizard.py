@@ -20,8 +20,8 @@
 
 from datetime import datetime as dt
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 import tools
 
 
@@ -72,4 +72,3 @@ class compute_stock_valuation(osv.osv_memory):
             'domain': [('id', 'in', valuation_ids)],
         } or True
 
-compute_stock_valuation()

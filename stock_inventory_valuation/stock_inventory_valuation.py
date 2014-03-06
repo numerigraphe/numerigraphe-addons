@@ -20,9 +20,9 @@
 
 import time
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import decimal_precision as dp
-from tools.translate import _
+from openerp.tools.translate import _
 import tools
 
 class stock_inventory_valuation(osv.osv):
@@ -34,7 +34,7 @@ class stock_inventory_valuation(osv.osv):
     """
     _name = 'stock.inventory.valuation'
     _description = 'Stock inventory valuation'
-    
+
     def _get_total_valuation(self, cr, uid, ids, fields, arg, context=None):
         """Method for the function field 'total_valuation'"""
         valuations = self.browse(cr, uid, ids, context=context)
@@ -87,4 +87,3 @@ class stock_inventory_valuation(osv.osv):
         'date': lambda *a: time.strftime(tools.DEFAULT_SERVER_DATE_FORMAT),
     }
 
-stock_inventory_valuation()

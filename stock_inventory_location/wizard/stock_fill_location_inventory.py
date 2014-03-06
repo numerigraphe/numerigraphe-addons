@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import fields, osv
-from tools.translate import _
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 from collections import OrderedDict
 
 
@@ -51,11 +51,13 @@ class stock_fill_location_inventory(osv.osv_memory):
         inventory_obj = self.pool.get('stock.inventory')
         inventory_state = inventory_obj.read(cr, uid, [context.get('active_id')], ['state'], context=context)[0]
         if inventory_state['state'] != 'open':
-            raise osv.except_osv(_('Error !'), _('the inventory must be in "Open" state.'))
+            raise osv.except_osv(_('Error !'),
+                                 _('the inventory must be in "Open" state.'))
 
         nb_inventory = inventory_obj.search(cr, uid, [('id', '=', context.get('active_id'))], count=True, context=context)
         if nb_inventory == 0:
-            raise osv.except_osv(_('Warning !'), _('No locations found for the inventory.'))
+            raise osv.except_osv(_('Warning !'),
+                                 _('No locations found for the inventory.'))
 
         return super(stock_fill_location_inventory, self).view_init(cr, uid, fields_list, context=context)
 
@@ -92,5 +94,3 @@ class stock_fill_location_inventory(osv.osv_memory):
         for line in lines:
             inventory_lines_obj.create(cr, uid, line, context=context)
         return {'type': 'ir.actions.act_window_close'}
-
-stock_fill_location_inventory()

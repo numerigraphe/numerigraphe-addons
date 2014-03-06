@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv, fields
-from tools.translate import _
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 class stock_location(osv.osv):
     _inherit = 'stock.location'
@@ -37,7 +37,7 @@ class stock_location(osv.osv):
          'receipt': lambda *a: False,
          'need_quality': lambda *a: False,
     }
-stock_location()
+
 
 class stock_production_lot(osv.osv):
 
@@ -113,7 +113,7 @@ class stock_production_lot(osv.osv):
             new_values['locked'] = True
             
         return super(stock_production_lot, self).create(cr, uid, new_values, context=context)
-stock_production_lot()
+
 
 class stock_move(osv.osv):
 
@@ -153,4 +153,4 @@ class stock_move(osv.osv):
         if prodlot_ids:
             self.pool.get('stock.production.lot').write(cr, uid, prodlot_ids,{'locked': True}, context=context)
         return super(stock_move, self).action_done(cr, uid, ids, context=context)
-stock_move()
+

@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-from osv import osv
-from tools.translate import _
+from openerp.osv import osv
+from openerp.tools.translate import _
 
 
 class StockInventory(osv.osv):
@@ -33,12 +33,15 @@ class StockInventory(osv.osv):
 
     def action_open(self, cr, uid, ids, context=None):
         """Open only if all the parents are Open."""
-        #XXX the dosctring used to say this but it's not implemented, normal? --> "Before opening, if locations are  missing, ask the user to validate the opening without these locations."
+        #XXX the dosctring used to say this but it's not implemented, normal?
+        # --> "Before opening, if locations are  missing, ask the user 
+        # to validate the opening without these locations."
         for inventory in self.browse(cr, uid, ids, context=context):
             while inventory.parent_id:
                 inventory = inventory.parent_id
                 if inventory.state != 'open':
-                    raise osv.except_osv(_('Warning !'), _('One of the parent inventories are not open.'))
+                    raise osv.except_osv(_('Warning !'),
+                                         _('One of the parent inventories are not open.'))
         return super(StockInventory, self).action_open(cr, uid, ids, context=context)
 
     def check_location(self, cr, uid, ids, location_ids, name, context=None):
@@ -73,7 +76,8 @@ class StockInventory(osv.osv):
         for inventory in self.browse(cr, uid, children_ids, context=context):
             if inventory.exhaustive:
                 if not inventory.location_ids:
-                    raise osv.except_osv(_('Warning !'), _('Location missing for inventory "%s".') % inventory.name)
+                    raise osv.except_osv(_('Warning !'),
+                                         _('Location missing for inventory "%s".') % inventory.name)
         children_count = self.pool.get('stock.inventory').search(cr, uid, [('parent_id', 'child_of', ids)], count=True)
         if children_count == 1:
             return self.action_open(cr, uid, ids, context)
@@ -89,7 +93,6 @@ class StockInventory(osv.osv):
                 'context': context,
                 'nodestroy': True,
                 }
-StockInventory()
 
 
 # XXX: move to /wizard
@@ -131,4 +134,4 @@ class StockInventoryUninventoriedLocation(osv.osv_memory):
     _defaults = {
         'location_ids': default_locations,
         }
-StockInventoryUninventoriedLocation()
+

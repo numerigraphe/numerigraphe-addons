@@ -5,7 +5,7 @@
 -
  !python {model: product.product}: |
   ctx = {'location': [ref('stock.stock_location_components')], 'to_date': '2099-01-01 13:10:34'}
-  products = self.read(cr, uid, [ref('product.product_product_pc1')], ['qty_available'], context=ctx)
+  products = self.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)
   assert products[0]['qty_available'] == 10.0, "Quantity is not equal to 10.0 before stock move : %s" % products[0]['qty_available']
 -
   To check that inventories are not made wrong by stock moves dated ealier,
@@ -16,7 +16,7 @@
     from osv import orm
 
     try:
-      move_id = self.create(cr, uid, {'product_id': ref('product.product_product_pc1'),
+      move_id = self.create(cr, uid, {'product_id': ref('product.product_product_10'),
                                       'location_id': ref('stock.stock_location_14'),
                                       'location_dest_id': ref('stock.stock_location_components'),
                                       'product_qty': 17.0,
@@ -27,7 +27,7 @@
       # I check the available quantity
       product_obj = self.pool.get('product.product')
       ctx = {'location': [ref('stock.stock_location_components')], 'to_date': '2099-01-01 15:10:34'}
-      products = product_obj.read(cr, uid, [ref('product.product_product_pc1')], ['qty_available'], context=ctx)
+      products = product_obj.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)
       assert products[0]['qty_available'] == 10.0, "Quantity is not equal to 10 after stock move : %s" % products[0]['qty_available']
     except orm.except_orm as e:
       log("Good ! the stock move creation action has failed : %s" % e)
@@ -39,7 +39,7 @@
     name: Test draft stock move before inventory date
     location_id: stock.stock_location_components
     location_dest_id: stock.stock_location_7
-    product_id: product.product_product_pc1
+    product_id: product.product_product_10
     prodlot_id : lot_test0
     product_qty: 3.0
     product_uom: product.product_uom_unit
@@ -59,7 +59,7 @@
       self.action_done(cr, uid, [ref('draft_stock_move')])
       # I check the available quantity
       products = self.pool.get('product.product').read(
-        cr, uid, [ref('product.product_product_pc1')], ['qty_available'],
+        cr, uid, [ref('product.product_product_10')], ['qty_available'],
         context={'location': [ref('stock.stock_location_components')],
                  'to_date': '2099-01-01 15:10:34'})
       assert products[0]['qty_available'] == 10.0, "Quantity is not equal to 10 after stock move : %s" % products[0]['qty_available']
@@ -73,7 +73,7 @@
     name: 2nd Test draft stock move before inventory date
     location_id: stock.stock_location_components
     location_dest_id: stock.stock_location_7
-    product_id: product.product_product_pc1
+    product_id: product.product_product_10
     prodlot_id : lot_test0
     product_qty: 3.0
     product_uom: product.product_uom_unit
@@ -97,7 +97,7 @@
     date: '2099-06-02 09:53:28'
     location_id: stock.stock_location_14
     location_dest_id: stock.stock_location_components
-    product_id: product.product_product_pc1
+    product_id: product.product_product_10
     prodlot_id : lot_test0
     product_qty: 10.0
     product_uom: product.product_uom_unit
@@ -106,7 +106,7 @@
   I check the quantity for product is equal to 20.0 after the inventory.
 -
  !python {model: product.product}: |
-  products = self.read(cr, uid, [ref('product.product_product_pc1')],['qty_available'],
+  products = self.read(cr, uid, [ref('product.product_product_10')],['qty_available'],
                        context={'location': [ref('stock.stock_location_components')],
                                 'to_date': '2099-12-31 19:10:34'})
   assert products[0]['qty_available'] == 20.0, "Quantity is not equal to 20.0 : %s" % products[0]['qty_available']
@@ -117,10 +117,10 @@
   !python {model: stock.inventory}: |
     from osv import orm
     try:
-      self.action_cancel_inventary(cr, uid, [ref('stock_inventory_init')])
+      self.action_cancel_inventory(cr, uid, [ref('stock_inventory_init')])
       # I check the available quantity
       products = self.pool.get('product.product').read(
-        cr, uid, [ref('product.product_product_pc1')], ['qty_available'],
+        cr, uid, [ref('product.product_product_10')], ['qty_available'],
         context={'location': [ref('stock.stock_location_components')],
                  'to_date': '2099-12-31 19:10:34'})
       assert products[0]['qty_available'] == 20.0, "Quantity is not equal to 20 after canceling the inventory : %s" % products[0]['qty_available']
@@ -130,4 +130,4 @@
   I check that the last inventory can be canceled
 -
   !python {model: stock.inventory}: |
-    self.action_cancel_inventary(cr, uid, [ref('stock_inventory_physical0')])
+    self.action_cancel_inventory(cr, uid, [ref('stock_inventory_physical0')])

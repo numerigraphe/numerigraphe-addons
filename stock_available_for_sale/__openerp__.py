@@ -23,11 +23,11 @@
     'version' : '1.2',
     'author' : u'Numérigraphe SÀRL',
     'category' : 'Stock',
-    'depends' : [
-        'sale', 'stock',  # FIXME in v7: depend upon 'sale_stock' instead
-        'sale_order_dates',
-        'mrp',
-    ],
+    'depends' : ['sale_stock',
+                 #'stock',
+                 #'sale',
+                 'sale_order_dates',
+                 ],
     'description': """
 This module computes and displays the quantities available for sale for Products in a given context.
 

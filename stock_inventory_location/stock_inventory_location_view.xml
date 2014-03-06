@@ -23,33 +23,29 @@
                     </field>
                 </xpath>                    
 
+				<!-- Add Fill Inventory button when state is open -->
+				<xpath expr="//button[@string='Fill Inventory']" position="attributes">
+					<attribute name="states">draft,open,confirm</attribute>
+				</xpath>
+
                 <!-- Reduce the colspan of the lines to make room for the Locations-->
                 <xpath expr="/form//field[@name='inventory_line_id']" position="attributes">
                     <attribute name="colspan">3</attribute>
                 </xpath>                
 
                 <!-- Control locations added by user on inventory line -->  
-                <xpath expr="/form//field[@name='inventory_line_id']/tree/field[@name='location_id']" position="attributes">
+                <xpath expr="/form//field[@name='inventory_line_id']/tree//field[@name='location_id']" position="attributes">
                     <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
                 </xpath>
-                <xpath expr="/form//field[@name='inventory_line_id']/form/field[@name='location_id']" position="attributes">
+                <xpath expr="/form//field[@name='inventory_line_id']/form//field[@name='location_id']" position="attributes">
                     <attribute name="on_change">onchange_location_id(parent.location_ids, parent.exhaustive, location_id)</attribute>
                 </xpath>
-                
-				<!-- XXX: does not work: there is no state on inventory lines / work only on Loic version mode -->
-                <!-- Change states when the button is available --> 
-                <!-- <xpath expr="/form//field/tree/button[@name='%(stock.action_view_stock_inventory_line_split)d']" position="attributes">
-                    <attribute name="states">open</attribute>
-                </xpath>                
-                <xpath expr="/form//field/form/button[@name='%(stock.action_view_stock_inventory_line_split)d']" position="attributes">
-                    <attribute name="states">open</attribute>
-                </xpath> -->                
-                
+                                
                 <!-- #XXX change the attributes  instead and add the button -->
                 <!-- #XXX enlarge the group's colspan? -->
                 <!-- Add button to open an inventory. Call wizard on confirm inventory -->
-                <xpath expr="/form//button[@name='action_cancel_inventary']" position="replace">
-                    <button name="action_cancel_inventary" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>
+                <xpath expr="/form//button[@name='action_cancel_inventory']" position="replace">
+                    <button name="action_cancel_inventory" states="draft,open,confirm,done" string="Cancel Inventory" type="object" icon="gtk-cancel"/>
                     <button name="action_open" states="draft" string="Open Inventory" type="object" icon="gtk-go-forward"/>
                 </xpath>
                 

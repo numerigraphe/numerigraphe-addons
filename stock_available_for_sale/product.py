@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 import decimal_precision as dp
 
 
@@ -61,7 +61,7 @@ class product_product(osv.osv):
         # Compute the core quantities
         res = super(product_product, self)._product_available(
             cr, uid, ids, field_names=field_names, arg=arg, context=context)
-        
+
         # Compute the quantities quoted/potential/available for sale
         if ('quoted_qty' in field_names
             or 'available_for_sale' in field_names
@@ -141,7 +141,7 @@ class product_product(osv.osv):
                 "         product_uom",
                 (tuple(ids),) + date_args + shop_args)
             results = cr.fetchall()
-            
+    
             # Get the UoM resources we'll need for conversion
             # UoMs from the products
             uoms_o = {}
@@ -257,5 +257,4 @@ class product_product(osv.osv):
                  "Location.\n"
                  "Otherwise, this includes every Quotation."),
     }
-product_product()
 
