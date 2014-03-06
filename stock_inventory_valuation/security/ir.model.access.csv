@@ -1,3 +1,2 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_stock_inventory_valuation_user","stock.inventory_valuation user","model_stock_inventory_valuation","stock.group_stock_user",1,0,0,0
 "access_stock_inventory_valuation_manager","stock.inventory_valuation manager","model_stock_inventory_valuation","stock.group_stock_manager",1,1,1,1

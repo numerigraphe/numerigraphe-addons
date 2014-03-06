@@ -43,10 +43,11 @@ But for exhaustive inventories in complex warehouses, it is not practical:
 
 This module lets choose whether an Physical Inventory is exhaustive or standard.
 For an exhaustive Inventory, in the state "Draft" you define the list of Locations where goods must be counted.
- - a new Inventory status ("Open") lets you indicate that the list of Locations is definitive and you are now counting the goods. In that status, no Stock Moves can be recorded in/out of the Inventory's Locations.
- - if some of the Inventory's Locations have not been entered in the Inventory Lines, OpenERP warns you when you confirm the Inventory
- - only the Inventory's Locations can be entered in the Inventory Lines
- - every good that is not in the Inventory Lines is considered lost, and gets moved out of the stock when you confirm the Inventory
+ - a new Inventory status ("Open") lets you indicate that the list of Locations is definitive and you are now counting the goods.
+    In that status, no Stock Moves can be recorded in/out of the Inventory's Locations.
+ - if some of the Inventory's Locations have not been entered in the Inventory Lines, OpenERP warns you when you confirm the Inventory.
+ - only the Inventory's Locations can be entered in the Inventory Lines.
+ - every good that is not in the Inventory Lines is considered lost, and gets moved out of the stock when you confirm the Inventory.avec openerp
 """,
     "update_xml": [
                    "wizard/stock_confirm_uninventoried_location.xml",

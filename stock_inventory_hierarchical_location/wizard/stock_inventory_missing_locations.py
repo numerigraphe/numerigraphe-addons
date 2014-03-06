@@ -80,5 +80,3 @@ class inventory_missing_location(osv.osv_memory):
     _defaults = {
         'location_ids': default_missing_locations,
         }
-
-

@@ -72,7 +72,6 @@
                     <field name="name" />
                     <field name="state" />
                     <field name="confirmed_rate" widget="progressbar" />
-                    <!-- <field name="inventory_ids" string="Number of Sub-inventories"/> -->
                     <field name="inventory_ids" string="Number of Sub-inventories"/>
                     <!-- XXX: Ideally we would have liked to have a button to open Sub-inventories,
                     but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
@@ -100,8 +99,7 @@
                         <field name="state" />
                         <!-- XXX: Ideally we would have liked to have a button to open Sub-inventories,
                             but unfortunately the v6.0 GTK client crashes, and the 6.0 web client opens a windows without action buttons.
-                            Maybe we may try that again with the new web client one day... 
-                            
+                            Maybe we may try that again with the new web client one day...                             
                             <button string="View this inventory" type="object" name="open_sub_inventory"/>
                         -->
                     </group>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2014 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,4 +18,4 @@
 #
 ##############################################################################
 
-import inventory_hierarchical_valuation
+import compute_stock_valuation_wizard

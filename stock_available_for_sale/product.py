@@ -107,9 +107,7 @@ class product_product(osv.osv):
                 res_location = cr.fetchone()
                 if res_location:
                     shop_ids.append(res_location)
-                else:
-                    # Give up if we found no shop
-                    return res
+
             # Account for a warehouse in the context
             # Take any draft order in any shop using this warehouse
             if context.get('warehouse', False):
@@ -120,9 +118,7 @@ class product_product(osv.osv):
                 res_wh = cr.fetchone()
                 if res_wh:
                     shop_ids.append(res_wh)
-                else:
-                    # Give up if we found no warehouse
-                    return res
+
             # If we are in a single Shop context, only count the quotations from this shop
             if context.get('shop', False):
                 shop_ids.append(context['shop'])

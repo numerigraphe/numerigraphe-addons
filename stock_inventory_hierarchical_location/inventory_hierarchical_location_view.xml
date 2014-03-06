@@ -23,8 +23,7 @@
                     </field>           
                 </xpath>
                 
-                <!-- replace action_open button to open wizard missing locations -->
-                <!-- <xpath expr="//form[@string='Physical Inventory']/group[last()]/button[@name='action_open']" position="replace"> -->
+                <!-- replace action_open button to open wizard missing locations -->                
                 <xpath expr="/form//button[@name='action_open']" position="replace">
                      <button name="open_missing_location_wizard"
                       string="Open Inventory" type="object" states="draft" icon="gtk-apply"/>                    

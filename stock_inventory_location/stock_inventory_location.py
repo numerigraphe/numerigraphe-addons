@@ -29,7 +29,11 @@ class StockInventory(osv.osv):
     _inherit = 'stock.inventory'
     _columns = {
         # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
-        'state': fields.selection((('draft', 'Draft'), ('open', 'Open'), ('done', 'Done'), ('confirm', 'Confirmed'), ('cancel', 'Cancelled')), 'State', readonly=True, select=True),
+        'state': fields.selection((('draft', 'Draft'),
+                                   ('open', 'Open'),
+                                   ('done', 'Done'),
+                                   ('confirm', 'Confirmed'),
+                                   ('cancel', 'Cancelled')), 'State', readonly=True, select=True),
         # Make the inventory lines read-only in all states except "Open", to ensure that no unwanted Location can be inserted
         'inventory_line_id': fields.one2many('stock.inventory.line', 'inventory_id', 'Inventory lines', readonly=True, states={'open': [('readonly', False)]}),
         'location_ids': fields.many2many('stock.location', 'stock_inventory_location_rel',
@@ -90,7 +94,7 @@ For an exhaustive Inventory:
         for open_inventory in self.browse(cr, uid, open_inventories_ids, context=context):
             location_ids.update([location.id for location in open_inventory.location_ids])
         # Extend to the children Locations
-        if location_ids: #XXX probably works even otherwise
+        if location_ids:  # XXX probably works even otherwise
             location_ids = self.pool.get('stock.location').search(cr, uid,
                 [('location_id', 'child_of', location_ids), ('usage', '=', 'internal')],
                 context=context)
@@ -150,7 +154,8 @@ For an exhaustive Inventory:
 
                 datas[(prod_id, lot_id)] = {'product_id': prod_id,
                                             'location_id': location,
-                                            # Floating point sum could introduce some tiny rounding errors. The uom are the same on input and output to use api for rounding.
+                                            # Floating point sum could introduce some tiny rounding errors. 
+                                            # The uom are the same on input and output to use api for rounding.
                                             'product_qty': uom_obj._compute_qty_obj(cr, uid, move.product_id.uom_id, qty, move.product_id.uom_id),
                                             'product_uom': move.product_id.uom_id.id,
                                             'prod_lot_id': lot_id,
@@ -217,8 +222,6 @@ class StockInventoryLine(osv.osv):
         return True
 
 
-
-
 class StockLocation(osv.osv):
     """Refuse changes during exhaustive Inventories"""
     _inherit = 'stock.location'
@@ -259,7 +262,6 @@ class StockLocation(osv.osv):
         return super(StockLocation, self).unlink(cr, uid, ids, context=context)
 
 
-
 class StockMove(osv.osv):
     """Refuse Moves during exhaustive Inventories"""
 
@@ -291,4 +293,3 @@ class StockMove(osv.osv):
                     (_check_open_inventory_location,
                      "A Physical Inventory is being conducted at this location", ['location_id', 'location_dest_id']),
                    ]
-
