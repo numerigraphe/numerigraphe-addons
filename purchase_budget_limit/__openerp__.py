@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    This module is copyright (C) 2014 Numérigraphe SARL. All Rights Reserved.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,19 +19,22 @@
 ##############################################################################
 
 {
-    'name': "Take uninvoiced Purchase Orders into account in Budget Lines",
+    'name': "Block Purchase Orders that go beyond a Budget line",
     'version': '1.0',
     'author': u'Numérigraphe SARL',
-    'category': 'Generic Modules/Accounting',
-    'description': '''This module lets Budget manager take pending Purchase Orders into account in Budget Lines.
-Normally the Budgets are based on the Entries of General Accounting, and may be filtered by Analytic Account.
-The problem for purchase Budgets is that invoices may come in very late in the
-process. This often hides future problems from the sight of the managers.
+    'category': 'Generic Modules/Purchase',
+    'description': '''This module lets Budget managers define limits on Purchase Orders.
+When new Purchase Orders are being confirmed, this will put them in a
+special State if the remaining budget from any of the Budget Lines is not
+sufficient to pay the expected invoice.
 
-To help with this problem, this module lets Budget Manager include the amounts
-of Purchase Order Lines that have been confirmed but not yet invoiced.''',
+Purchase managers can either wait until the situation changes, or override the
+budget and approve the Purchase Order, or cancel the Purchase Order.''',
     'depends' : ['account_budget', 'purchase'],
     'data': [
-        'account_budget_view.xml',
+        'purchase_workflow.xml',
+        'purchase_view.xml',
+        'wizard/purchase_budget_view.xml',
+        'security/ir.model.access.csv',
     ],
 }
