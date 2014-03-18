@@ -96,7 +96,7 @@ class StockInventory(osv.osv):
 
 
 # XXX: move to /wizard
-class StockInventoryUninventoriedLocation(osv.osv_memory):
+class StockInventoryUninventoriedLocation(osv.TransientModel):
     _inherit = 'stock.inventory.uninventoried.locations'
 
     def inventories(self, cr, uid, inventory_parent_id):

@@ -7,8 +7,8 @@
             <field name="model">stock.location.product</field>
             <field name="arch" type="xml">
             	<data>
-                    <xpath expr="/form/separator[2]" position="before" >
-                        <group colspan="4" groups="base.group_extended">
+                    <xpath expr="//form/group[2]" position="after" >
+                        <group>
                             <separator string="Additional information" colspan="4"/>
                             <field name="partner_id" colspan="4"/>
                         </group>

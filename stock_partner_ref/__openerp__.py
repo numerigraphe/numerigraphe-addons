@@ -22,8 +22,9 @@
     'name': 'Partner references on Product lists',
     'version': '1.0',
     "category" : "Generic Modules/Inventory Control",
-    'description': """This modules adds an option to select a Partner whose references will be displayed along with the Product list in the wizard 'Stock by Location'.
-It will also add the Partner's reference on any Product list when a Partner is in the context.""",
+    'description': """This modules adds an option to select a Partner 
+    whose references will be displayed along with the Product list in the wizard 'Stock by Location'.
+    It will also add the Partner's reference on any Product list when a Partner is in the context.""",
     'author': u'Numérigraphe SARL',
     'depends': [
         'product',

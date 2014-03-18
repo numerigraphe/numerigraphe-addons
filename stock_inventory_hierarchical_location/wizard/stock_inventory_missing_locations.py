@@ -22,7 +22,7 @@ from openerp.osv import osv, fields
 from openerp.tools.translate import _
 
 
-class inventory_missing_location(osv.osv_memory):
+class inventory_missing_location(osv.TransientModel):
 
     _name = 'stock.inventory.missing.location'
     _description = 'Search on inventory tree for missing declared locations.'

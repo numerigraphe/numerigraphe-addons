@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import osv, fields
 from inspect import getargspec
 
 class sale_order_line(osv.osv):
@@ -28,7 +28,7 @@ class sale_order_line(osv.osv):
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
         """Tweak the context to base the stock availability control on the quantity available for sale"""
-        
+
         # in v6.0 and earlier (and probably many community addons), product_id_change() doesn't accept a context parameter, so there's nothing we can really do
         parent_method = super(sale_order_line, self).product_id_change
         if 'context' not in getargspec(parent_method)[0]:

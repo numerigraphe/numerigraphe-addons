@@ -20,14 +20,15 @@
 
 from openerp.osv import fields, osv
 
-class stock_location_product(osv.osv_memory):
+
+class stock_location_product(osv.TransientModel):
     _name = 'stock.location.product'
     _inherit = 'stock.location.product'
     _columns = {
         'partner_id': fields.many2one('res.partner',
                                       "Display Partner's references"),
     }
-    
+
     def action_open_window(self, cr, uid, ids, context=None):
         """Add the selected partner to the context"""
         # Call the standard method
@@ -43,9 +44,9 @@ class stock_location_product(osv.osv_memory):
         if location_product:
             # XXX in trunk , change to  ... = location_product[0]['partner_id'][0]
             result['context']['partner_id'] = location_product[0]['partner_id']
-        
+
         return result
-            
+
 
 
 

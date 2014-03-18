@@ -23,12 +23,13 @@ from openerp.tools.translate import _
 from collections import OrderedDict
 
 
-class stock_fill_location_inventory(osv.osv_memory):
+class stock_fill_location_inventory(osv.TransientModel):
     _inherit = 'stock.fill.inventory'
 
     _columns = {
          'location_id': fields.many2one('stock.location', 'Location'),
-         'exhaustive': fields.boolean('stock.inventory', 'Type'),
+         #'exhaustive': fields.boolean('stock.inventory', 'Type'),
+         'exhaustive': fields.boolean('stock.inventory'),
          }
 
     def get_inventory_type(self, cr, uid, context=None):

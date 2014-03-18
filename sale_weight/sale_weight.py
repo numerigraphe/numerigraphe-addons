@@ -19,8 +19,9 @@
 ##############################################################################
 
 """Compute the net weight of sale orders."""
-
 from openerp.osv import osv, fields
+
+
 class sale_order(osv.osv):
     """Add the total net weight to the object "Sale Order"."""
 
@@ -46,15 +47,15 @@ class sale_order(osv.osv):
         return result.keys()
 
     _columns = {
-        'total_weight_net': fields.function(_total_weight_net, method=True,
-            readonly=True, string='Total Net Weight',
+        'total_weight_net': fields.function(_total_weight_net, type='float',
+            method=True, readonly=True, string='Total Net Weight',
             help="The cumulated net weight of all the order lines.",
             store={
                 # Low priority to compute this before fields in other modules
                 'sale.order': (lambda self, cr, uid, ids, context=None: ids,
                      ['order_line'], -10),
                 'sale.order.line': (_get_order,
-                     ['product_uom_qty', 'product_uom','product_id'], -10),
+                     ['product_uom_qty', 'product_uom', 'product_id'], -10),
             },
         ),
     }

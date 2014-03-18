@@ -114,6 +114,7 @@ result_fields = {
     },
 }
 
+
 def _export(self, cr, uid, data, context):
     """
     Export moves files usable by accounting software by EBP version 3 and above.
@@ -360,6 +361,7 @@ def _export(self, cr, uid, data, context):
         'exported_lines': l,
         'exported_accounts': len(accounts_data),
     }
+
 
 class wizard_ebp(wizard.interface):
     states = {

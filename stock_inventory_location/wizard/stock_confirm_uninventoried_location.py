@@ -22,7 +22,7 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
 
-class stock_inventory_uninventoried_location(osv.osv_memory):
+class stock_inventory_uninventoried_location(osv.TransientModel):
     _name = 'stock.inventory.uninventoried.locations'
     _description = 'Confirm the uninventoried Locations.'
 

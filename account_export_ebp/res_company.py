@@ -22,6 +22,7 @@
 
 from openerp.osv import fields, osv
 
+
 class res_company(osv.osv):
     """Add parameters to export accounting moves to EBP's software"""
     _inherit = 'res.company'

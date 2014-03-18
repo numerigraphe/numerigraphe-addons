@@ -21,7 +21,7 @@
 from openerp.osv import osv, fields
 
 class address(osv.osv):
-    _inherit = 'res.partner.address'
+    _inherit = 'res.partner'
     _columns = {
         'hours': fields.char('Opening Hours', size=64),
         'day_off': fields.char('Day Off', size=64),

@@ -35,7 +35,6 @@
     'demo_xml': [],
     'active': False,
     'installable': True,
-#    'license' : 'AGPL-3', # XXX Bug #520854 : Missing license options
 }
 
 

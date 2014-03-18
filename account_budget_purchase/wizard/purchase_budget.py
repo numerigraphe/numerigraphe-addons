@@ -18,13 +18,12 @@
 #
 ##############################################################################
 
-import netsvc
+import openerp.netsvc as netsvc
+from openerp.osv import fields, osv
 
-from osv import fields, osv
 
-class PurchaseBudget(osv.osv_memory):
+class PurchaseBudget(osv.TransientModel):
     _name = 'purchase.budget.wizard'
-    
     _columns = {
         'budget_line_ids': fields.many2many("crossovered.budget.lines",
                                             rel='purchase_budget_lines_rel',

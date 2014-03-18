@@ -22,14 +22,12 @@ from datetime import datetime as dt
 
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
-import tools
 
 
-class compute_stock_valuation(osv.osv_memory):
+class compute_stock_valuation(osv.TransientModel):
     _name = "stock.inventory.valuation.wizard"
     _description = "Stock Valuation wizard"
-    _auto = False
-    
+
     _columns = {
                 'name': fields.char('Title', size=64),
                 'location_id': fields.many2one('stock.location', 'Location', required=True),
@@ -64,7 +62,7 @@ class compute_stock_valuation(osv.osv_memory):
             'name': _('Stock Valuation'),
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'view_id': [view_id],
+            'view_ids': [view_id],
             'res_model': 'stock.inventory.valuation',
             'context': {'search_default_group_by_name': 1,
                         'search_default_group_by_category': 1,

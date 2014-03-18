@@ -6,14 +6,13 @@
 			<field name="name">sale_partner_category.order.form</field>
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form" />
-			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<field name="note" position="after">
-                    <group colspan="4" col="2" groups="base.group_extended">
+				<xpath expr="//page[@string='Other Information']/group/group[last()]" position="after">
+                    <group>
 					    <separator string="The Customer is in the following Categories" />
 					    <field name="partner_category_ids" colspan="4" nolabel="1" />
 					</group>
-				</field>
+				</xpath>
 			</field>
 		</record>
 		
@@ -22,11 +21,10 @@
             <field name="name">sale_partner_category.order.list.select</field>
             <field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_sales_order_filter" />
-            <field name="type">search</field>
 			<field name="arch" type="xml">
 				<field name="partner_id" position="after">
 					<field name="partner_category_ids" operator="child_of"/>
-				</field>
+				</field>				
 			</field>
 		</record>
 	</data>

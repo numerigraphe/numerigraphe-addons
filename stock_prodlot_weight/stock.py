@@ -22,12 +22,13 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import decimal_precision as dp
 
+
 class product_template(osv.osv):
     _inherit = 'product.template'
 
     def _get_weight_observed(self, cr, uid, ids, names, arg, context=None):
         """ Get the average weight of the lots in stock"""
-        
+
         res = {}.fromkeys(ids, 0.0)
         # SUM(SP.QTY) cannot be zero because SP.QTY > 0
         cr.execute('''
@@ -45,16 +46,16 @@ class product_template(osv.osv):
         )
         res.update(dict(cr.fetchall()))
         return res
-    
+
     def _search_weight_observed(self, cr, uid, obj, name, args, context=None):
         """Search for a product by average weight"""
         fieldname, operator, value = args[0]
-        
+
         # Sanitize input to protect from SQL injection
         if operator not in ('=', '!=', '<>', '<=', '<', '>', '>=', 'in', 'not in'):
             raise osv.except_osv(
                _('Invalid operator!'),
-               _("The operator '%s' cannot be used to filter the field '%s'.") % (operator, field))
+               _("The operator '%s' cannot be used to filter the field '%s'.") % (operator, fieldname))
         # SUM(SP.QTY) cannot be zero because SP.QTY > 0
         cr.execute('''
                 SELECT      SP.PRODUCT_ID
@@ -70,7 +71,7 @@ class product_template(osv.osv):
         res = cr.fetchall()
         domain = [('id', 'in', map(lambda x: x[0], res))]
         return domain
-    
+
     _columns = {
         'weight_observed': fields.function(
             _get_weight_observed, fnct_search=_search_weight_observed, method=True,
@@ -85,14 +86,14 @@ class product_template(osv.osv):
 
 class stock_production_lot(osv.osv):
     _inherit = 'stock.production.lot'
-    
+
     _columns = {
         'weight_observed': fields.float(
              # XXX use digits_compute=dp.get_precision('Stock Weight')
             'Observed Unit Weight', digits=(16, 4),
             help="The Unit Weight observed for this Product in this Lot, in Kg."),
     }
-    
+
     def copy(self, cr, uid, id, default=None, context=None):
         """Reset the weight on copied lots"""
         default = default and default.copy() or {}

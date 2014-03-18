@@ -22,6 +22,7 @@ from openerp.osv import osv, fields
 import decimal_precision as dp
 
 
+# TODO v7 : a découper en plusieurs sous module...
 class product_product(osv.osv):
     """Add the computation for the stock available for sale"""
     _inherit = 'product.product'

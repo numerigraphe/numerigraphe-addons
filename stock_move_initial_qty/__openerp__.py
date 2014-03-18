@@ -23,7 +23,11 @@
     'version' : '1.0',
     'author' : u'Numérigraphe',
     'category': 'Custom',
-    'description': "This module keeps track of the initial quantity planned for each stock move.",
+    'description': """
+    This module keeps track of the initial quantity planned for each stock move.
+
+    # TODO : Add procurements to the view.
+    """,
     'depends' : [
         'stock',
     ],

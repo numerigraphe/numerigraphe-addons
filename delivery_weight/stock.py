@@ -23,8 +23,8 @@ import decimal_precision as dp
 
 class stock_picking(osv.osv):
     """Add the real weight"""
-    _inherit = 'stock.picking'
-    
+    _inherit = 'stock.picking.out'
+
     def action_confirm(self, cr, uid, ids, context=None):
         """Estimate the real gross weight from the computed weight."""
         super(stock_picking, self).action_confirm(cr, uid, ids, context=context)
@@ -32,7 +32,7 @@ class stock_picking(osv.osv):
             self.write(cr, uid, picking.id, {'weight_real': picking.weight},
                        context=context)
         return True
-    
+
     _columns = {
         'weight_real': fields.float('Real Weight',
                                digits_compute=dp.get_precision('Stock Weight'))

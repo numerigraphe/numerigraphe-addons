@@ -6,37 +6,12 @@
 			<field name="name">partner_fdl.partner.address</field>
 			<field name="model">res.partner</field>
 			<field name="inherit_id" ref="base.view_partner_form" />
-			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<field name="email" position="after">
-					<field name="hours" />
-					<field name="day_off" />
-				</field>
+			<xpath expr="//field[@name='website']" position="after">  
+				<field name="hours" string="Opening Hours"/>
+				<field name="day_off" string="Day Off"/>
+			</xpath>
 			</field>
-		</record>
-		<record model="ir.ui.view" id="view_address1">
-			<field name="name">partner_fdl.address1</field>
-			<field name="model">res.partner.address</field>
-			<field name="inherit_id" ref="base.view_partner_address_form1" />
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<field name="email" position="after">
-					<field name="hours" />
-					<field name="day_off" />
-				</field>
-			</field>
-		</record>
-		<record model="ir.ui.view" id="view_address2">
-			<field name="name">partner_fdl.address2</field>
-			<field name="model">res.partner.address</field>
-			<field name="inherit_id" ref="base.view_partner_address_form2" />
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<field name="email" position="after">
-					<field name="hours" />
-					<field name="day_off" />
-				</field>
-			</field>
-		</record>
+		</record>	
 	</data>
 </openerp>
