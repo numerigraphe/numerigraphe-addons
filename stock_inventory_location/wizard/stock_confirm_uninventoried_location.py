@@ -18,11 +18,12 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp.osv import fields, orm
 from openerp.tools.translate import _
+from stock_inventory_location.stock_inventory_location import EmptyLocationException
 
 
-class stock_inventory_uninventoried_location(osv.TransientModel):
+class stock_inventory_uninventoried_location(orm.TransientModel):
     _name = 'stock.inventory.uninventoried.locations'
     _description = 'Confirm the uninventoried Locations.'
 
@@ -65,6 +66,8 @@ class stock_inventory_uninventoried_location(osv.TransientModel):
 
     def confirm_uninventoried_locations(self, cr, uid, ids, context=None):
         """ Call action confirm method from stock.inventory """
+        if context is None or 'active_ids' not in context:
+            return False
         inventory_ids = context['active_ids']
         # call the wizard to add lines for uninventoried locations with zero quantity
         inventory_obj = self.pool.get('stock.inventory')
@@ -83,13 +86,11 @@ class stock_inventory_uninventoried_location(osv.TransientModel):
                                                                location_ids,
                                                                True,
                                                                context=context)
-                except osv.except_osv as e:
-                    pass
+                except EmptyLocationException:
+                    pass  # Don't care about empty location exception
 
                 for line in lines:
                     self.pool.get('stock.inventory.line').create(cr, uid, line, context=context)
 
         inventory_obj.action_confirm(cr, uid, inventory_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}
-
-

@@ -10,11 +10,10 @@
 
 -
   In order, i add products to exhaustive inventory.
-  Don't add mou(product.product_product_25) and keya (product.product_product_24) products.
-  Adding pc1.
+  Adding 17” LCD Monitor.
 -    
   !record {model: stock.inventory.line, id: lines_inventory_location_pc1}:
-    product_id: product.product_product_10
+    product_id: product.product_product_7
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_1    
@@ -22,10 +21,10 @@
     location_id: stock.stock_location_14
 
 -
-  Adding pc3.
+  Adding USB Keyboard, QWERTY.
 -      
   !record {model: stock.inventory.line, id: lines_inventory_location_pc3}:
-    product_id: product.product_product_pc3
+    product_id: product.product_product_8
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_1    
@@ -39,8 +38,8 @@
   !python {model: stock.inventory}: |
     from osv import orm, osv
     locations = self._get_locations_open_inventories(cr, uid)    
-    assert len(locations) == 1, "Function return wrong results : %s" % locations
-    assert locations[0] == ref('stock.stock_location_14'), "Function '_get_locations_open_inventories' return wrong location_id. Should be '%s' : '%s'" % (stock.stock_location_14, locations[0]) 
+    assert len(locations) == 1, "Function return wrong results: %s" % locations
+    assert locations[0] == ref('stock.stock_location_14'), "Function '_get_locations_open_inventories' return wrong location_id. Should be '%s': '%s'" % (stock.stock_location_14, locations[0]) 
   
 -  
   I will call the function onchange_location_id.
@@ -49,9 +48,9 @@
   !python {model: stock.inventory.line}: |
     from osv import orm, osv
     res = self.onchange_location_id(cr, uid, [], [(6,0,[ref('stock.stock_location_14')])], True, ref('stock.stock_location_14'))
-    assert res == True, "Exhaustive : The function 'onchange_location_id' should return True and return '%s'" % res    
+    assert res == True, "Exhaustive: The function 'onchange_location_id' should return True and return '%s'" % res    
     res = self.onchange_location_id(cr, uid, [], [(6,0,[ref('stock.stock_location_14')])], True, ref('stock.stock_location_components'))
-    assert res.get('warning', False) != False , "Function 'onchange_location_id' : Warning not raise. ('%s)" % res    
+    assert res.get('warning', False) != False , "Function 'onchange_location_id': Warning not raise. ('%s)" % res    
 
 -
   I will call _fill_location_lines to simulate confirmation for stock_confirm_uninventoried_location,
@@ -88,14 +87,14 @@
   !python {model: product.product}: |
     from osv import orm, osv 
     ctx={'location': [ref('stock.stock_location_14')], 'to_date': '2020-12-31 23:59:59'} 
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 18.0, "The stock of PC1 was not set to 18.0 : %s" % prod_qty_avail
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_7')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 18.0, "The stock of PC1 was not set to 18.0: %s" % prod_qty_avail
     
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_pc3')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 5.0, "The stock of PC3 was not set to 5.0 : %s" % prod_qty_avail
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_8')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 5.0, "The stock of PC3 was not set to 5.0: %s" % prod_qty_avail
 
     prod_qty_avail = self.read(cr, uid, [ref('product.product_product_24')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 0.0, "The stock of KEYA was not set to 0 : %s" % prod_qty_avail
+    assert prod_qty_avail == 0.0, "The stock of KEYA was not set to 0: %s" % prod_qty_avail
 
     prod_qty_avail = self.read(cr, uid, [ref('product.product_product_25')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 0.0, "The stock of MOU was not set to 0 : %s" % prod_qty_avail
+    assert prod_qty_avail == 0.0, "The stock of MOU was not set to 0: %s" % prod_qty_avail

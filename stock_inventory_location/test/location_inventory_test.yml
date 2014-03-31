@@ -10,10 +10,10 @@
    
 -
   In order, I add products to inventory.
-  Adding cpu1.
+  Adding Azerty Keyboard.
 -
-  !record {model: stock.inventory.line, id: lines_inventory_location_cpu1}:
-    product_id: product.product_product_cpu1
+  !record {model: stock.inventory.line, id: lines_inventory_location_kbaz}:
+    product_id: product.product_product_9
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_0    
@@ -21,10 +21,10 @@
     location_id: stock.stock_location_components
 
 -
-  Adding cpu3.
+  Adding Optical Mouse.
 -
-  !record {model: stock.inventory.line, id: lines_inventory_location_cpu3}:
-    product_id: product.product_product_cpu3
+  !record {model: stock.inventory.line, id: lines_inventory_location_optm}:
+    product_id: product.product_product_10
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_0    
@@ -32,10 +32,10 @@
     location_id: stock.stock_location_components
 
 -
-  Adding fan.
+  Adding Multimedia Speakers.
 -
-  !record {model: stock.inventory.line, id: lines_inventory_location_fan}:
-    product_id: product.product_product_fan
+  !record {model: stock.inventory.line, id: lines_inventory_location_grca}:
+    product_id: product.product_template_31
     product_uom: product.product_uom_unit
     company_id: base.main_company
     inventory_id: stock_inventory_location_0    
@@ -49,7 +49,7 @@
   !python {model: stock.inventory}: |
     from osv import orm, osv
     locations = self._get_locations_open_inventories(cr, uid)    
-    assert len(locations) == 0, "Function return wrong results : %s" % locations
+    assert len(locations) == 0, "Function return wrong results: %s" % locations
      
 -
   I will call the function onchange_location_id.
@@ -98,12 +98,12 @@
   !python {model: product.product}: |
     from osv import orm, osv 
     ctx={'location': [ref('stock.stock_location_components')], 'to_date': '2020-12-31 23:59:59'} 
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_cpu1')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 18.0, "The stock of CPU1 was not set to 18.0 : %s" % prod_qty_avail
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_9')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 18.0, "The stock of CPU1 was not set to 18.0: %s" % prod_qty_avail
     
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_cpu3')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 12.0, "The stock of CPU3 was not set to 12.0 : %s" % prod_qty_avail
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 12.0, "The stock of CPU3 was not set to 12.0: %s" % prod_qty_avail
     
-    prod_qty_avail = self.read(cr, uid, [ref('product.product_product_fan')], ['qty_available'], context=ctx)[0]['qty_available']
-    assert prod_qty_avail == 32.0, "The stock of FAN was not set to 32.0 : %s" % prod_qty_avail
+    prod_qty_avail = self.read(cr, uid, [ref('product.product_template_31')], ['qty_available'], context=ctx)[0]['qty_available']
+    assert prod_qty_avail == 32.0, "The stock of FAN was not set to 32.0: %s" % prod_qty_avail
     

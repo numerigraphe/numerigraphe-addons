@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field name="priority" eval="10"/>
             <field name="arch" type="xml">
-                <!-- Add type of inventory : partial or complete. -->
+                <!-- Add type of inventory: partial or complete. -->
                 <xpath expr="/form//field[@name='date']" position="after">
                     <field name="exhaustive"/>
                 </xpath>

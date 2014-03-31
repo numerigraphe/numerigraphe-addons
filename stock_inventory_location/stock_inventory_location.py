@@ -20,11 +20,18 @@
 
 from collections import Iterable
 
-from openerp.osv import osv, orm, fields
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
 
-class StockInventory(osv.osv):
+class EmptyLocationException(orm.except_orm):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+        self.args = (name, value)
+
+
+class StockInventory(orm.Model):
     """Add locations to the inventories"""
     _inherit = 'stock.inventory'
     _columns = {
@@ -60,13 +67,13 @@ For an exhaustive Inventory:
         for inventory in self.browse(cr, uid, ids, context=None):
             if inventory.exhaustive:
                 if not inventory.location_ids:
-                    raise osv.except_osv(_('Warning !'), _('Location missing for this inventory.'))
+                    raise orm.except_orm(_('Warning'), _('Location missing for this inventory.'))
         return self.write(cr, uid, ids, {'state': 'open'}, context=context)
 
     # XXX refactor if ever lp:~numerigraphe/openobject-addons/7.0-inventory-states is accepted upstream
     _defaults = {
-        'state': lambda *a: 'draft',
-        'exhaustive': lambda *a: False,
+        'state': 'draft',
+        'exhaustive': False,
         }
 
     def _check_location_free_from_inventories(self, cr, uid, ids):
@@ -118,7 +125,7 @@ For an exhaustive Inventory:
                     'nodestroy': True,
                     }
 
-    # XXX : get from stock.py v6.0 patch. Waiting for integration on standard by openerp ... 
+    # XXX: get from stock.py v6.0 patch. Waiting for integration on standard by openerp ...
     def _fill_location_lines(self, cr, uid, inventory_id, location_ids, set_stock_zero, context=None):
         """ To Import stock inventory according to products available in the selected locations.
         @param self: The object pointer.
@@ -154,7 +161,7 @@ For an exhaustive Inventory:
 
                 datas[(prod_id, lot_id)] = {'product_id': prod_id,
                                             'location_id': location,
-                                            # Floating point sum could introduce some tiny rounding errors. 
+                                            # Floating point sum could introduce some tiny rounding errors.
                                             # The uom are the same on input and output to use api for rounding.
                                             'product_qty': uom_obj._compute_qty_obj(cr, uid, move.product_id.uom_id, qty, move.product_id.uom_id),
                                             'product_uom': move.product_id.uom_id.id,
@@ -165,7 +172,7 @@ For an exhaustive Inventory:
                 flag = True
                 res.append(datas)
         if not flag:
-            raise osv.except_osv(_('Warning !'), _('No product in this location.'))
+            raise EmptyLocationException(_('Warning'), _('No product in this location.'))
 
         stock_moves = []
         for stock_move in res:
@@ -199,7 +206,7 @@ For an exhaustive Inventory:
         return stock_moves
 
 
-class StockInventoryLine(osv.osv):
+class StockInventoryLine(orm.Model):
     """Only allow the Inventory's Locations"""
 
     _inherit = 'stock.inventory.line'
@@ -222,7 +229,7 @@ class StockInventoryLine(osv.osv):
         return True
 
 
-class StockLocation(osv.osv):
+class StockLocation(orm.Model):
     """Refuse changes during exhaustive Inventories"""
     _inherit = 'stock.location'
     _order = 'name'
@@ -235,7 +242,7 @@ class StockLocation(osv.osv):
             ids = [ids]
         for id in ids:
             if id in location_inventory_open_ids:
-                raise osv.except_osv(_('Error! Location on inventory'),
+                raise orm.except_orm(_('Error: Location on inventory'),
                                      _('A Physical Inventory is being conducted at this location'))
         return True
 
@@ -262,7 +269,7 @@ class StockLocation(osv.osv):
         return super(StockLocation, self).unlink(cr, uid, ids, context=context)
 
 
-class StockMove(osv.osv):
+class StockMove(orm.Model):
     """Refuse Moves during exhaustive Inventories"""
 
     _inherit = 'stock.move'
@@ -285,8 +292,8 @@ class StockMove(osv.osv):
                 and move.location_id.id in location_inventory_open_ids):
                 message += " - %s\n" % (move.location_id.name)
         if message:
-            raise osv.except_osv(_('Error! Location on inventory'),
-                                 _('One or more locations are inventoried :\n%s') % message)
+            raise orm.except_orm(_('Error: Location on inventory'),
+                                 _('One or more locations are inventoried:\n%s') % message)
         return True
 
     _constraints = [

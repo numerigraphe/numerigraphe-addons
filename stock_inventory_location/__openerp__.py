@@ -24,7 +24,7 @@
     "version": "1.0",
     "depends": ["stock"],
     "author": u"Numérigraphe",
-    "category": "Inventory",
+    "category": "Warehouse Management",
     "description": """
 Let users choose between standard and exhaustive Inventories
 ============================================================

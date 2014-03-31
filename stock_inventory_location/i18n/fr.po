@@ -74,26 +74,26 @@ msgstr "Emplacement"
 #. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:54
 #, python-format
-msgid "Error !"
-msgstr "Erreur !"
+msgid "Error"
+msgstr "Erreur"
 
 #. module: stock_inventory_location
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:75
 #, python-format
-msgid "Error : Empty location !"
-msgstr "Erreur : Emplacement vide !"
+msgid "Error: Empty location"
+msgstr "Erreur : Emplacement vide"
 
 #. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:231
 #: code:addons/stock_inventory_location/stock_inventory_location.py:282
 #, python-format
-msgid "Error! Location on inventory"
-msgstr "Erreur! emplacement en inventaire"
+msgid "Error: Location on inventory"
+msgstr "Erreur: emplacement en inventaire"
 
 #. module: stock_inventory_location
 #: constraint:stock.inventory:0
-msgid "Error! You can not create recursive inventories."
-msgstr "Erreur! Vous ne pouvez pas créer un inventaire récursif."
+msgid "Error: You can not create recursive inventories."
+msgstr "Erreur: Vous ne pouvez pas créer un inventaire récursif."
 
 #. module: stock_inventory_location
 #: constraint:stock.inventory.line:0
@@ -171,7 +171,7 @@ msgstr "Pas de produit à cet emplacement."
 #. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:283
 #, python-format
-msgid "One or more locations are inventoried :\n"
+msgid "One or more locations are inventoried:\n"
 "%s"
 msgstr "Un ou plusieurs emplacements sont en inventaire :\n"
 "%s"
@@ -220,8 +220,8 @@ msgstr "Emplacements non inventoriés"
 #: code:addons/stock_inventory_location/stock_inventory_location.py:163
 #: code:addons/stock_inventory_location/wizard/stock_fill_location_inventory.py:58
 #, python-format
-msgid "Warning !"
-msgstr "Attention !"
+msgid "Warning"
+msgstr "Attention"
 
 #. module: stock_inventory_location
 #: code:addons/stock_inventory_location/stock_inventory_location.py:209
