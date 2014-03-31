@@ -21,9 +21,9 @@
 # TODOv7: migrate this to openerp-connector
 
 {
-    'name' : "Export accounting moves to EBP's accounting software",
-    'version' : '1.1',
-    'author' : u'Numérigraphe SARL',
+    'name': "Export accounting moves to EBP's accounting software",
+    'version': '1.1',
+    'author': u'Numérigraphe SARL',
     'category': 'Generic Modules/Accounting',
     'description': '''This module lets you export accounting moves and accounts to flat text files readable by 'EBP Comptabilité', an accounting software package widely spread in France.
 The files are in the text format for EBP's software, version 3 and above.
@@ -41,10 +41,11 @@ If those are properly set, the files should be imported automatically as simulat
 
 The python package "smbc" must be installed on the server to use this module.   
 ''',
-    'depends' : ['account_accountant'],
-    'update_xml' : [
+    'depends': ['account_accountant'],
+    'update_xml': [
         'account_export_ebp_wizard.xml',
         'res_company_view.xml',
         'account_view.xml',
+        'wizard/wizard_ebp_view.xml',
     ],
 }

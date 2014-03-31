@@ -18,18 +18,14 @@
 #
 ##############################################################################
 
-import string
-import re
-
 from openerp.osv import osv, fields
+
 
 class partner(osv.osv):
     _inherit = 'res.partner'
-    
+
     _columns = {
         # Partner's account number in EBP
         'ref_nb': fields.char("Partner's Account suffix in EBP", size=64,
             help="When exporting Entries to EBP, this suffix will be appended "
-                 "to the Account Number to make it a Partner Account.",),    }
-
-
+                 "to the Account Number to make it a Partner Account.",), }

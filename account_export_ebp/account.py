@@ -43,9 +43,9 @@ class account_move(osv.osv):
             help="""Indicates whether the move has already been exported to EBP or not. It is changed automatically."""),
     }
     _defaults = {
-        'exported_ebp': lambda * a:False,
+        'exported_ebp': False,
     }
-    
+
     def write(self, cr, uid, ids, vals, context=None):
         """Refuse to change changes exported Moves"""
         if 'exported_ebp' not in vals:
@@ -56,7 +56,7 @@ class account_move(osv.osv):
                                      _('You cannot modify exported moves: %s!')
                                         % ', '.join([m.name for m in exported_moves]))
         return super(osv.osv, self).write(cr, uid, ids, vals, context=context)
-     
+
     def unlink(self, cr, uid, ids, context=None, check=True):
         """Refuse to delete exported Moves"""
         exported_move_ids = self.search(cr, uid, [('exported_ebp', '=', True), ('id', 'in', ids)])

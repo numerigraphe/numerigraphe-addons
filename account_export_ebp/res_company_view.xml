@@ -8,12 +8,13 @@
 			<field name="inherit_id" ref="base.view_company_form" />
 			<field name="arch" type="xml">
 				<page string="Configuration" position="inside">
-					<separator string="EBP Accounting Software" colspan="4" />
-					<field name="ebp_uri" />
-					<field name="ebp_domain" />
-					<field name="ebp_username" />
-					<field name="ebp_password" password="True" />
-					<newline />
+					<group>
+						<separator string="EBP Accounting Software" colspan="2" />
+						<field name="ebp_uri" colspan="2"/>
+						<field name="ebp_domain" colspan="2"/>
+						<field name="ebp_username" colspan="2"/>
+						<field name="ebp_password" password="True" colspan="2"/>
+					</group>
 				</page>
 			</field>
 		</record>

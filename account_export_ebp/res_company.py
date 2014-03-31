@@ -36,5 +36,3 @@ class res_company(osv.osv):
         'ebp_password': fields.char('EBP User Password', size=256,
             help="The password of the user to access the company's EBP folder."),
     }
-
-
