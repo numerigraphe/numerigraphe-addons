@@ -75,8 +75,8 @@ class product_template(osv.osv):
     _columns = {
         'weight_observed': fields.function(
             _get_weight_observed, fnct_search=_search_weight_observed, method=True,
-            # XXX use digits_compute=dp.get_precision('Stock Weight')
-            type='float', digits=(16, 5),
+            digits_compute=dp.get_precision('Stock Weight'),
+            type='float',
             string='Observed Weight',
             help="This is the average unit weight of the product in Kg, based on the "
                  "weights and quantities of the Production Lots currently "
@@ -89,8 +89,8 @@ class stock_production_lot(osv.osv):
 
     _columns = {
         'weight_observed': fields.float(
-             # XXX use digits_compute=dp.get_precision('Stock Weight')
-            'Observed Unit Weight', digits=(16, 4),
+             digits_compute=dp.get_precision('Stock Weight'),
+            'Observed Unit Weight',
             help="The Unit Weight observed for this Product in this Lot, in Kg."),
     }
 
