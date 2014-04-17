@@ -19,15 +19,14 @@
 ##############################################################################
 
 {
-    'name' : 'Effective gross weight of a delivery',
-    'version' : '1.0',
-    'author' : u'Numerigraphe',
+    'name': 'Effective gross weight of a delivery',
+    'version': '1.0',
+    'author': u'Numerigraphe',
     'category': 'Generic Modules/Sales & Purchases',
     'depends': ['stock', 'delivery', ],
     'init_xml': [],
     'demo_xml': [],
     'update_xml': ['stock_view.xml'],
-    'description': """Adds a new field to the packings to let users key in the effective weight of deliveries.""",
+    'description': """
+Adds a new field to the packings to let users key in the effective weight of deliveries.""",
 }
-
-

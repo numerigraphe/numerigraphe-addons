@@ -17,17 +17,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-from openerp.osv import fields, osv
+from openerp.osv import fields, orm
 import decimal_precision as dp
 
-class stock_picking(osv.osv):
+
+class stock_picking_out(orm.Model):
     """Add the real weight"""
     _inherit = 'stock.picking.out'
 
     def action_confirm(self, cr, uid, ids, context=None):
         """Estimate the real gross weight from the computed weight."""
-        super(stock_picking, self).action_confirm(cr, uid, ids, context=context)
+        super(stock_picking_out, self).action_confirm(cr, uid, ids,
+                                                      context=context)
         for picking in self.browse(cr, uid, ids, context=context):
             self.write(cr, uid, picking.id, {'weight_real': picking.weight},
                        context=context)
@@ -39,4 +40,22 @@ class stock_picking(osv.osv):
     }
 
 
+# Needed to workaround bug 996816 (inherit bug on report object)
+# XXX : https://bugs.launchpad.net/openobject-server/+bug/996816
+class stock_picking(orm.Model):
+    """Add the real weight"""
+    _inherit = 'stock.picking'
 
+    def action_confirm(self, cr, uid, ids, context=None):
+        """Estimate the real gross weight from the computed weight."""
+        super(stock_picking, self).action_confirm(cr, uid, ids,
+                                                  context=context)
+        for picking in self.browse(cr, uid, ids, context=context):
+            self.write(cr, uid, picking.id, {'weight_real': picking.weight},
+                       context=context)
+        return True
+
+    _columns = {
+        'weight_real': fields.float('Real Weight',
+                               digits_compute=dp.get_precision('Stock Weight'))
+    }
