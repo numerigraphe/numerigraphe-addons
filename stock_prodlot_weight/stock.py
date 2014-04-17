@@ -89,8 +89,8 @@ class stock_production_lot(osv.osv):
 
     _columns = {
         'weight_observed': fields.float(
-             digits_compute=dp.get_precision('Stock Weight'),
             'Observed Unit Weight',
+            digits_compute=dp.get_precision('Stock Weight'),
             help="The Unit Weight observed for this Product in this Lot, in Kg."),
     }
 
