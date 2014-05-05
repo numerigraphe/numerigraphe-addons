@@ -34,7 +34,7 @@ class AccountBudgetPosition (osv.osv):
                  "when dealing with suppliers who send their invoices late "
                  "(i.e. monthly invoices after reception).\n"
              ),
-        # The values are immutable on purpose: different codes match each value
+        # The values are immutable on purpose: different code process each value
         'purchase_sign': fields.selection(
             (('+', 'Positive'), ('-', 'Negative')), "Sign",
             help="If you select 'Positive', the sum of all the "
@@ -52,7 +52,7 @@ class BudgetLine(osv.osv):
 
     _inherit = "crossovered.budget.lines"
 
-    # This is done on _prac_amt() because _prac would need us to redefine the function field too
+    # Doing this on _prac would need us to redefine the field too
     def _prac_amt(self, cr, uid, ids, context=None):
         """Optionally add/subtract the amount of the Purchase Order Lines"""
         # Get the standard amounts
