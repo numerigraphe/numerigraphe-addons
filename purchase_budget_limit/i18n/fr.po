@@ -1,6 +1,6 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-#	* account_budget_purchase
+#	* purchase_budget_limit
 #
 msgid ""
 msgstr ""
@@ -15,33 +15,33 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: field:purchase.budget.wizard,budget_line_ids:0
 msgid "Budget Lines"
 msgstr "Lignes de budget"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: view:purchase.budget.wizard:0
 msgid "Budget warning"
 msgstr "Avertissement sur le budget"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: view:purchase.budget.wizard:0
 msgid "Cancel"
 msgstr "Annuler"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: selection:purchase.order,state:0
 msgid "Over Budget"
 msgstr "Budget dépassé"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: view:purchase.budget.wizard:0
 #: view:purchase.order:0
 msgid "Override Budgets"
 msgstr "Outrepasser le budget"
 
-#. module: account_budget_purchase
+#. module: purchase_budget_limit
 #: view:purchase.budget.wizard:0
 msgid "The following Budget Lines will be exhausted if you confirm the Purchase Order: you may have dificulties paying the Supplier Invoice."
 msgstr "Les lignes de budget suivantes seront épuisées si vous confirmez cette commande : il vous sera peut-être difficile de payer la facture d'achat."
