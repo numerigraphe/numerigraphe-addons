@@ -19,34 +19,36 @@
 ##############################################################################
 
 {
-    'name': "Take uninvoiced Purchase Orders into account in Budget Lines",
+    'name': "Block over-budget Purchase Orders",
     'version': '1.0',
     'author': u'Numérigraphe SARL',
-    'category': 'Generic Modules/Accounting',
+    'category': 'Purchase Management',
     'description': '''
-Take pending Purchase Orders into account in Budget Lines
-=========================================================
-Normally the Budgets are based on the Entries of General Accounting, and may be
-filtered by Analytic Account.
-The problem for purchase Budgets is that invoices may come in very late in the
-process. This often hides future problems from the budget managers.
+Let Budget managers define limits on Purchase Orders
+====================================================
 
-To help with this problem, this module lets Budget Lines include the amounts
-of Purchase Order Lines that have been confirmed but not yet invoiced.''',
+When new Purchase Orders are being confirmed, this module will put them in a
+special state if the remaining budget is not sufficient to pay the expected
+invoice in one of the Budget Lines in the same period.
+
+Purchase managers can :
+- either wait until the financial situation changes
+- or override the budget and approve the Purchase Order
+- or cancel the Purchase Order.
+''',
     'depends': ['account_budget', 'purchase'],
     'data': [
-        'account_budget_view.xml',
+        'purchase_workflow.xml',
+        'purchase_view.xml',
+        'wizard/purchase_budget_view.xml',
+        'security/ir.model.access.csv',
     ],
     'test': [
         # FIXME add an automatic test:
-        # - create 3 identical budget lines:
-        #   - line A ignoring POs
-        #   - line B adding POs to amount
-        #   - line C subtracting POs from amount
-        # - record the initial "real" amount of line A
-        # - create a PO for 100 EUR and validate it
-        # - check that the amount of line A is unchanged
-        # - check that the amount of line B is A+100
-        # - check that the amount of line C is A-100
+        # - create a budget line for 10000 EUR
+        # - create a PO for 100 EUR and validate it, check it's not blocked
+        # - create a budget line for 150 EUR
+        # - create a PO for 200 EUR and validate it, check it's blocked
+        # - override the budget and check the PO is validated
     ]
 }
