@@ -19,36 +19,21 @@
 ##############################################################################
 
 {
-    'name' : 'Stock available for sale',
-    'version' : '1.2',
-    'author' : u'Numérigraphe SÀRL',
-    'category' : 'Stock',
-    'depends' : ['sale_stock',
-                 #'stock',
-                 #'sale',
-                 'sale_order_dates',
-                 ],
+    'name': 'Stock available for sale',
+    'version': '2.0',
+    'author': u'Numérigraphe SÀRL',
+    'category': 'Stock',
+    'depends': ['sale', 'stock'],
     'description': """
 This module computes and displays the quantities available for sale for Products in a given context.
 
-3 new quantities are computed in real-time:
-- "Quoted" = the sum of the quantities of this product in Quotations, taking the context's shop or warehouse into account
-- "Potential" = quantity that can be manufactured with the components immediately at hand, following a single level of Bills of Materials)
+new quantities are computed in real-time:
 - "Available for Sale" = Virtual Stock + Potential - Quoted
 
 When entering sale orders with this module installed, the salesperson gets warned if the quantity available for sale
-is insufficient, instead of the virtual available quantity.
-For technical reasons, this later feature works only in v6.1 and later unless you patch the standard addons.""",
-    'update_xml' : [
+is insufficient, instead of the virtual available quantity.""",
+    'update_xml': [
         'product_view.xml',
     ],
-    'demo': [
-        'product_demo.yml',
-    ],
-    'test': [
-        'test/potential_qty.yml',
-        'test/quoted_qty.yml',
-        'test/available_for_sale.yml'
-     ],
-    'license' : 'GPL-3',
+    'license': 'GPL-3',
 }

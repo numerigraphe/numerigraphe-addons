@@ -6,24 +6,13 @@
 			<field name="name">product.form.available_for_sale</field>
 			<field name="model">product.product</field>
 			<field name="type">form</field>
-			<field name="inherit_id" ref="stock.view_normal_stock_property_form" />
+			<field name="inherit_id" ref="stock.view_normal_procurement_locations_form" />
 			<field name="arch" type="xml">
 				<data>
-					<xpath expr="/form/notebook/page/group/field[@name='virtual_available']"
+					<xpath expr="//field[@name='virtual_available']"
 						position="after">
-						<newline />
 						<field name="available_for_sale" />
 					</xpath>
-                    <xpath expr="/form/notebook/page/group[@name='lot']" position="after">
-                    	<!-- TODO refactor for v7 (some fields are already in the standard view) -->
-	                    <group colspan="2" col="4" name="stock_variations" groups="base.group_extended">
-	                        <separator string="Expected Stock Variations" colspan="4"/>
-	                        <field name="incoming_qty"/>
-	                        <field name="outgoing_qty"/>
-                            <field name="potential_qty"/>
-                            <field name="quoted_qty"/>
-	                    </group>
-                    </xpath>
 				</data>
 			</field>
 		</record>

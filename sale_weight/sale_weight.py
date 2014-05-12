@@ -19,10 +19,10 @@
 ##############################################################################
 
 """Compute the net weight of sale orders."""
-from openerp.osv import osv, fields
+from openerp.osv import orm, fields
 
 
-class sale_order(osv.osv):
+class sale_order(orm.Model):
     """Add the total net weight to the object "Sale Order"."""
 
     _inherit = "sale.order"
@@ -61,9 +61,9 @@ class sale_order(osv.osv):
     }
 
 
-class sale_order_line(osv.osv):
+class sale_order_line(orm.Model):
     """Add the net weight to the object "Sale Order Line"."""
-    
+
     _inherit = 'sale.order.line'
 
     def _weight_net(self, cr, uid, ids, field_name, arg, context=None):
@@ -92,5 +92,3 @@ class sale_order_line(osv.osv):
             },
         ),
     }
-
-

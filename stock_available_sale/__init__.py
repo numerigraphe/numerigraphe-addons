@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2009 Numérigraphe SARL.
+#    This module is copyright (C) 2013 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -18,15 +18,4 @@
 #
 ##############################################################################
 
-{
-    'name': 'Effective gross weight of a delivery',
-    'version': '1.0',
-    'author': u'Numerigraphe',
-    'category': 'Generic Modules/Sales & Purchases',
-    'depends': ['stock', 'delivery', ],
-    'init_xml': [],
-    'demo_xml': [],
-    'update_xml': ['stock_view.xml'],
-    'description': """
-Adds a new field to the packings to let users key in the effective weight of deliveries.""",
-}
+import product

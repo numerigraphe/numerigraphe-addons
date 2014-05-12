@@ -1,5 +1,13 @@
 - Test the computation of the quoted quantity on product.product_product_10
 
+- Create a UoM in the category of PCE
+- !record {model: product.uom, id: thousand}:
+    name: Thousand
+    factor: 0.001
+    rounding: 0.00
+    uom_type: bigger
+    category_id: product.product_uom_categ_unit
+
 - Cancel all the previous Quotations
 - !python {model: sale.order}: |
     line_ids = self.pool.get('sale.order.line').search(
@@ -20,12 +28,10 @@
         product_uom_qty: 107.0
         state: draft
         product_id: product.product_product_10
-    partner_id: base.res_partner_agrolait
+    partner_id: base.res_partner_2
     partner_invoice_id: base.res_partner_address_8
-    partner_order_id: base.res_partner_address_8
     partner_shipping_id: base.res_partner_address_8
     pricelist_id: product.list0
-    shop_id: sale.shop
 - The quoted qty should match the single quotation
 - !assert {model: product.product, id: product.product_product_10, string: "Check quoted_qty"}:
     - quoted_qty == -107.0
@@ -40,10 +46,8 @@
         product_id: product.product_product_10
     partner_id: base.res_partner_2
     partner_invoice_id: base.res_partner_address_9
-    partner_order_id: base.res_partner_address_9
     partner_shipping_id: base.res_partner_address_9
     pricelist_id: product.list0
-    shop_id: sale.shop
 - The quoted qty should match the total of the quotations
 - !assert {model: product.product, id: product.product_product_10, string: "Check quoted quantity"}:
     - quoted_qty == -720.0

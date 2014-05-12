@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2009 Numérigraphe SARL.
+#    This module is copyright (C) 2011 Numérigraphe SARL. All Rights Reserved.
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,14 +19,26 @@
 ##############################################################################
 
 {
-    'name': 'Effective gross weight of a delivery',
-    'version': '1.0',
-    'author': u'Numerigraphe',
-    'category': 'Generic Modules/Sales & Purchases',
-    'depends': ['stock', 'delivery', ],
-    'init_xml': [],
-    'demo_xml': [],
-    'update_xml': ['stock_view.xml'],
+    'name': 'Stock available potential',
+    'version': '2.0',
+    'author': u'Numérigraphe SÀRL',
+    'category': 'Stock',
+    'depends': ['stock_available', 'mrp'],
     'description': """
-Adds a new field to the packings to let users key in the effective weight of deliveries.""",
+This module computes and displays the potential quantities available for Products in a given context.
+
+new quantities are computed in real-time:
+- "Potential" = quantity that can be manufactured with the components immediately at hand,
+following a single level of Bills of Materials
+
+When entering sale orders with this module installed, the salesperson gets warned
+if the quantity available for sale with potential
+is insufficient, instead of the virtual available quantity.""",
+    'update_xml': [
+        'product_view.xml',
+    ],
+    'test': [
+        'test/potential_qty.yml',
+     ],
+    'license': 'GPL-3',
 }
