@@ -25,18 +25,9 @@
             </field>
         </record>
         
-        <!--  Add the state "Over Budget" to the "waiting approval" search filter -->
-        <record id="view_purchase_order_filter_over_budget" model="ir.ui.view">
-            <field name="name">purchase.order.list.select.over_budget</field>
-            <field name="inherit_id" ref="purchase.view_purchase_order_filter" />
-            <field name="model">purchase.order</field>
-            <field name="arch" type="xml">
-                <data>
-                    <xpath expr="//filter[@name='confirmed']" position="attributes">
-                        <attribute name="domain">[('state','in',('wait','confirmed','over_budget'))]</attribute>
-                    </xpath>
-                </data>
-            </field>
+        <!--  Add the state "Over Budget" to the "Draft" search filter and list -->
+        <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+            <field name="domain">[('state','in',('draft','sent','confirmed','over_budget'))]</field>
         </record>
     </data>
 </openerp>
