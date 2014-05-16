@@ -10,7 +10,7 @@
                     <label string="The following Budget Lines will be exhausted if you confirm the Purchase Order: you may have dificulties paying the Supplier Invoice."/>
                     <field name="budget_line_ids" nolabel="1"/>
                     <footer>
-                        <button special="cancel" string="Block Purchase Order" icon="gtk-cancel" class="oe_highlight"/>
+                        <button special="cancel" string="Block Purchase Order" class="oe_highlight"/>
                         <button name="override_budget" string="Override Budgets" type="object"/>
                     </footer>
                 </form>

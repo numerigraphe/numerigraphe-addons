@@ -22,6 +22,7 @@ import time
 
 from openerp import netsvc
 from openerp.osv import orm
+from openerp.tools.translate import _
 
 
 class PurchaseOrder (orm.Model):
@@ -101,6 +102,7 @@ class PurchaseOrder (orm.Model):
                          for o in self.browse(cr, uid, ids, context=context)])
 
         return orders_ok or {
+            'name': _('Budget warning'),
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.budget.wizard',
             'view_type': 'form',
