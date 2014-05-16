@@ -71,7 +71,7 @@ class PurchaseOrder (orm.Model):
                          ('date_to', '>=', today)],
                         context=context)
                     budget_line_ids.update(
-                        [l.id for l in b_line_obj.browse(
+                        [l.id for l in b_line_obj.browse(cr, uid,
                              bl_ids, context=context)
                          if l.crossovered_budget_id.state == 'validate'
                             and (l.practical_amount - ol.price_subtotal
