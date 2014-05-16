@@ -26,14 +26,15 @@ class AccountBudgetPosition (orm.Model):
     _inherit = 'account.budget.post'
 
     _columns = {
-        'include_purchase': fields.boolean('Include Purchase Orders',
+        'include_purchase': fields.boolean(
+            'Include Purchase Orders',
             help="Check this box to take Purchase orders into account.\n"
                  "If unchecked, only the Accounting Entries will be "
                  "taken into account.\n"
                  "This field lets managers make more realistic Budgets "
                  "when dealing with suppliers who send their invoices late "
                  "(i.e. monthly invoices after reception).\n"
-             ),
+        ),
         # The values are immutable on purpose: they trigger different code
         'purchase_sign': fields.selection(
             (('+', 'Positive'), ('-', 'Negative')), "Sign",
@@ -43,7 +44,7 @@ class AccountBudgetPosition (orm.Model):
                  "Budget Lines that use this Budgetary position.\n"
                  "If you select 'Negative', it will be subtracted "
                  "instead.\n"
-                 ),
+        ),
     }
 
 
@@ -60,7 +61,8 @@ class BudgetLine(orm.Model):
                                                     context=context)
         # Compute the total amount of current purchase order lines
         po_obj = self.pool["purchase.order"]
-        po_ids = po_obj.search(cr, uid,
+        po_ids = po_obj.search(
+            cr, uid,
             [('invoiced', '=', False), ('state', 'in', ['confirmed', 'done'])],
             context=context)
         # XXX does it need rounding?
