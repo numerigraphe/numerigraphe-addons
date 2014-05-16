@@ -53,6 +53,15 @@ class BudgetLine(orm.Model):
 
     _inherit = "crossovered.budget.lines"
 
+    # Only count the PO with the following states
+    PO_STATES = [
+        'confirmed',
+        'approved',
+        'except_picking',
+        'except_invoice',
+        'done',
+    ]
+
     # Doing this on _prac would need us to redefine the field too
     def _prac_amt(self, cr, uid, ids, context=None):
         """Optionally add/subtract the amount of the Purchase Order Lines"""
@@ -62,19 +71,20 @@ class BudgetLine(orm.Model):
         # Compute the total amount of current purchase order lines
         po_obj = self.pool["purchase.order"]
         po_ids = po_obj.search(
-            cr, uid,
-            [('invoiced', '=', False), ('state', 'in', ['confirmed', 'done'])],
-            context=context)
+            cr, uid, [('state', 'in', self.PO_STATES)], context=context)
         # XXX does it need rounding?
         po_amount = sum([po.amount_untaxed * (100.0 - po.invoiced_rate) / 100.0
                          for po in po_obj.browse(cr, uid, po_ids,
-                                                 context=context)])
-        # Add/subtract that amount to/from lines
-        if po_amount is not None:
-            for line in self.browse(cr, uid, ids, context=context):
-                if line.general_budget_id.include_purchase:
-                    if line.general_budget_id.purchase_sign == '+':
-                        results[line.id] += po_amount
-                    elif line.general_budget_id.purchase_sign == '-':
-                        results[line.id] -= po_amount
+                                                 context=context)
+                         if not po.invoiced])
+        if not po_amount:
+            # Nothing to do if no POs are running
+            return results
+        # Add/subtract the total amount of POs to/from lines
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.general_budget_id.include_purchase:
+                if line.general_budget_id.purchase_sign == '+':
+                    results[line.id] += po_amount
+                elif line.general_budget_id.purchase_sign == '-':
+                    results[line.id] -= po_amount
         return results
