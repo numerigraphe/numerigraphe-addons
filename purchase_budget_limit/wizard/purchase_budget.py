@@ -31,29 +31,31 @@ class PurchaseBudget(osv.TransientModel):
                                             string='Budget Lines',
                                             readonly=True),
     }
-    
+
     def _get_budget_line_ids(self, cr, uid, context=None):
-        """Load the exhausted budget lines related to the Purchase Orders""" 
+        """Load the exhausted budget lines related to the Purchase Orders"""
         if context is None:
             context = {}
         if context.get('active_model') != 'purchase.order':
             return []
-        return self.pool.get('purchase.order').exhausted_budget_lines(cr, uid,
+        return self.pool['purchase.order'].exhausted_budget_lines(cr, uid,
             context.get('active_ids'), context=context)
-    
+
     def override_budget(self, cr, uid, ids, context=None):
         """Override the Budgets and confirm the Purchase Order"""
         if context is None:
             context = {}
         if context.get('active_model') != 'purchase.order':
             return False
-        
+
         # Send the workflow signal on every purchase order
         wf_service = netsvc.LocalService("workflow")
-        for id in context.get('active_ids'):
-            wf_service.trg_validate(uid, 'purchase.order', id, 'purchase_confirm_overbudget', cr)
-        return {'type':'ir.actions.act_window_close'} 
-    
+        for po_id in context.get('active_ids'):
+            wf_service.trg_validate(
+                uid, 'purchase.order', po_id, 'purchase_confirm_overbudget',
+                cr)
+        return {'type': 'ir.actions.act_window_close'}
+
     _defaults = {
         'budget_line_ids': _get_budget_line_ids
      }

@@ -21,10 +21,10 @@
 import time
 
 from openerp import netsvc
-from openerp.osv import osv
+from openerp.osv import orm
 
 
-class PurchaseOrder (osv.osv):
+class PurchaseOrder (orm.Model):
     """Display a warning when confirming a Purchase if the budget is too low"""
     _inherit = 'purchase.order'
 
@@ -58,7 +58,7 @@ class PurchaseOrder (osv.osv):
             ids = [ids]
 
         budget_line_ids = set()
-        b_line_obj = self.pool.get('crossovered.budget.lines')
+        b_line_obj = self.pool['crossovered.budget.lines']
         today = time.strftime('%Y-%m-%d')
         for po_id in ids:
             for ol in self.browse(cr, uid, po_id, context=context).order_line:

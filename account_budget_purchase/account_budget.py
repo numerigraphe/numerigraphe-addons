@@ -18,10 +18,10 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class AccountBudgetPosition (osv.osv):
+class AccountBudgetPosition (orm.Model):
     """Add purchase orders to budget positions"""
     _inherit = 'account.budget.post'
 
@@ -34,7 +34,7 @@ class AccountBudgetPosition (osv.osv):
                  "when dealing with suppliers who send their invoices late "
                  "(i.e. monthly invoices after reception).\n"
              ),
-        # The values are immutable on purpose: different code process each value
+        # The values are immutable on purpose: they trigger different code
         'purchase_sign': fields.selection(
             (('+', 'Positive'), ('-', 'Negative')), "Sign",
             help="If you select 'Positive', the sum of all the "
@@ -47,7 +47,7 @@ class AccountBudgetPosition (osv.osv):
     }
 
 
-class BudgetLine(osv.osv):
+class BudgetLine(orm.Model):
     """Adapt the computation of the Real amount"""
 
     _inherit = "crossovered.budget.lines"
@@ -59,15 +59,15 @@ class BudgetLine(osv.osv):
         results = super(BudgetLine, self)._prac_amt(cr, uid, ids,
                                                     context=context)
         # Compute the total amount of current purchase order lines
-        po_obj = self.pool.get("purchase.order")
+        po_obj = self.pool["purchase.order"]
         po_ids = po_obj.search(cr, uid,
             [('invoiced', '=', False), ('state', 'in', ['confirmed', 'done'])],
             context=context)
-        # FIXME missing rounding!
+        # XXX does it need rounding?
         po_amount = sum([po.amount_untaxed * (100.0 - po.invoiced_rate) / 100.0
                          for po in po_obj.browse(cr, uid, po_ids,
                                                  context=context)])
-        # Add/substract that amount to/from lines
+        # Add/subtract that amount to/from lines
         if po_amount is not None:
             for line in self.browse(cr, uid, ids, context=context):
                 if line.general_budget_id.include_purchase:

@@ -44,7 +44,7 @@ Purchase managers can :
         'security/ir.model.access.csv',
     ],
     'test': [
-        # FIXME add an automatic test:
+        # TODO add an automatic test:
         # - create a budget line for 10000 EUR
         # - create a PO for 100 EUR and validate it, check it's not blocked
         # - create a budget line for 150 EUR
