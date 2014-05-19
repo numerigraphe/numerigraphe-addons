@@ -18,23 +18,24 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, osv
+from openerp.osv import orm, fields
 
 
-class AccountBudgetPosition (osv.osv):
+class AccountBudgetPosition (orm.Model):
     """Add purchase orders to budget positions"""
     _inherit = 'account.budget.post'
 
     _columns = {
-        'include_purchase': fields.boolean('Include Purchase Orders',
+        'include_purchase': fields.boolean(
+            'Include Purchase Orders',
             help="Check this box to take Purchase orders into account.\n"
                  "If unchecked, only the Accounting Entries will be "
                  "taken into account.\n"
                  "This field lets managers make more realistic Budgets "
                  "when dealing with suppliers who send their invoices late "
                  "(i.e. monthly invoices after reception).\n"
-             ),
-        # The values are immutable on purpose: different code process each value
+        ),
+        # The values are immutable on purpose: they trigger different code
         'purchase_sign': fields.selection(
             (('+', 'Positive'), ('-', 'Negative')), "Sign",
             help="If you select 'Positive', the sum of all the "
@@ -43,14 +44,23 @@ class AccountBudgetPosition (osv.osv):
                  "Budget Lines that use this Budgetary position.\n"
                  "If you select 'Negative', it will be subtracted "
                  "instead.\n"
-                 ),
+        ),
     }
 
 
-class BudgetLine(osv.osv):
+class BudgetLine(orm.Model):
     """Adapt the computation of the Real amount"""
 
     _inherit = "crossovered.budget.lines"
+
+    # Only count the PO with the following states
+    PO_STATES = [
+        'confirmed',
+        'approved',
+        'except_picking',
+        'except_invoice',
+        'done',
+    ]
 
     # Doing this on _prac would need us to redefine the field too
     def _prac_amt(self, cr, uid, ids, context=None):
@@ -59,20 +69,22 @@ class BudgetLine(osv.osv):
         results = super(BudgetLine, self)._prac_amt(cr, uid, ids,
                                                     context=context)
         # Compute the total amount of current purchase order lines
-        po_obj = self.pool.get("purchase.order")
-        po_ids = po_obj.search(cr, uid,
-            [('invoiced', '=', False), ('state', 'in', ['confirmed', 'done'])],
-            context=context)
-        # FIXME missing rounding!
+        po_obj = self.pool["purchase.order"]
+        po_ids = po_obj.search(
+            cr, uid, [('state', 'in', self.PO_STATES)], context=context)
+        # XXX does it need rounding?
         po_amount = sum([po.amount_untaxed * (100.0 - po.invoiced_rate) / 100.0
                          for po in po_obj.browse(cr, uid, po_ids,
-                                                 context=context)])
-        # Add/substract that amount to/from lines
-        if po_amount is not None:
-            for line in self.browse(cr, uid, ids, context=context):
-                if line.general_budget_id.include_purchase:
-                    if line.general_budget_id.purchase_sign == '+':
-                        results[line.id] += po_amount
-                    elif line.general_budget_id.purchase_sign == '-':
-                        results[line.id] -= po_amount
+                                                 context=context)
+                         if not po.invoiced])
+        if not po_amount:
+            # Nothing to do if no POs are running
+            return results
+        # Add/subtract the total amount of POs to/from lines
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.general_budget_id.include_purchase:
+                if line.general_budget_id.purchase_sign == '+':
+                    results[line.id] += po_amount
+                elif line.general_budget_id.purchase_sign == '-':
+                    results[line.id] -= po_amount
         return results

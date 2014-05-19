@@ -38,7 +38,7 @@ of Purchase Order Lines that have been confirmed but not yet invoiced.''',
         'account_budget_view.xml',
     ],
     'test': [
-        # FIXME add an automatic test:
+        # TODO add an automatic test:
         # - create 3 identical budget lines:
         #   - line A ignoring POs
         #   - line B adding POs to amount
