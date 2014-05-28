@@ -18,22 +18,38 @@
 #
 ##############################################################################
 
+from openerp import netsvc
 from openerp.osv import orm
 
 
 class StockPicking(orm.Model):
     _inherit = 'stock.picking'
 
-    def test_complete(self, cr, uid, ids):
+    def test_complete(self, cr, uid, ids, context=None):
         """Tests whether all the moves are done."""
+        # Find all the moves of all the selected pickings
         move_obj = self.pool['stock.move']
-        move_ids = move_obj.search(cr, uid, [('picking_id', 'in', ids)])
+        move_ids = move_obj.search(cr, uid, [('picking_id', 'in', ids)],
+                                   context=context)
         return all([move.state == 'done'
-                    for move in move_obj.browse(cr, uid, move_ids)])
+                    for move in move_obj.browse(cr, uid, move_ids,
+                                                context=context)])
 
 
 class StockMove(orm.Model):
     _inherit = 'stock.move'
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        print """Trigger the picking workflow when canceling normal moves"""
+        result = super(StockMove, self).action_cancel(
+            cr, uid, ids, context=context)
+        wf_service = netsvc.LocalService("workflow")
+        for picking_id in set([m.picking_id.id
+                               for m in self.browse(cr, uid, ids,
+                                                    context=context)
+                               if m.picking_id]):
+            wf_service.trg_write(uid, 'stock.picking', picking_id, cr)
+        return result
 
     def split(self, cr, uid, ids, split_qty, split_uos_qty, default=None,
               context=None):
