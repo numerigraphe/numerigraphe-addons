@@ -8,10 +8,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Split Move" version="7.0">
-                <!-- FIXME move to technical features? -->
                     <div groups="base.group_no_one">
                         <field name="product_id" class="oe_inline"/>: 
-                        <label for="initial_qty" groups="product.group_uos"/>
+                        <label for="initial_qty"/>
                         <field name="initial_qty" class="oe_inline"/>
                         <field name="product_uom" class="oe_inline"
                             groups="product.group_uom"/>
