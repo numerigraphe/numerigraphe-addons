@@ -40,7 +40,7 @@ class StockMove(orm.Model):
     _inherit = 'stock.move'
 
     def action_cancel(self, cr, uid, ids, context=None):
-        print """Trigger the picking workflow when canceling normal moves"""
+        """Trigger the picking workflow when canceling normal moves"""
         result = super(StockMove, self).action_cancel(
             cr, uid, ids, context=context)
         wf_service = netsvc.LocalService("workflow")
