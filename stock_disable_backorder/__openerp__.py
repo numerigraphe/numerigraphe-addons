@@ -69,8 +69,10 @@ Credits
 Split icon ©Yusuke Kamiyamane - http://p.yusukekamiyamane.com/. Licensed under
 a Creative Commons Attribution 3.0 License.
 """,
-    # FIXME: average price is not updated anymore
-    # FIXME: receptions cannot be recreated from purchase orders in exception state
+    # FIXME+TODOv7: average price is not updated anymore
+    # FIXME+TODOv7: receptions cannot be recreated from purchase orders in exception state
+    # TODOv7: add buttons on the wizard to directly enter the serial number and confirm/cancel the move
+    # TODOv7: make the move trees editable to let users enter the prodlot directly, make the other fields read-only
     # TODO: split the dependency on "purchase" to a 2nd module (auto-install)
     'depends': [
         'stock',

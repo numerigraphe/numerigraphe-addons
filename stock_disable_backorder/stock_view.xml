@@ -9,8 +9,13 @@
             <field name="model">stock.picking.in</field>
             <field name="inherit_id" ref="stock.view_picking_in_form"/>
             <field name="arch" type="xml">
-                <button name="draft_validate" position="replace"/>
-                <button name="action_process" position="replace">
+                <button name="draft_validate" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="after">
                     <button name="button_done" states="assigned" string="Receive"
                         class="oe_highlight"/>
                 </button>
@@ -21,7 +26,9 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_picking_tree"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="replace"/>
+                <button name="%(stock.track_line)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
@@ -39,7 +46,9 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_picking_form"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="replace"/>
+                <button name="%(stock.track_line)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <button name="cancel_assign" position="before">
                     <button name="action_done" states="draft,assigned,confirmed"
                         string="Process" type="object" help="Done" class="oe_highlight"/>
@@ -57,8 +66,13 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <button name="draft_validate" position="replace"/>
-                <button name="action_process" position="replace">
+                <button name="draft_validate" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="after">
                     <button name="button_done" groups="base.group_user"
                         states="assigned" string="Transfer" class="oe_highlight"/>
                 </button>
@@ -72,8 +86,13 @@
             <field name="model">stock.picking.out</field>
             <field name="inherit_id" ref="stock.view_picking_out_form"/>
             <field name="arch" type="xml">
-                <button name="draft_validate" position="replace"/>
-                <button name="action_process" position="replace">
+                <button name="draft_validate" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="action_process" position="after">
                     <button name="button_done" groups="base.group_user"
                         states="assigned" string="Transfer" class="oe_highlight"/>
                 </button>
@@ -88,7 +107,9 @@
             <field name="inherit_id" ref="stock.view_move_tree"/>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="replace"/>
+                <button name="%(stock.track_line)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
@@ -105,9 +126,13 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_form"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="replace"/>
+                <button name="%(stock.track_line)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <button name="%(stock.action_partial_move_server)d"
-                    position="replace"/>
+                    position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
             </field>
         </record>
 
@@ -118,9 +143,13 @@
             <field name="inherit_id" ref="stock.view_move_tree_reception_picking"/>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="replace"/>
+                <button name="%(stock.track_line)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <button name="%(stock.action_partial_move_server)d"
-                    position="replace"/>
+                    position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
