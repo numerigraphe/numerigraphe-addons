@@ -58,6 +58,7 @@ be used through XML-RPC or custom modules.
 """,
     # FIXME+TODOv7: receptions cannot be recreated from purchase orders in exception state
     # TODOv7: write to the sale/purchase order's chat when a stock move is cancelled
+    # TODOv7: Warn (or block?) when making a picking which contains unassigned moves (or cancel them?)
     # TODO: split the dependency on "purchase" to a 2nd module (auto-install)
     'depends': [
         'stock',

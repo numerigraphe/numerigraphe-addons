@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <!-- Remove the buttons to split into serial numbers,
-         and replace with simple cancel/split/done buttons -->
+    <!-- Hide the buttons to split into serial numbers,
+         and replace with simple cancel/split/done buttons.
+         Also make the tree views editable to let users enter the lot numbers
+         quickly. -->
     <data>
         <!--  Reception picking -->
         <record id="view_picking_in_form" model="ir.ui.view">
@@ -26,12 +28,23 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_picking_tree"/>
             <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </tree>
+                <!-- Making the tree editable means the form view becomes out of bound.
+                     So we need to add the fields that we think users may want to change. -->
+                <field name="location_id" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </field>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
                 </field>
             </field>
         </record>
+        <!-- This one is unused in v7 because the web client does not
+             let you "zoom" from an editable o2m tree view to the form view.
+             We change it anyway just to be on the safe side. -->
         <record id="view_move_picking_form" model="ir.ui.view">
             <field name="name">Picking line form</field>
             <field name="model">stock.move</field>
@@ -91,6 +104,9 @@
             <field name="inherit_id" ref="stock.view_move_tree"/>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </tree>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
