@@ -21,7 +21,7 @@
 
 from openerp.osv import fields, orm
 from openerp.addons import decimal_precision as dp
-
+from openerp.tools.translate import _
 
 class StockMoveSplitSimple(orm.TransientModel):
     """This object lets users enter details to split a move line in two."""
@@ -65,34 +65,30 @@ class StockMoveSplitSimple(orm.TransientModel):
                           product_uom, product_uos, initial_qty,
                           initial_uos_qty):
         """Call stock.move.onchange_quantity() and update remaining qty"""
-        # Cap the split qty to the initial qty
-        product_qty = max(min(product_qty, initial_qty), 0.0)
         changes = self.pool['stock.move'].onchange_quantity(
             cr, uid, ids, product_id, product_qty, product_uom, product_uos)
+        # We let users input bigger quantities but they'll get a warning
+        if product_qty > initial_qty:
+            changes['warning'] = {
+                'title': _("Quantity increased"),
+                'message': _(
+                    "The quantity you have entered (%s) is bigger than the "
+                    "quantity expected (%s)") % (product_qty, initial_qty)}
         # Update the remaining qty
-        vals = changes['value']
-        vals.update({
-            'product_qty': product_qty,
-            'rest_qty': max(initial_qty - product_qty, 0.0),
-            'rest_uos_qty': max(initial_uos_qty
-                                - vals.get('product_uos_qty', 0.0), 0.0)})
+        changes['value']['rest_qty'] = max(initial_qty - product_qty, 0.0)
         return changes
 
     def onchange_uos_quantity(self, cr, uid, ids, product_id, product_uos_qty,
                               product_uos, product_uom, initial_qty,
                               initial_uos_qty):
-        """Call stock.move.onchange_uos_quantity() and update remaining qty"""
-        # Cap the split qty to the initial qty
-        product_uos_qty = max(min(product_uos_qty, initial_uos_qty), 0.0)
+        """"Call stock.move.onchange_uos_quantity() and update remaining qty"""
         changes = self.pool['stock.move'].onchange_uos_quantity(
             cr, uid, ids, product_id, product_uos_qty, product_uos,
             product_uom)
+        # No qty check here because clients should call onchange_quantity too
         # Update the remaining qty
-        vals = changes['value']
-        vals.update({
-            'product_uos_qty': product_uos_qty,
-            'rest_qty': max(initial_qty - vals.get('product_qty', 0.0), 0.0),
-            'rest_uos_qty': max(initial_uos_qty - product_uos_qty, 0.0)})
+        changes['value']['rest_uos_qty'] = max(
+            initial_uos_qty - product_uos_qty, 0.0)
         return changes
 
     def split(self, cr, uid, ids, context=None):
@@ -110,8 +106,8 @@ class StockMoveSplitSimple(orm.TransientModel):
         move_obj = self.pool['stock.move']
         move_ids = context['active_ids']
         for data in self.browse(cr, uid, ids):
-            _ = move_obj.split(cr, uid, move_ids, data.product_qty,
-                               data.product_uos_qty, context=context)
+            move_obj.split(cr, uid, move_ids, data.product_qty,
+                           data.product_uos_qty, context=context)
         return {'type': 'ir.actions.act_window_close'}
 
     def default_get(self, cr, uid, fields, context=None):

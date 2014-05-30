@@ -77,6 +77,14 @@ class StockMove(orm.Model):
             initial_qty = move['product_qty']
             initial_uos_qty = move['product_uos_qty']
             if initial_qty <= split_qty or initial_uos_qty <= split_uos_qty:
+                # Special case where the quantity is actually increased
+                # In this case we'll update the existing Stock Move instead
+                self.write(
+                    cr, uid, ids,
+                    {
+                        'product_qty': split_qty,
+                        'product_uos_qty': split_uos_qty,
+                    })
                 continue
             # Adjust the quantity on the original move
             self.write(
