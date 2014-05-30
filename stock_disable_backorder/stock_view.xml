@@ -26,18 +26,9 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_picking_tree"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </button>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
-                    <button name="%(split_move)d" string="Split" type="action"
-                        icon="../../../../../stock_disable_backorder/static/src/img/icons/split-ltr"
-                        states="confirmed,assigned"/>
-                    <button name="action_done" states="draft,assigned,confirmed"
-                        string="Receive" type="object" icon="gtk-go-forward"
-                        help="Done" class="oe_highlight"/>
                 </field>
             </field>
         </record>
@@ -46,13 +37,6 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_picking_form"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </button>
-                <button name="cancel_assign" position="before">
-                    <button name="action_done" states="draft,assigned,confirmed"
-                        string="Process" type="object" help="Done" class="oe_highlight"/>
-                </button>
                 <button name="cancel_assign" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel Move" type="object"/>
@@ -107,17 +91,9 @@
             <field name="inherit_id" ref="stock.view_move_tree"/>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </button>
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
-                    <button name="%(split_move)d" string="Split" type="action"
-                        icon="../../../../../stock_disable_backorder/static/src/img/icons/split-ltr"
-                        states="confirmed,assigned"/>
-                    <button name="action_done" states="draft,assigned,confirmed"
-                        string="Receive" type="object" class="oe_highlight"/>
                 </field>
             </field>
         </record>
@@ -126,9 +102,6 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_form"/>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </button>
                 <button name="%(stock.action_partial_move_server)d"
                     position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -143,9 +116,6 @@
             <field name="inherit_id" ref="stock.view_move_tree_reception_picking"/>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
-                <button name="%(stock.track_line)d" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </button>
                 <button name="%(stock.action_partial_move_server)d"
                     position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -153,9 +123,6 @@
                 <field name="state" position="after">
                     <button name="action_cancel" states="assigned,confirmed"
                         string="Cancel" type="object" icon="gtk-cancel"/>
-                    <button name="%(split_move)d" string="Split" type="action"
-                        icon="../../../../../stock_disable_backorder/static/src/img/icons/split-ltr"
-                        states="confirmed,assigned"/>
                 </field>
             </field>
         </record>
