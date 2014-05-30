@@ -67,7 +67,7 @@ class StockMoveSplitSimple(orm.TransientModel):
         """Call stock.move.onchange_quantity() and update remaining qty"""
         # Cap the split qty to the initial qty
         product_qty = max(min(product_qty, initial_qty), 0.0)
-        changes = self.pool.get('stock.move').onchange_quantity(
+        changes = self.pool['stock.move'].onchange_quantity(
             cr, uid, ids, product_id, product_qty, product_uom, product_uos)
         # Update the remaining qty
         vals = changes['value']
@@ -84,7 +84,7 @@ class StockMoveSplitSimple(orm.TransientModel):
         """Call stock.move.onchange_uos_quantity() and update remaining qty"""
         # Cap the split qty to the initial qty
         product_uos_qty = max(min(product_uos_qty, initial_uos_qty), 0.0)
-        changes = self.pool.get('stock.move').onchange_uos_quantity(
+        changes = self.pool['stock.move'].onchange_uos_quantity(
             cr, uid, ids, product_id, product_uos_qty, product_uos,
             product_uom)
         # Update the remaining qty
@@ -107,7 +107,7 @@ class StockMoveSplitSimple(orm.TransientModel):
         """
         if context is None or 'active_ids' not in context:
             return False
-        move_obj = self.pool.get('stock.move')
+        move_obj = self.pool['stock.move']
         move_ids = context['active_ids']
         for data in self.browse(cr, uid, ids):
             _ = move_obj.split(cr, uid, move_ids, data.product_qty,
@@ -134,7 +134,7 @@ class StockMoveSplitSimple(orm.TransientModel):
             ['product_id', 'product_qty', 'product_uom',
              'product_uos_qty', 'product_uos'])
         # Read the values
-        move = self.pool.get('stock.move').read(
+        move = self.pool['stock.move'].read(
             cr, uid, context['active_id'], move_fields, context=context)
         if move:
             for field in [f for f in move_fields if move[f]]:

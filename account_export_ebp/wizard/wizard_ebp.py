@@ -93,7 +93,7 @@ class wizard_ebp(osv.TransientModel):
         wizard = self.browse(cr, uid, ids[0], context=context)
 
         # Read the EBP year number name from the selected fiscal year
-        fiscalyear = self.pool.get('account.fiscalyear').browse(cr, uid,
+        fiscalyear = self.pool['account.fiscalyear'].browse(cr, uid,
             [wizard.fiscalyear_id.id], context)
 
         # Sanity checks
@@ -105,7 +105,7 @@ class wizard_ebp(osv.TransientModel):
         accounts_data = {}
         # Line counter
         l = 0
-        moves = self.pool.get('account.move').browse(cr, uid, context['active_ids'], context)
+        moves = self.pool['account.move'].browse(cr, uid, context['active_ids'], context)
         moves_lines = []
 
         exported_move_ids = []
@@ -188,9 +188,9 @@ class wizard_ebp(osv.TransientModel):
                         and line.account_id.type in ('payable', 'receivable')):
                         # Partner account
                         # Get the default address
-                        address_id = self.pool.get('res.partner').address_get(cr, uid,
+                        address_id = self.pool['res.partner'].address_get(cr, uid,
                             [line.partner_id.id])['default']
-                        address = self.pool.get('res.partner.address').browse(cr, uid,
+                        address = self.pool['res.partner.address'].browse(cr, uid,
                             [address_id], context)[0]
                         accounts_data[account_nb] = {
                             'name': line.partner_id.name,
@@ -255,7 +255,7 @@ class wizard_ebp(osv.TransientModel):
 
         # Mark the moves as exported to EBP
         if len(exported_move_ids):
-            self.pool.get('account.move').write(cr, uid, exported_move_ids,
+            self.pool['account.move'].write(cr, uid, exported_move_ids,
                 {'exported_ebp': True, })
 
         account_lines = []
@@ -307,7 +307,7 @@ class wizard_ebp(osv.TransientModel):
                                               'exported_moves': len(exported_move_ids), 'ignored_moves': len(ignored_move_ids),
                                               'exported_lines': l, 'exported_accounts': len(accounts_data)
                                               }, context=context)
-            view_id = self.pool.get('ir.ui.view').search(cr, uid, [('model', '=', 'wizard.export_ebp')])
+            view_id = self.pool['ir.ui.view'].search(cr, uid, [('model', '=', 'wizard.export_ebp')])
             res = {
                     'type': 'ir.actions.act_window',
                     'res_model': 'wizard.export_ebp',

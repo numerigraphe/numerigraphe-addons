@@ -41,7 +41,7 @@ class sale_order(orm.Model):
     def _get_order(self, cr, uid, ids, context=None):
         """Get the order ids of the given Sale Order Lines."""
         result = {}
-        for line in self.pool.get('sale.order.line').browse(cr, uid, ids,
+        for line in self.pool['sale.order.line'].browse(cr, uid, ids,
             context=context):
             result[line.order_id.id] = True
         return result.keys()
@@ -69,7 +69,7 @@ class sale_order_line(orm.Model):
     def _weight_net(self, cr, uid, ids, field_name, arg, context=None):
         """Compute the net weight of the given Sale Order Lines."""
         result = {}
-        uom_obj = self.pool.get('product.uom')
+        uom_obj = self.pool['product.uom']
         for line in self.browse(cr, uid, ids, context=context):
             result[line.id] = 0.0
             if line.product_id and line.product_id.weight > 0.00:
