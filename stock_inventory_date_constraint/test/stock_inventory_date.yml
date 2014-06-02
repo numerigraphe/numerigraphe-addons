@@ -25,7 +25,7 @@
                                       'name': 'Product of test',
                                       'state': 'done'})
       # I check the available quantity
-      product_obj = self.pool.get('product.product')
+      product_obj = self.pool['product.product']
       ctx = {'location': [ref('stock.stock_location_components')], 'to_date': '2099-01-01 15:10:34'}
       products = product_obj.read(cr, uid, [ref('product.product_product_10')], ['qty_available'], context=ctx)
       assert products[0]['qty_available'] == 10.0, "Quantity is not equal to 10 after stock move : %s" % products[0]['qty_available']
@@ -58,7 +58,7 @@
     try:
       self.action_done(cr, uid, [ref('draft_stock_move')])
       # I check the available quantity
-      products = self.pool.get('product.product').read(
+      products = self.pool['product.product'].read(
         cr, uid, [ref('product.product_product_10')], ['qty_available'],
         context={'location': [ref('stock.stock_location_components')],
                  'to_date': '2099-01-01 15:10:34'})
@@ -119,7 +119,7 @@
     try:
       self.action_cancel_inventory(cr, uid, [ref('stock_inventory_init')])
       # I check the available quantity
-      products = self.pool.get('product.product').read(
+      products = self.pool['product.product'].read(
         cr, uid, [ref('product.product_product_10')], ['qty_available'],
         context={'location': [ref('stock.stock_location_components')],
                  'to_date': '2099-12-31 19:10:34'})

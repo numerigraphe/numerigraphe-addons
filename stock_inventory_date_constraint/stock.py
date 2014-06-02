@@ -23,7 +23,7 @@ from openerp.tools.translate import _
 
 
 class StockInventoryCancelable(osv.osv):
-    """Make inventories cancelable despite the constraint on stock move dates""" 
+    """Make inventories cancelable despite the constraint on stock move dates"""
     _inherit = "stock.inventory"
 
     def action_cancel_inventory(self, cr, uid, ids, context=None):
@@ -41,12 +41,13 @@ class StockMoveConstraint(osv.osv):
 
     _inherit = 'stock.move'
 
-    def _past_inventories(self, cr, uid, product_ids, prodlot_ids, location_ids, limit_date, context=None):
+    def _past_inventories(self, cr, uid, product_ids, prodlot_ids,
+                          location_ids, limit_date, context=None):
         """Search for inventories already finished after a given date"""
         # Search for inventory lines with the given location / prodlot / product
         if context is None:
             context = {}
-        sil_obj = self.pool.get('stock.inventory.line')
+        sil_obj = self.pool['stock.inventory.line']
         sil_ids = sil_obj.search(cr, uid, [('product_id', 'in', product_ids),
                                            ('prod_lot_id', 'in', prodlot_ids),
                                            ('location_id', 'in', location_ids),
@@ -59,7 +60,7 @@ class StockMoveConstraint(osv.osv):
                          for i in sil_obj.read(cr, uid,
                                                sil_ids, ['inventory_id'],
                                                context=context)]
-        return self.pool.get('stock.inventory').search(
+        return self.pool['stock.inventory'].search(
                 cr, uid, [('id', 'in', inventory_ids),
                           ('state', '=', 'done'),
                           ('date', '>=', limit_date)], context=context)
@@ -82,7 +83,7 @@ class StockMoveConstraint(osv.osv):
                                              vals.get('date'), context=context)
             if inv_ids:
                 # Make a message string with the names of the Inventories
-                inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
+                inventories = self.pool["stock.inventory"].browse(cr, uid, inv_ids, context=context)
                 tab_inventories = {i.id: i.name for i in inventories}
                 msg = "\n".join([_("- %s (ID %d)") % (name, i)
                                 for (i, name) in tab_inventories.iteritems()])
@@ -133,7 +134,7 @@ class StockMoveConstraint(osv.osv):
 
         if inv_ids:
             # Make a message string with the names of the Inventories
-            inventories = self.pool.get("stock.inventory").browse(cr, uid, inv_ids, context=context)
+            inventories = self.pool["stock.inventory"].browse(cr, uid, inv_ids, context=context)
             tab_inventories = {i.id: i.name for i in inventories}
             msg = "\n".join([_("- %s (ID %d)") % (name, i)
                             for (i, name) in tab_inventories.iteritems()])

@@ -32,19 +32,11 @@ and Deliveries. Doing improves the feedback given to the persons who give the
 orders (usually sales people, purchases managers or manufacturing managers),
 by bringing logistic problems directly to their attention.
 
-Simpler interface for logistic workers
---------------------------------------
-Instead of letting partial operations be recorded through various wizards and
-buttons, those are instead entered by only 3 buttons displayed consistently on
-every documents:
- - cancel the move
- - split the stock move in two
- - confirm the move
-
 Partial operations
 ------------------
 Operations which cannot be done, or can only be done partially, are entered by
-simply canceling the corresponding Stock Move.
+simply splitting the Stock Moves to enter the Serials of the goods processed,
+and canceling the remaining Stock Move.
 Usually this Stock Move will have been associated to a procurement order:
 canceling the Stock Move will then put the Procurement Order in a special state
 which OpenERP will propagate to the original document (Purchase Order, Sale
@@ -63,21 +55,16 @@ This module exposes a simple method to split Stock Moves that is through
 webservices.
 This module does NOT disable the standard API for partial moves: it may still
 be used through XML-RPC or custom modules.
-
-Credits
--------
-Split icon ©Yusuke Kamiyamane - http://p.yusukekamiyamane.com/. Licensed under
-a Creative Commons Attribution 3.0 License.
 """,
-    # FIXME: average price is not updated anymore
-    # FIXME: receptions cannot be recreated from purchase orders in exception state
+    # FIXME+TODOv7: receptions cannot be recreated from purchase orders in exception state
+    # TODOv7: write to the sale/purchase order's chat when a stock move is cancelled
+    # TODOv7: Warn (or block?) when making a picking which contains unassigned moves (or cancel them?)
     # TODO: split the dependency on "purchase" to a 2nd module (auto-install)
     'depends': [
         'stock',
         'purchase',
     ],
     'data': [
-        'wizard/stock_split_simple_view.xml',
         'stock_view.xml',
         'stock_workflow.xml',
         'purchase_workflow.xml',
