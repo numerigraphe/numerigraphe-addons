@@ -18,8 +18,6 @@
 #
 ##############################################################################
 
-# TODOv7: migrate this to openerp-connector
-
 {
     'name': "Export accounting moves to EBP's accounting software",
     'version': '1.1',
