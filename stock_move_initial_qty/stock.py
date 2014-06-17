@@ -41,7 +41,7 @@ class stock_move(osv.osv):
                                             context=context)
     _columns = {
                 'product_initial_qty': fields.float('Initial quantity',
-                    digits_compute=dp.get_precision('Product UoM'),
+                    digits_compute=dp.get_precision('Product Unit of Measure'),
                     help='This is the quantity of product initially intended '
                          'for this Stock Move.'),
     }
