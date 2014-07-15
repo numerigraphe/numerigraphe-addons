@@ -22,7 +22,7 @@
 
 from openerp.osv import osv, fields
 
-class account_invoice(osv.TransientModel):
+class account_invoice(osv.Model):
     """Add the partner categories to the object "Invoice"."""
 
     _inherit = 'account.invoice'
