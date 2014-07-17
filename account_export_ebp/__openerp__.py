@@ -41,7 +41,6 @@ The python package "smbc" must be installed on the server to use this module.
 ''',
     'depends': ['account_accountant'],
     'update_xml': [
-        'account_export_ebp_wizard.xml',
         'res_company_view.xml',
         'account_view.xml',
         'wizard/wizard_ebp_view.xml',
