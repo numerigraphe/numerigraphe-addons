@@ -17,13 +17,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.tools.translate import _
-from openerp.osv import osv, fields
-from account.account import _logger
+
 import base64
 import codecs
+import logging
 import smbc
 
+from openerp.tools.translate import _
+from openerp.osv import osv, fields
+
+_logger = logging.getLogger(__name__)
 
 class wizard_ebp(osv.TransientModel):
 
@@ -49,27 +52,24 @@ class wizard_ebp(osv.TransientModel):
                     ('choose', 'choose'),   # choose options
                     ('get', 'get'),         # get the files
                     )),
-        'export_type': fields.selection((
-                    ('smb', 'Write directly on server'),  # use smb protocol to write files (old method)
-                    ('download', 'Download from browser'),  # download file in local computer (new method)
-                    )),
-        'data_writes': fields.binary('File', readonly=True),
-        'name_writes': fields.char('Filename writes', 255, readonly=True),
-        'data_accounts': fields.binary('File', readonly=True),
-        'name_accounts': fields.char('Filename accounts', 255, readonly=True),
+        'export_smb': fields.boolean('Write the files directly on the EBP server'),
+        'moves_file_contents': fields.binary('Moves File', readonly=True),
+        'moves_file_name': fields.char('Moves file name', readonly=True),
+        'accounts_file_contents': fields.binary('Accounts file', readonly=True),
+        'accounts_file_name': fields.char('Accounts file name', readonly=True),
 
-        'exported_moves': fields.float('Number of exported moves', digits=(12, 0)),
-        'exported_lines': fields.float('Number of exported moves', digits=(12, 0)),
-        'ignored_moves': fields.float('Number of exported moves', digits=(12, 0)),
-        'exported_accounts': fields.float('Number of exported moves', digits=(12, 0))
-                }
+        'exported_moves': fields.integer('Number of exported moves', readonly=True),
+        'ignored_moves': fields.integer('Number of moves ignored', readonly=True),
+        'exported_lines': fields.integer('Number of lines exported', readonly=True),
+        'exported_accounts': fields.integer('Number of accounts exported', readonly=True),
+    }
 
     _defaults = {
-        'partner_accounts': lambda * a: True,
-        'ignore_draft': lambda * a: True,
-        'ignore_exported': lambda * a: True,
-        'state': lambda *a: 'choose',
-        'export_type': lambda *a: 'smb',
+        'export_smb': True,
+        'partner_accounts': True,
+        'ignore_draft': True,
+        'ignore_exported': True,
+        'state': 'choose',
     }
 
     def export(self, cr, uid, ids, context=None):
@@ -94,7 +94,7 @@ class wizard_ebp(osv.TransientModel):
 
         # Read the EBP year number name from the selected fiscal year
         fiscalyear = self.pool['account.fiscalyear'].browse(cr, uid,
-            [wizard.fiscalyear_id.id], context)
+            wizard.fiscalyear_id.id, context=context)
 
         # Sanity checks
         if context['active_model'] != 'account.move':
@@ -105,7 +105,7 @@ class wizard_ebp(osv.TransientModel):
         accounts_data = {}
         # Line counter
         l = 0
-        moves = self.pool['account.move'].browse(cr, uid, context['active_ids'], context)
+        moves = self.pool['account.move'].browse(cr, uid, context['active_ids'], context=context)
         moves_lines = []
 
         exported_move_ids = []
@@ -190,8 +190,8 @@ class wizard_ebp(osv.TransientModel):
                         # Get the default address
                         address_id = self.pool['res.partner'].address_get(cr, uid,
                             [line.partner_id.id])['default']
-                        address = self.pool['res.partner.address'].browse(cr, uid,
-                            [address_id], context)[0]
+                        address = self.pool['res.partner'].browse(cr, uid,
+                            [address_id], context=context)[0]
                         accounts_data[account_nb] = {
                             'name': line.partner_id.name,
                             'partner_name': line.partner_id.name,
@@ -221,7 +221,6 @@ class wizard_ebp(osv.TransientModel):
             _logger.debug("Exporting the move summary")
             for account_nb, line in moves_data.iteritems():
                 l += 1
-                #moves_file.write(','.join([
                 moves_lines.append(','.join([
                     # Line number
                     '%d' % l,
@@ -250,7 +249,6 @@ class wizard_ebp(osv.TransientModel):
                     # Currency
                     #fiscalyear.company_id.currency_id.name.replace(',', ''),
                 ]))
-                #moves_file.write('\r\n')
             exported_move_ids.append(move.id)
 
         # Mark the moves as exported to EBP
@@ -259,7 +257,6 @@ class wizard_ebp(osv.TransientModel):
                 {'exported_ebp': True, })
 
         account_lines = []
-
         for account_nb, account in accounts_data.iteritems():
             account_lines.append(','.join([
                 account_nb.replace(',', ''),  # Account number
@@ -274,54 +271,53 @@ class wizard_ebp(osv.TransientModel):
                 (account['fax'] or '').replace(',', '')[:20],  # Fax
             ]))
 
-        if wizard.export_type == 'smb':
+        moves_file_contents = '\r\n'.join(moves_lines)
+        accounts_file_contents = '\r\n'.join(account_lines)
+        if wizard.export_smb:
             # Stream writer to convert Unicode to Windows Latin-1
             win_writer = codecs.getwriter('cp1252')
             path = '%s/Compta.%s' % (fiscalyear.company_id.ebp_uri, fiscalyear.ebp_nb)
+            _logger.info("Connecting to the SMB server at %s" % path)
             win_share = smbc.Context(
                 auth_fn=lambda server, share, workgroup, username, password:
                     (fiscalyear.company_id.ebp_domain,
                      fiscalyear.company_id.ebp_username,
                      fiscalyear.company_id.ebp_password))
+            _logger.debug("Writing ECRITURES.TXT")
             moves_file = win_writer(win_share.creat('%s/ECRITURES.TXT' % path))
-            for line in moves_lines:
-                moves_file.write(line)
-                moves_file.write('\r\n')
+            moves_file.write(moves_file_contents)
             moves_file.close()
 
+            _logger.debug("Writing COMPTES.TXT")
             accounts_file = win_writer(win_share.creat('%s/COMPTES.TXT' % path))
-            for line in account_lines:
-                accounts_file.write(line)
-                accounts_file.write('\r\n')
+            accounts_file.write(accounts_file_contents)
             accounts_file.close()
-            res = True
 
-        elif wizard.export_type == 'download':
-            data_writes = u"\n".join(moves_lines)
-            out_writes = base64.encodestring(data_writes.encode("cp1252"))
-            data_accounts = u"\n".join(account_lines)
-            out_accounts = base64.encodestring(data_accounts.encode("cp1252"))
+        _logger.info("Preparing files for download")
+        self.write(
+            cr, uid, ids, {
+                'state': 'get',
+                'moves_file_contents': base64.encodestring(moves_file_contents.encode("cp1252")),
+                'moves_file_name': 'ECRITURES.TXT',
+                'accounts_file_contents': base64.encodestring(accounts_file_contents.encode("cp1252")),
+                'accounts_file_name': 'COMPTES.TXT',
+                'exported_moves': len(exported_move_ids),
+                'ignored_moves': len(ignored_move_ids),
+                'exported_lines': l,
+                'exported_accounts': len(accounts_data)
+            }, context=context)
 
-            self.write(cr, uid, ids, {'state': 'get', 'data_writes': out_writes, 'name_writes': 'ECRITURES.TXT',
-                                              'data_accounts': out_accounts, 'name_accounts': 'COMPTES.TXT',
-                                              'exported_moves': len(exported_move_ids), 'ignored_moves': len(ignored_move_ids),
-                                              'exported_lines': l, 'exported_accounts': len(accounts_data)
-                                              }, context=context)
-            view_id = self.pool['ir.ui.view'].search(cr, uid, [('model', '=', 'wizard.export_ebp')])
-            res = {
-                    'type': 'ir.actions.act_window',
-                    'res_model': 'wizard.export_ebp',
-                    'name': _('Export EBP'),
-                    'res_id': ids[0],
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'view_id': view_id,
-                    'target': 'new',
-                    'nodestroy': True,
-                    'context': context
-                    }
-        else:
-            raise osv.except_osv(_('Wrong export type'),
-                _('Export option is not valid or undefined !'))
+        view_id = self.pool['ir.ui.view'].search(cr, uid, [('model', '=', 'wizard.export_ebp')])
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'wizard.export_ebp',
+            'name': _('Export done'),
+            'res_id': ids[0],
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': view_id,
+            'target': 'new',
+            'nodestroy': True,
+            'context': context
+        }
 
-        return res

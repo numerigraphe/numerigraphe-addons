@@ -19,96 +19,96 @@ msgstr ""
 #: code:_description:0
 #, python-format
 msgid "Account Entry"
-msgstr "Pièce comptable"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:158
 #, python-format
 msgid "Account code \"%s\" is too long to be exported to EBP."
-msgstr "Le code de compte \"%s\" est trop long pour être transféré vers EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:157
 #, python-format
 msgid "Account code too long"
-msgstr "Code de compte trop long"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,accounts_file_contents:0
 msgid "Accounts file"
-msgstr "Fichier des comptes"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,accounts_file_name:0
 msgid "Accounts file name"
-msgstr "Nom du fichier des comptes"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,partner_accounts:0
 msgid "Append partners' code to accounts"
-msgstr "Ajouter le code partenaire au numéro de compte"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:wizard.export_ebp,ignore_exported:0
 msgid "Check this box unless you want to re-export moves to EBP"
-msgstr "Cochez cette case sauf si vous désirez re-transférer des écritures vers EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:_description:0
 #, python-format
 msgid "Companies"
-msgstr "Sociétés"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:res.company:0
 msgid "Configuration"
-msgstr "Configuration"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:res.company:0
 msgid "EBP Accounting Software"
-msgstr "EBP Comptabilité"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:account.fiscalyear,ebp_nb:0
 msgid "EBP Fiscal Year Number"
-msgstr "Numéro d'exercice EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:res.company,ebp_uri:0
 msgid "EBP Share URI"
-msgstr "URI du partage EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:res.company,ebp_domain:0
 msgid "EBP User Domain"
-msgstr "Domaine de l'utilisateur EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:res.company,ebp_username:0
 msgid "EBP User Name"
-msgstr "Nom d'utilisateur EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:res.company,ebp_password:0
 msgid "EBP User Password"
-msgstr "Mot de passe de l'utilisateur EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: model:ir.model,name:account_export_ebp.model_account_fiscalyear
 msgid "Exercice comptable"
-msgstr "Exercice comptable"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:wizard.export_ebp:0
 msgid "Export"
-msgstr "Exporter"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:314
 #, python-format
 msgid "Export done"
-msgstr "Exportation terminée"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:_description:0
@@ -116,227 +116,227 @@ msgstr "Exportation terminée"
 #: model:ir.model,name:account_export_ebp.model_wizard_export_ebp
 #, python-format
 msgid "Export to EBP"
-msgstr "Transférer vers EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/account.py:55
 #: code:addons/account_export_ebp/account.py:65
 #, python-format
 msgid "Exported move!"
-msgstr "Écriture transférée !"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:_description:0
 #, python-format
 msgid "Fiscal Year"
-msgstr "Exercice"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,fiscalyear_id:0
 msgid "Fiscal year"
-msgstr "Exercice"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,ignore_draft:0
 msgid "Ignore draft moves"
-msgstr "Ignorer les écritures en brouillon"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,ignore_exported:0
 msgid "Ignore moves already exported"
-msgstr "Ignorer les écritures déjà transférées"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:account.move,exported_ebp:0
 msgid "Indicates whether the move has already been exported to EBP or not. It is changed automatically."
-msgstr "Indique si l'écriture a été transférée dans EBP ou pas. Information mise à jour automatiquement."
+msgstr ""
 
 #. module: account_export_ebp
 #: view:account.move:0
 msgid "Journal Entries not yet exported to EBP"
-msgstr "Journal des entrées pas encore exportés vers EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:151
 #, python-format
 msgid "Journal code \"%s\" is too long to be exported to EBP."
-msgstr "Le code du journal \"%s\" est trop long pour être transféré vers EBP."
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:150
 #, python-format
 msgid "Journal code too long"
-msgstr "Code de journal trop long"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:162
 #, python-format
 msgid "Move name \"%s\" is too long to be exported to EBP."
-msgstr "Le nom d'écriture \"%s\" est trop long pour être transféré vers EBP."
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:161
 #, python-format
 msgid "Move name too long"
-msgstr "Nom d'écriture trop long"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,moves_file_contents:0
 msgid "Moves File"
-msgstr "Fichier des écritures"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,moves_file_name:0
 msgid "Moves file name"
-msgstr "Nom du fichier des écritures"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:account.move:0
 msgid "Not Exported"
-msgstr "Non transféré"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,exported_accounts:0
 msgid "Number of accounts exported"
-msgstr "Nombre de comptes transférés"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,exported_moves:0
 msgid "Number of exported moves"
-msgstr "Nombre de pièces transférées"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,exported_lines:0
 msgid "Number of lines exported"
-msgstr "Nombre de lignes transférées"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,ignored_moves:0
 msgid "Number of moves ignored"
-msgstr "Nombre de pièces ignorées"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:wizard.export_ebp,fiscalyear_id:0
 msgid "Only the moves in this fiscal will be exported"
-msgstr "Seules les écritures de cet exercice seront transférées"
+msgstr ""
 
 #. module: account_export_ebp
 #: model:ir.model,name:account_export_ebp.model_res_partner
 msgid "Partenaire"
-msgstr "Partenaire"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:_description:0
 #, python-format
 msgid "Partner"
-msgstr "Partenaire"
+msgstr ""
 
 #. module: account_export_ebp
 #: model:ir.model,name:account_export_ebp.model_account_move
 msgid "Pièce comptable"
-msgstr "Pièce comptable"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:wizard.export_ebp,ignore_draft:0
 msgid "Please be aware that draft moves do not not have a move number attached to them. As a consequence, they might not be imported correctly into EBP accounting software"
-msgstr "Veuillez noter que les écritures en brouillon ne sont pas numérotées. Par conséquent elles peuvent ne pas être importées correctement dans EBP Comptabilité."
+msgstr ""
 
 #. module: account_export_ebp
 #: view:account.move:0
 msgid "Posted"
-msgstr "Validé"
+msgstr ""
 
 #. module: account_export_ebp
 #: model:ir.model,name:account_export_ebp.model_res_company
 msgid "Sociétés"
-msgstr "Sociétés"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:wizard.export_ebp:0
 msgid "The Accounting Moves have been exported to the EBP server"
-msgstr "Les écritures comptables ont été transférées sur le serveur EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:res.company,ebp_uri:0
 msgid "The URI of the network share containing the company's EBP folder. Format: smb://SERVER/SHARE/DIR"
-msgstr "L'URI du partage réseau contenant le dossier EBP de la société. Format: smb://SERVEUR/PARTAGE/DOSSIER"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:res.company,ebp_domain:0
 msgid "The domain of the user to access the company's EBP folder."
-msgstr "Le domaine de l'utilisateur pour accéder au dossier EBP de la société."
+msgstr ""
 
 #. module: account_export_ebp
 #: help:res.company,ebp_username:0
 msgid "The name of the user to access the company's EBP folder."
-msgstr "Le nom de l'utilisateur pour accéder au dossier EBP."
+msgstr ""
 
 #. module: account_export_ebp
 #: help:res.company,ebp_password:0
 msgid "The password of the user to access the company's EBP folder."
-msgstr "Le mot de passe pour accéder au dossier EBP de la société."
+msgstr ""
 
 #. module: account_export_ebp
 #: help:account.fiscalyear,ebp_nb:0
 msgid "This value should reflect the number of the fiscal year as used by the EBP accounting software. This should be set to the number of fiscal years recorded in EBP accounting before this one - So for the first year the number is 0, for the second year the number is 1 and so on. This is used for exporting accounting moves to EBP."
-msgstr "Cette valeur doit refléter le numéro d'exercice utilisé dans EBP Comptabilité. Indiquez le nombre d'exercice enregistrés dans EBP avant celui-ci : ainsi pour le premier exercice indiquez 0 ; pour le second indiquez 1 etc. Cette information est utilisée lors de l'exportation des écritures vers EBP."
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:102
 #, python-format
 msgid "This wizard should only be used on accounting moves"
-msgstr "Cet assistant ne peut être utilisé que sur des écritures comptables"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:account.move,exported_ebp:0
 msgid "Transfered to EBP"
-msgstr "Transféré vers EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: help:wizard.export_ebp,partner_accounts:0
 msgid "When this is checked, the partner's special code will be appended to the receivable and payable accounts' numbers in the exported files on every move line where a partner has been specified. By default it has no effect, but can by customized by OpenERP developers."
-msgstr "Si cette case est cochée, les codes spécifiques des partenaires seront accolés aux numéros des comptes payables et recevables dans les fichiers transférés pour chaque ligne d'écriture où un partenaire est précisé. Par défaut cela n'aura aucun effet, les développeurs OpenERP peuvent le personnaliser."
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,export_smb:0
 msgid "Write the files directly on the EBP server"
-msgstr "Écrire le fichier directement sur le serveur EBP"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/wizard/wizard_ebp.py:101
 #, python-format
 msgid "Wrong Object"
-msgstr "Objet incorrect"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/account.py:66
 #, python-format
 msgid "You cannot delete exported moves: %s!"
-msgstr "Impossible de supprimer une écriture transferée vers EBP: %s!"
+msgstr ""
 
 #. module: account_export_ebp
 #: code:addons/account_export_ebp/account.py:56
 #, python-format
 msgid "You cannot modify exported moves: %s!"
-msgstr "Impossible de modifier une écriture transferée vers EBP : %s!"
+msgstr ""
 
 #. module: account_export_ebp
 #: selection:wizard.export_ebp,state:0
 msgid "choose"
-msgstr "choose"
+msgstr ""
 
 #. module: account_export_ebp
 #: view:wizard.export_ebp:0
 msgid "export_ebp"
-msgstr "export_ebp"
+msgstr ""
 
 #. module: account_export_ebp
 #: selection:wizard.export_ebp,state:0
 msgid "get"
-msgstr "get"
+msgstr ""
 
 #. module: account_export_ebp
 #: field:wizard.export_ebp,state:0
 msgid "unknown"
-msgstr "unknown"
+msgstr ""
 
