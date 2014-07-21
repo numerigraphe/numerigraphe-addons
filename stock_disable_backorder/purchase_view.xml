@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Add a menu entry for purchase orders in exception -->
+        <record id="action_purchase_orders_exception" model="ir.actions.act_window">
+            <field name="name">Purchase Orders in Exception</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('except_picking','except_invoice'))]</field>
+            <field name="view_mode">tree,form,graph,calendar</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+        </record>
+        <menuitem action="action_purchase_orders_exception" id="menu_purchase_orders_exception"
+            parent="purchase.menu_procurement_management" sequence="-1"/>
+    </data>
+</openerp>
