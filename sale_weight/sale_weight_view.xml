@@ -7,9 +7,11 @@
 			<field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form" />
 			<field name="arch" type="xml">
-				<field name="amount_untaxed" position="before">
-					<field name="total_weight_net" />
-				</field>				
+				<group name="sale_total" position="before">
+					<group class="oe_subtotal_footer oe_left" colspan="2" name="sale_weight_total">
+						<field name="total_weight_net" />
+					</group>
+				</group>
 			</field>
 		</record>
 
