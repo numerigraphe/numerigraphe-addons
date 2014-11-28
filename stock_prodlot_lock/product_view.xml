@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_product_category_form" model="ir.ui.view">
+            <field name="name">product.category.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+				<xpath expr="//group[@name='parent']" position="replace">
+	                <group name="parent" col="6">
+	                    <field name="parent_id"/>
+	                    <field name="type"/>
+	                    <field name="need_quality"/>
+	                </group>                
+				</xpath>
+            </field>
+        </record>
+
+        <record id="view_product_label_form" model="ir.ui.view">
+            <field name="name">product.label.form</field>
+            <field name="model">product.label</field>
+            <field name="inherit_id" ref="product_label.view_product_label_form"/>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <xpath
+                expr="//field[@name='green_color']"
+                position="after">
+                    <field name="need_quality" select="1"/>               
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_label_list" model="ir.ui.view">
+            <field name="name">product.label.list</field>
+            <field name="model">product.label</field>
+            <field name="inherit_id" ref="product_label.view_product_label_list"/>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <xpath
+                expr="//field[@name='complete_name']"
+                position="after">
+                    <field name="need_quality"/>                
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
