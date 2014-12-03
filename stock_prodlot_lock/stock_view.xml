@@ -4,47 +4,51 @@
         <record id="view_stock_production_lot_form" model="ir.ui.view">
             <field name="name">stock.production.lot.form</field>
             <field name="model">stock.production.lot</field>
-            <field name="inherit_id" ref="stock.view_production_lot_form"/>
-            <field name="priority" eval="17"/>
+            <field name="inherit_id" ref="stock.view_production_lot_form" />
+            <field name="priority" eval="17" />
             <field name="arch" type="xml">
                 <data>
                     <field name="stock_available" position="after">
-                        <separator string="Quality Control and traceability" colspan="4"/>
-                        <field name="locked" colspan="4"/>
+                        <separator string="Quality Control and traceability"
+                            colspan="4" />
+                        <field name="locked" colspan="4" />
                     </field>
                 </data>
             </field>
         </record>
-        
+
         <record model="ir.ui.view" id="search_product_lot_filter">
             <field name="name">Production Lots Filter</field>
             <field name="model">stock.production.lot</field>
-            <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+            <field name="inherit_id" ref="stock.search_product_lot_filter" />
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//filter[@name='available']" position="after">
-                        <filter icon="terp-check" name="locked" string="Locked" domain="[('locked', '&gt;', 0)]" help="Locked Product Lots" />
+                        <filter icon="terp-check" name="locked" string="Locked"
+                            domain="[('locked', '&gt;', 0)]" help="Locked Product Lots" />
                     </xpath>
                 </data>
             </field>
         </record>
-    
-    	<record id="view_stock_location_form" model="ir.ui.view">
+
+        <record id="view_stock_location_form" model="ir.ui.view">
             <field name="name">stock.location.form</field>
             <field name="model">stock.location</field>
-            <field name="inherit_id" ref="stock.view_location_form"/>
-            <field name="priority" eval="17"/>
+            <field name="inherit_id" ref="stock.view_location_form" />
+            <field name="priority" eval="17" />
             <field name="arch" type="xml">
                 <data>
-        			<xpath expr="//form//field[@name='usage']" position="attributes">
-            			<attribute name="on_change">onchange_usage(usage)</attribute>
-        			</xpath>
+                    <xpath expr="//form//field[@name='usage']" position="attributes">
+                        <attribute name="on_change">onchange_usage(usage)
+                        </attribute>
+                    </xpath>
                     <xpath expr="//form//field[@name='usage']" position="after">
-                        <field name="receipt" colspan="4"/>
-                        <field name="need_quality" colspan="4" attrs="{'invisible':[('usage','!=','production')]}"/>
+                        <field name="receipt" colspan="4" />
+                        <field name="need_quality" colspan="4"
+                            attrs="{'invisible':[('usage','!=','production')]}" />
                     </xpath>
                 </data>
             </field>
         </record>
-	</data>
+    </data>
 </openerp>

@@ -19,11 +19,11 @@
 ##############################################################################
 
 
-from openerp.osv import osv, fields
+from openerp.osv import orm, fields
 from openerp.tools.translate import _
 
 
-class stock_location(osv.osv):
+class stock_location(orm.Model):
     _inherit = 'stock.location'
 
     def onchange_usage(self, cr, uid, ids, usage, context=None):
@@ -46,7 +46,7 @@ class stock_location(osv.osv):
     }
 
 
-class stock_production_lot(osv.osv):
+class stock_production_lot(orm.Model):
     _inherit = 'stock.production.lot'
 
     _columns = {
@@ -76,7 +76,8 @@ class stock_production_lot(osv.osv):
             new_args = list(args)
         else:
             new_args = []
-        if context.get('locked_test', True) and context.get('active_test', True):
+        if (context.get('locked_test', True)
+                and context.get('active_test', True)):
             lock_in_args = False
             for arg in args:
                 if arg[0] == 'locked':
@@ -87,13 +88,13 @@ class stock_production_lot(osv.osv):
             cr, uid, new_args, offset=offset, limit=limit, order=order,
             context=context, count=count)
 
-    def lock(self, cr, uid, id, context=None):
+    def lock(self, cr, uid, lot_id, context=None):
         """API friendly method to lock the lot)"""
-        self.write(cr, uid, [id], {'locked': True}, context=context)
+        self.write(cr, uid, [lot_id], {'locked': True}, context=context)
 
-    def unlock(self, cr, uid, id, context=None):
+    def unlock(self, cr, uid, lot_id, context=None):
         """API friendly method to unlock the lot)"""
-        self.write(cr, uid, [id], {'locked': False}, context=context)
+        self.write(cr, uid, [lot_id], {'locked': False}, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
         """Log locking/unlocking as prodlot revisions"""
@@ -115,30 +116,21 @@ class stock_production_lot(osv.osv):
 
         Lots get locked if the product category or product label requires it
         or state in product is first use"""
-        product_obj = self.pool.get("product.product")
+        product_obj = self.pool["product.product"]
+        # product_id is required, it's safe to assume it's defined
         product = product_obj.browse(
             cr, uid, values['product_id'], context=context)
-        new_values = values.copy()
 
-        # test need control quality for labels
-        for obj in product.product_tmpl_id.label_ids:
-            if obj.need_quality:
-                new_values['locked'] = True
-                break
-
-        # test need control quality for product in first use
-        if product.product_tmpl_id.state == 'first':
-            new_values['locked'] = True
-
-        # test need control quality for product category
-        if product.product_tmpl_id.categ_id.need_quality:
-            new_values['locked'] = True
+        if (any([label.need_quality for label in product.label_ids])
+                or product.state == 'first'
+                or product.categ_id.need_quality):
+            values = dict(values, locked=True)
 
         return super(stock_production_lot, self).create(
-            cr, uid, new_values, context=context)
+            cr, uid, values, context=context)
 
 
-class stock_move(osv.osv):
+class stock_move(orm.Model):
 
     _inherit = 'stock.move'
 
@@ -163,7 +155,7 @@ class stock_move(osv.osv):
                 message += _(" - Lot %s: %s.\n") % (move.prodlot_id.name,
                                                     move.product_id.name)
         if message:
-            raise osv.except_osv(
+            raise orm.except_orm(
                 _('Production Lot Locked'),
                 _('One or more lots are awaiting quality control and cannot '
                   'be moved:\n%s') % message)
