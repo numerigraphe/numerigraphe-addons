@@ -76,7 +76,7 @@ class stock_production_lot(osv.osv):
             new_args = list(args)
         else:
             new_args = []
-        if context.get('locked_test', True):
+        if context.get('locked_test', True) and context.get('active_test', True):
             lock_in_args = False
             for arg in args:
                 if arg[0] == 'locked':
