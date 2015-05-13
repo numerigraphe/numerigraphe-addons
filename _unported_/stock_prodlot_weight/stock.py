@@ -83,6 +83,8 @@ class product_template(osv.osv):
                  "in stock."),
     }
 
+    _defaults = {'weight_observed': 0.0}
+
 
 class stock_production_lot(osv.osv):
     _inherit = 'stock.production.lot'
