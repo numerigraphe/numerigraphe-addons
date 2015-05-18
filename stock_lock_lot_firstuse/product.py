@@ -18,24 +18,10 @@
 #
 ##############################################################################
 
+from openerp import models, fields
 
-{
-    'name': 'Lock production lots',
-    'version': '1.0',
-    'author': u'Sylëam, Numérigraphe',
-    'category': 'Custom',
-    'description': """
-This module lets users lock a production lot, forbidding any new stock move
-from being confirmed.
-Based on custom module by Sylëam.
-    """,
-    'depends': [
-        'stock',
-        'product_label',
-    ],
-    'update_xml': [
-        'stock_view.xml',
-        'product_view.xml',
-    ],
-    'license': 'AGPL-3',
-}
+
+class ProductTemplate(models.Model):
+    """Add a new value 'First Use' to the product state"""
+    _inherit = 'product.template'
+    state = fields.Selection(selection_add=[('first', 'First in Use')])
