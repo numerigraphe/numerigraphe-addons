@@ -29,8 +29,8 @@ Add a new product state "First use".
 Lock new Serial Numbers/lots by default when the product is in this state.
 
 This module supersedes stock_prodlot_lock but drops the following features:
-* allow stock moves inside reception locations
-* locking on arbitrary locations
+* allow stock moves inside reception locations (moved to module stock_lock_lot_receipt)
+* locking on arbitrary locations (not ported to v8)
     """,
     'depends': [
         'stock_lock_lot',

@@ -24,4 +24,4 @@ from openerp import models, fields
 class ProductTemplate(models.Model):
     """Add a new value 'First Use' to the product state"""
     _inherit = 'product.template'
-    state = fields.Selection(selection_add=[('first', 'First in Use')])
+    state = fields.Selection(selection_add=[('first', 'First Use')])
