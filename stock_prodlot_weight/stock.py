@@ -24,7 +24,7 @@ import decimal_precision as dp
 
 
 class product_template(osv.osv):
-    _inherit = 'product.template'
+    _inherit = 'product.product'
 
     def _get_weight_observed(self, cr, uid, ids, names, arg, context=None):
         """ Get the average weight of the lots in stock"""
