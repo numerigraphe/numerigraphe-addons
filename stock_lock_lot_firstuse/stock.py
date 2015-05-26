@@ -25,7 +25,8 @@ from openerp import models
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
-    def _get_locked_value(self):
+    def _get_product_locked(self, product):
         """Lock new lots when the product is in "First Use" state"""
-        return (super(StockProductionLot,self)._get_locked_value()
-                or self.product_id.state == 'first')
+        a = super(StockProductionLot, self)._get_product_locked(product)
+        b = product.state == 'first'
+        return (a or b)
