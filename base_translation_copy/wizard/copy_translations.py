@@ -18,16 +18,18 @@
 #
 ##############################################################################
 
+import logging
 
 from openerp import tools
 from openerp import pooler
-from openerp import netsvc
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
+_logger = logging.getLogger(__name__)
+
 class wizard_copy_translations(osv.osv_memory):
     """Wizard to copy the translations from a language to en_US
-    
+
     When object model fields are translatable, only the English version is
     stored in the database table.
     The translations into other languages are stored as
@@ -38,34 +40,30 @@ class wizard_copy_translations(osv.osv_memory):
     def _get_languages(self, cr, uid, context):
         """Find which languages are maintained in the database"""
         lang_obj = pooler.get_pool(cr.dbname).get('res.lang')
-        ids = lang_obj.search(cr, uid, ['&', ('active', '=', True), ('code', '<>', 'en_US'), ('translatable', '=', True), ])
+        ids = lang_obj.search(
+            cr, uid, [('code', '<>', 'en_US'),
+                      ('translatable', '=', True), ])
         langs = lang_obj.browse(cr, uid, ids)
         return [(lang.code, lang.name) for lang in langs]
-    
-    def act_destroy(self, *args):
-        """Close the wizard window"""
-        return {'type':'ir.actions.act_window_close' }
 
     def act_copy(self, cr, uid, ids, context=None):
         """Copy the translations from a language to en_US"""
-    
+
         class BogusTranslation(Exception):
             """Exception class for bogus translation entries"""
             pass
 
-        logger = netsvc.Logger()
         wizard = self.browse(cr, uid, ids)[0]
         trans_obj = pooler.get_pool(cr.dbname).get('ir.translation')
-        logger.notifyChannel(self._name, netsvc.LOG_INFO,
-                             "Copying translations from %s to en_US" % wizard.lang)
-        
+        _logger.info(
+            "Copying translations from %s to en_US" % wizard.lang)
+
         # Read all the model translations in the new language (except system objects and XML data)
         trans_ids = trans_obj.search(cr, uid, [
                 ('type', '=', 'model'),
                 ('lang', '=', wizard.lang),
                 ('value', '!=', ''),
-                ('name', 'not ilike', 'ir.%'),
-                ('xml_id', '=', False),
+                ('module', '=', False),
             ], context=None)
         for trans in trans_obj.browse(cr, uid, trans_ids, context=None):
             try:
@@ -84,7 +82,7 @@ class wizard_copy_translations(osv.osv_memory):
                 if value[field] != trans.src:
                     raise BogusTranslation(trans.id, u"source string does not match the record")
                 if value[field] != trans.value:
-                    logger.notifyChannel(self._name, netsvc.LOG_DEBUG,
+                    _logger.debug(
                         "Changing %s in %s,%d from %s to %s" % (
                             field, model, trans.res_id, value[field], trans.value))
                     # Copy the versions in the new language to the English version
@@ -95,13 +93,12 @@ class wizard_copy_translations(osv.osv_memory):
                     trans_obj.unlink(cr, uid, trans.id, context=None)
             except BogusTranslation as error:
                 # Useless translation detected
-                logger.notifyChannel(self._name, netsvc.LOG_DEBUG,
-                                     "Bogus translation with id %d: %s" % tuple(error.args))
+                _logger.debug(
+                    "Bogus translation with id %d: %s" % tuple(error.args))
                 if wizard.delete_bogus:
                     trans_obj.unlink(cr, uid, error.args[0], context=None)
                 continue
-        logger.notifyChannel(self._name, netsvc.LOG_INFO, "Done")
-        return self.write(cr, uid, ids, {'state':'done'}, context=context)
+        _logger.info("Done")
 
     def run(self, cr, uid, lang, delete_bogus=False, context=None):
         """Run the wizard on a given language - useful as a cron task"""
@@ -109,18 +106,14 @@ class wizard_copy_translations(osv.osv_memory):
                          context=context)
         self.act_copy(cr, uid, [id], context=context)
         return True
-    
+
     _name = "wizard.translation.copy"
     _columns = {
             'lang': fields.selection(_get_languages, 'Language', required=True,
                  help='All the strings in English will be overwritten with the translations from language.'),
-            'state': fields.selection((('choose', 'choose'), # step 1: choose language
-                                         ('done', 'done'), # step 2: copy done
-                                       ), required=True),
             'delete_bogus': fields.boolean('Delete bogus translations')
             }
     _defaults = {
-                 'state': lambda *a: 'choose',
                  'delete_bogus': lambda *a: False,
                 }
 
