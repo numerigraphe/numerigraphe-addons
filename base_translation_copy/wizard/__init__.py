@@ -18,4 +18,4 @@
 #
 ##############################################################################
 
-import copy_translations
+from . import copy_translations
