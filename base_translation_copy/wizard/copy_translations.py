@@ -20,22 +20,21 @@
 
 import logging
 
-from openerp import tools
 from openerp import pooler
 from openerp.osv import fields, osv
-from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
+
 
 class wizard_copy_translations(osv.osv_memory):
     """Wizard to copy the translations from a language to en_US
 
-    When object model fields are translatable, only the English version is
+    When model fields are translatable, only the English version is
     stored in the database table.
     The translations into other languages are stored as
-    ir_translation object resources.
+    ir_translation records.
     This method will copy a translation to the English version in every
-    object."""
+    record."""
 
     def _get_languages(self, cr, uid, context):
         """Find which languages are maintained in the database"""
@@ -58,37 +57,47 @@ class wizard_copy_translations(osv.osv_memory):
         _logger.info(
             "Copying translations from %s to en_US" % wizard.lang)
 
-        # Read all the model translations in the new language (except system objects and XML data)
-        trans_ids = trans_obj.search(cr, uid, [
+        # Read all the "model" translations in the new language
+        # (except the strings written by the modules)
+        trans_ids = trans_obj.search(
+            cr, uid, [
                 ('type', '=', 'model'),
                 ('lang', '=', wizard.lang),
                 ('value', '!=', ''),
-                ('module', '=', False),
-            ], context=None)
+                ('module', '=', False)],
+            context=None)
         for trans in trans_obj.browse(cr, uid, trans_ids, context=None):
             try:
-                # Get the object and field name
-                (model, field) = trans.name.split(',', 1)
-                # Read the English version from the object
-                object = pooler.get_pool(cr.dbname).get(model)
-                if object is None:
-                    raise BogusTranslation(trans.id, "unknown model %s" % model)
-                value = object.read(cr, uid, trans.res_id, fields=[field],
-                    context=None)
+                # Get the model and field name
+                (model_name, field) = trans.name.split(',', 1)
+                # Read the English version from the record
+                model = pooler.get_pool(cr.dbname).get(model_name)
+                if model is None:
+                    raise BogusTranslation(
+                        trans.id, "unknown model %s" % model_name)
+                value = model.read(
+                    cr, uid, trans.res_id, fields=[field], context=None)
                 if not value:
-                    raise BogusTranslation(trans.id, "record not found: %s,%d" % (model, trans.res_id))
+                    raise BogusTranslation(
+                        trans.id,
+                        "record not found: %s,%d" % (model_name, trans.res_id))
                 if field not in value:
-                    raise BogusTranslation(trans.id, "unknown field: %s.%s" % (model, field))
+                    raise BogusTranslation(
+                        trans.id, "unknown field: %s.%s" % (model_name, field))
                 if value[field] != trans.src:
-                    raise BogusTranslation(trans.id, u"source string does not match the record")
+                    raise BogusTranslation(
+                        trans.id, u"source string does not match the record")
                 if value[field] != trans.value:
                     _logger.debug(
                         "Changing %s in %s,%d from %s to %s" % (
-                            field, model, trans.res_id, value[field], trans.value))
-                    # Copy the versions in the new language to the English version
+                            field, model_name, trans.res_id, value[field],
+                            trans.value))
+                    # Copy the translations to the English version
                     # We could pass trans.res_id as a single integer,
-                    # but some buggy objects would break
-                    object.write(cr, uid, [trans.res_id], {field: trans.value}, context=None)
+                    #   but some buggy models would break
+                    model.write(
+                        cr, uid, [trans.res_id], {field: trans.value},
+                        context=None)
                     # Remove the translation, it's now useless
                     trans_obj.unlink(cr, uid, trans.id, context=None)
             except BogusTranslation as error:
@@ -102,18 +111,21 @@ class wizard_copy_translations(osv.osv_memory):
 
     def run(self, cr, uid, lang, delete_bogus=False, context=None):
         """Run the wizard on a given language - useful as a cron task"""
-        id = self.create(cr, uid, {'lang':lang, 'delete_bogus': delete_bogus},
+        wizard_id = self.create(cr, uid, {'lang': lang, 'delete_bogus': delete_bogus},
                          context=context)
-        self.act_copy(cr, uid, [id], context=context)
+        self.act_copy(cr, uid, [wizard_id], context=context)
         return True
 
     _name = "wizard.translation.copy"
-    _columns = {
-            'lang': fields.selection(_get_languages, 'Language', required=True,
-                 help='All the strings in English will be overwritten with the translations from language.'),
-            'delete_bogus': fields.boolean('Delete bogus translations')
-            }
-    _defaults = {
-                 'delete_bogus': lambda *a: False,
-                }
 
+    _columns = {
+        'lang': fields.selection(
+            _get_languages, 'Language', required=True,
+            help='All the strings in English will be overwritten with the '
+                 'translations from language.'),
+        'delete_bogus': fields.boolean('Delete bogus translations')
+    }
+
+    _defaults = {
+        'delete_bogus': False,
+    }
