@@ -19,11 +19,11 @@
 ##############################################################################
 
 {
-    'name' : 'Copy Translations to English',
-    'version' : '1.1',
-    'author' : u'Numérigraphe',
-    'category' : 'Translation',
-    'depends' : [],
+    'name': 'Copy Translations to English',
+    'version': '1.1',
+    'author': u'Numérigraphe',
+    'category': 'Translation',
+    'depends': [],
     'description': """\
 This module lets you copy all the translations of a language to English.
 
@@ -35,14 +35,13 @@ unexpected behaviors because the English names are not updated.
 To tackle this in an environment where English is not used by the users,
 this module adds a wizard in Administration > Translations to let you copy
 all the strings in one language to the English translations.""",
-    'demo_xml' : [],
-    'init_xml' : [],
-    'update_xml' : [
-                    'wizard/copy_translations_view.xml',
-                    'base_translation_copy_data.xml',
-                    ],
+    'demo_xml': [],
+    'init_xml': [],
+    'update_xml': [
+        'wizard/copy_translations_view.xml',
+        'base_translation_copy_data.xml',
+    ],
     'active': False,
     'installable': True,
-    'license' : 'GPL-3',
+    'license': 'GPL-3',
 }
-
