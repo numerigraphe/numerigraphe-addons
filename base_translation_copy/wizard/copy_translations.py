@@ -20,7 +20,6 @@
 
 import logging
 
-from openerp import pooler
 from openerp.osv import fields, osv
 
 _logger = logging.getLogger(__name__)
@@ -38,7 +37,7 @@ class wizard_copy_translations(osv.osv_memory):
 
     def _get_languages(self, cr, uid, context):
         """Find which languages are maintained in the database"""
-        lang_obj = pooler.get_pool(cr.dbname).get('res.lang')
+        lang_obj = self.pool['res.lang']
         ids = lang_obj.search(
             cr, uid, [('code', '<>', 'en_US'),
                       ('translatable', '=', True), ])
@@ -53,7 +52,7 @@ class wizard_copy_translations(osv.osv_memory):
             pass
 
         wizard = self.browse(cr, uid, ids)[0]
-        trans_obj = pooler.get_pool(cr.dbname).get('ir.translation')
+        trans_obj = self.pool['ir.translation']
         _logger.info(
             "Copying translations from %s to en_US" % wizard.lang)
 
@@ -71,7 +70,7 @@ class wizard_copy_translations(osv.osv_memory):
                 # Get the model and field name
                 (model_name, field) = trans.name.split(',', 1)
                 # Read the English version from the record
-                model = pooler.get_pool(cr.dbname).get(model_name)
+                model = self.pool.get(model_name)
                 if model is None:
                     raise BogusTranslation(
                         trans.id, "unknown model %s" % model_name)
