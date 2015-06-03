@@ -4,37 +4,21 @@
         <record id="wizard_copy_translations_view" model="ir.ui.view">
             <field name="name">Copy model translations to English</field>
             <field name="model">wizard.translation.copy</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
-                <form col="3" string="Copy translations">
-                    <notebook>
-                        <page string="Copy Translations to English">
-                            <group col="2" states="choose">
-                                <separator colspan="2" string="Copy translations to English"/>
-                                <field name="lang" width="300"/>
-                                <group colspan="2" col="2">
-                                	<field name="delete_bogus"/>
-                                </group>
-                                <field invisible="1" name="state"/>
-                            </group>
-                            <group col="1" fill="0" states="done">
-                                <separator string="Copy done."/>
-                            </group>
-                        </page>
-                        <page string="Help">
-                            <label colspan="4" string="This wizard lets you copy all the translations of a language to English."/>
-                            <label colspan="4" string="This is useful because English is the default language for all objects in OpenERP, so when users work in any another language they will have to manage translations to and from the English language."/>
-                            <label colspan="4" string="When they don't, operations such as object copying or renaming will produce unexpected behaviors, because the English names won't be updated."/>
-                            <label colspan="4" string="In such cases, this wizard will let you generate pseudo-English values by copying a language that users actually use."/>
-                        </page>
-                    </notebook>
-
-
-                    <group col="2" colspan="3" fill="0">
-                        <button icon="gtk-cancel" name="act_destroy" special="cancel" states="choose" string="Cancel" type="object"/>
-                        <button icon="gtk-ok" name="act_copy" states="choose" string="Copy translations" type="object"/>
-                        <button icon="gtk-close" name="act_destroy" special="cancel" states="done" string="Close" type="object"/>
+                <form string="Copy translations" version="7.0">
+                    <p>This wizard lets you copy all the translations of a language to English.</p>
+                    <p>This is useful because English is the default language for all objects in OpenERP, so when users work in any another language they will have to manage translations to and from the English language.</p>
+                    <p>When they don't, operations such as object copying or renaming will produce unexpected behaviors, because the English names won't be updated.</p>
+                    <p>In such cases, this wizard will let you generate pseudo-English values by copying a language that users actually use.</p>
+                    <group string="Chose the language">
+                        <field name="lang"/>
+                        <field name="delete_bogus"/>
                     </group>
+                    <footer>
+                        <button name="act_copy" string="Copy translations" type="object" class="oe_highlight"/> 
+                        or
+                        <button special="cancel" string="Cancel" type="object" class="oe_link"/>
+                    </footer>
                 </form>
             </field>
         </record>
