@@ -10,7 +10,7 @@
                     <p>This is useful because English is the default language for all objects in OpenERP, so when users work in any another language they will have to manage translations to and from the English language.</p>
                     <p>When they don't, operations such as object copying or renaming will produce unexpected behaviors, because the English names won't be updated.</p>
                     <p>In such cases, this wizard will let you generate pseudo-English values by copying a language that users actually use.</p>
-                    <group string="Chose the language">
+                    <group string="Choose the language">
                         <field name="lang"/>
                         <field name="delete_bogus"/>
                     </group>
