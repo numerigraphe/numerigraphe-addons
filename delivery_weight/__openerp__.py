@@ -18,6 +18,13 @@
 #
 ##############################################################################
 
-import stock
-
-
+{
+    'name': 'Effective gross weight of a delivery',
+    'version': '1.0',
+    'author': u'Numérigraphe',
+    'category': 'Generic Modules/Sales & Purchases',
+    'depends': ['stock', 'delivery', ],
+    'data': ['stock_view.xml'],
+    'description': """
+Adds a new field to the packings to let users key in the effective weight of deliveries.""",
+}
