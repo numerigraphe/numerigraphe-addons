@@ -45,4 +45,5 @@ The python package "smbc" must be installed on the server to use this module.
         'account_view.xml',
         'wizard/wizard_ebp_view.xml',
     ],
+    'license': 'AGPL-3',
 }
