@@ -19,19 +19,16 @@
 ##############################################################################
 
 {
-    'name' : 'Total net weight of an order',
-    'version' : '1.0',
-    'author' : u'Numérigraphe SARL',
+    'name': 'Total net weight of an order',
+    'version': '8.0.1.2',
+    'author': u'Numérigraphe SARL',
     'website': 'http://numerigraphe.com',
     'category': 'Generic Modules/Sales & Purchases',
-    'depends': ['sale', ],
-    'init_xml': [],
-    'demo_xml': [],
-    'update_xml': ['sale_weight_view.xml', ],
-    'description': '''Adds the total net weight of the order form.
-''',
-    'active': False,
-    'installable': True,
+    'depends': [
+        'sale',
+    ],
+    'data': [
+        'sale_weight_view.xml',
+    ],
+    'description': '''Adds the total net weight of the order form.''',
 }
-
-
