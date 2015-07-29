@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_prodlot_weight
-#: field:stock.production.lot,weight_observed:0
+#: field:stock.quant,weight_observed:0
 msgid "Observed Unit Weight"
 msgstr "Poids unitaire mesuré"
 
@@ -26,7 +26,7 @@ msgid "Observed Weight"
 msgstr "Poids mesuré"
 
 #. module: stock_prodlot_weight
-#: help:stock.production.lot,weight_observed:0
+#: help:stock.quant,weight_observed:0
 msgid "The Unit Weight observed for this Product in this Lot, in Kg."
 msgstr "Le poids unitaire mesuré pour les produits de ce lot, en Kg."
 
