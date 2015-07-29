@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-   
         <record id="view_stock_production_lot_form" model="ir.ui.view">
-            <field name="name">stock.production.lot.form</field>
+            <field name="name">Observed weights on lot form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='quant_ids']/tree" position="inside">
+                        <field name="weight_observed"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_stock_quant_form" model="ir.ui.view">
+            <field name="name">Observed weights on quant form</field>
             <field name="model">stock.quant</field>
             <field name="inherit_id" ref="stock.view_stock_quant_form"/>
             <field name="priority" eval="17"/>
@@ -15,9 +27,9 @@
                 </data>
             </field>
         </record>
-    
-        <record id="view_stock_production_lot_tree" model="ir.ui.view">
-            <field name="name">stock.production.lot.tree</field>
+
+        <record id="view_stock_quant_tree" model="ir.ui.view">
+            <field name="name">Observed weight on quant tree</field>
             <field name="model">stock.quant</field>
             <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
             <field name="priority" eval="17"/>
@@ -31,7 +43,7 @@
         </record>
 
        <record id="view_product_normal_form_view" model="ir.ui.view">
-            <field name="name">product.normal.form</field>
+            <field name="name">Observed weight on product variant form</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="priority" eval="17"/>
@@ -45,7 +57,7 @@
         </record>
 
        <record id="view_product_product_tree_view" model="ir.ui.view">
-            <field name="name">product.normal.tree</field>
+            <field name="name">Observed weight on product variant list</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="priority" eval="17"/>
@@ -57,7 +69,5 @@
                 </data>
             </field>
         </record>
-
 	</data>
-	
 </openerp>
