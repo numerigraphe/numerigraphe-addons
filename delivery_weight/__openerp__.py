@@ -19,12 +19,13 @@
 ##############################################################################
 
 {
-    'name': 'Effective gross weight of a delivery',
-    'version': '1.0',
+    'name': 'Noop',
+    'version': '8.0.2.0',
     'author': u'Numérigraphe',
     'category': 'Generic Modules/Sales & Purchases',
     'depends': ['stock', 'delivery', ],
     'data': ['stock_view.xml'],
     'description': """
-Adds a new field to the packings to let users key in the effective weight of deliveries.""",
+Used to adds a new field to the packings to let users key in the effective weight of deliveries.
+Now disabled and replaced by fdl_shipping""",
 }
