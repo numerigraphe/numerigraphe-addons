@@ -1,0 +1,52 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* delivery_weight
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0.3\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-01-10 09:59+0000\n"
+"PO-Revision-Date: 2012-01-10 09:59+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: delivery_weight
+#: sql_constraint:sale.order:0
+msgid "Order Reference must be unique !"
+msgstr "La référence de la commande doit être unique !"
+
+#. module: delivery_weight
+#: field:stock.picking,weight_real:0
+msgid "Real Weight"
+msgstr "Poids réel"
+
+#. module: delivery_weight
+#: model:ir.module.module,shortdesc:delivery_weight.module_meta_information
+msgid "Effective gross weight of a delivery"
+msgstr "Poids effectif des livraisons"
+
+#. module: delivery_weight
+#: view:stock.picking:0
+msgid "Theorical weight"
+msgstr "Poids théorique"
+
+#. module: delivery_weight
+#: model:ir.module.module,description:delivery_weight.module_meta_information
+msgid "Adds a new field to the packings to let users key in the effective weight of deliveries."
+msgstr "Ajoute un champ pour saisir le poids réel des livraisons."
+
+#. module: delivery_weight
+#: model:ir.model,name:delivery_weight.model_stock_picking
+msgid "Picking List"
+msgstr "Opération de manutention"
+
+#. module: delivery_weight
+#: model:ir.model,name:delivery_weight.model_sale_order
+msgid "Sales Order"
+msgstr "Commande de ventes"
+
