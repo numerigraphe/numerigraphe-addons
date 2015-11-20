@@ -20,7 +20,7 @@
 
 {
     'name' : 'Compute the average weight of products based Lots',
-    'version' : '1.0',
+    'version' : '1.1',
     'author' : u'Numérigraphe',
     'category': 'Custom',
     'description': "This module lets users enter the weight of production lots,"
@@ -32,9 +32,8 @@
                 ],
     'init_xml' : [
                  ],
-    'update_xml' : [
-                    'stock_view.xml',
-                   ],
+    'data' : ['stock_view.xml',
+              ],
     'active': False,
     'installable': True,
     'license' : 'GPL-3',

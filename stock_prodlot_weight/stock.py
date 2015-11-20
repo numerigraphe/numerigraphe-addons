@@ -37,15 +37,16 @@ class ProductProduct(models.Model):
     def _get_weight_observed(self):
         """Get the average weight of the lots in stock""" 
         self.env.cr.execute("""
-            SELECT      PRODUCT_ID, 
-                        SUM(SQ.QTY * SQ.WEIGHT_OBSERVED) / SUM(SQ.qty)
+            SELECT      SQ.PRODUCT_ID, 
+                        SUM(SQ.QTY * SPL.WEIGHT_OBSERVED) / SUM(SQ.qty)
             FROM        STOCK_QUANT SQ
             INNER JOIN  STOCK_LOCATION SL ON SQ.LOCATION_ID = SL.ID
+            INNER JOIN  STOCK_PRODUCTION_LOT SPL ON SQ.LOT_ID = SPL.ID
             WHERE       SQ.PRODUCT_ID IN %s
             AND         SL.USAGE = 'internal'
             AND         SQ.QTY > 0
-            AND         SQ.WEIGHT_OBSERVED > 0
-            GROUP BY    PRODUCT_ID""", (tuple(self.ids),))
+            AND         SPL.WEIGHT_OBSERVED > 0
+            GROUP BY    SQ.PRODUCT_ID""", (tuple(self.ids),))
         r = dict( self.env.cr.fetchall())
         for record in self:
             record.weight_observed = r.get(record.id, 0.0)
@@ -62,21 +63,23 @@ class ProductProduct(models.Model):
                 SELECT      SQ.PRODUCT_ID
                 FROM        STOCK_QUANT SQ 
                 INNER JOIN  STOCK_LOCATION SL ON SQ.LOCATION_ID = SL.ID
+                INNER JOIN  STOCK_PRODUCTION_LOT SPL ON SQ.LOT_ID = SPL.ID
                 WHERE       SL.USAGE = 'internal'
                 AND         SQ.QTY > 0
-                AND         SQ.WEIGHT_OBSERVED > 0
+                AND         SPL.WEIGHT_OBSERVED > 0
                 GROUP BY    SQ.PRODUCT_ID
-                HAVING      SUM(SQ.QTY * SQ.WEIGHT_OBSERVED) / SUM(SQ.QTY) ''' + operator + " %s", (value, )
+                HAVING      SUM(SQ.QTY * SPL.WEIGHT_OBSERVED) / SUM(SQ.QTY) ''' + operator + " %s", (value, )
         )
         res = self.env.cr.fetchall()
         domain = [('id', 'in', map(lambda x: x[0], res))]
         return domain
 
 
-class StockQuant(models.Model):
-    _inherit = 'stock.quant'
+class StockProductionLot(models.Model):
+    _inherit = 'stock.production.lot'
 
     weight_observed = fields.Float(
         'Observed Unit Weight',
         digits=dp.get_precision('Stock Weight'),
         help="The Unit Weight observed for this Product in this Lot, in Kg.")
+
