@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <!-- Add a menu entry for sale orders in exception -->
-        <menuitem action="sale.action_orders_exception" id="menu_sale_order_exception"
-            parent="base.menu_sales" sequence="0"
-            groups="base.group_sale_salesman,base.group_sale_manager"/>
-    </data>
-</openerp>
