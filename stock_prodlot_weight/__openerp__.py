@@ -27,13 +27,9 @@
                    "and computes the average unit weight of the product based "
                    "on the weight and the quantity currently in stock of each "
                    "production lot.",
-    'depends' : [
-                 'stock',
-                ],
-    'init_xml' : [
-                 ],
-    'data' : ['stock_view.xml',
-              ],
+    'depends' : ['stock',],
+    'init_xml' : [],
+    'data' : ['stock_view.xml',],
     'active': False,
     'installable': True,
     'license' : 'GPL-3',

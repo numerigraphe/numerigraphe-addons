@@ -33,7 +33,6 @@ class ProductProduct(models.Model):
             help="This is the average unit weight of the product in Kg, based on the "
                  "weights and quantities of the Quant.")
 
-    
     def _get_weight_observed(self):
         """Get the average weight of the lots in stock""" 
         self.env.cr.execute("""
@@ -50,8 +49,7 @@ class ProductProduct(models.Model):
         r = dict( self.env.cr.fetchall())
         for record in self:
             record.weight_observed = r.get(record.id, 0.0)
-            
-            
+
     def _search_weight_observed(self, operator, value):
         """Search for a product by average weight"""
         # Sanitize input to protect from SQL injection
