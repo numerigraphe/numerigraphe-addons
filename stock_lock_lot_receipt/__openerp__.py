@@ -4,7 +4,7 @@
 
 {
     'name': 'Allow users to move locked lots in receipt locations',
-    'version': '1.0',
+    'version': '1.1',
     'author': u'Numérigraphe',
     "category": "Warehouse Management",
     'description': """
@@ -15,7 +15,7 @@ This allows stock workers to put away the received goods within certain
 limits.
     """,
     'depends': [
-        'stock_lock_lot',
+        'stock_lock_lot_strict',
     ],
     'data': [
         'views/stock_location_view.xml',

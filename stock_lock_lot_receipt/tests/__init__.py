@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2015 Numérigraphe
+# © 2016 Numérigraphe
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from . import stock_quant
-from . import stock_location
+from . import test_receipt
