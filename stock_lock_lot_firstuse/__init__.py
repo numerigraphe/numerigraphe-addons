@@ -21,3 +21,4 @@
 
 import stock
 import product
+from . import product_category

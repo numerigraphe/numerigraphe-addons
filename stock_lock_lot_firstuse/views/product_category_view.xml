@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="product_category_form_view_locklot_firstuse" model="ir.ui.view">
+            <field name="name">Checkbox to lock on first use</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="stock_lock_lot.product_category_form_view_inh_locklot"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//group[@name='locklot_property']" position="inside">
+                        <field name="lot_firstuse_locked" attrs="{'invisible': [('lot_default_locked', '=', True)]}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -27,6 +27,7 @@ class StockProductionLot(models.Model):
 
     def _get_product_locked(self, product):
         """Lock new lots when the product is in "First Use" state"""
-        a = super(StockProductionLot, self)._get_product_locked(product)
-        b = product.state == 'first'
-        return (a or b)
+        return (super(StockProductionLot, self)._get_product_locked(product) or
+                (product.state == 'first' and
+                 product.categ_id and
+                 product.categ_id.lot_firstuse_locked))
