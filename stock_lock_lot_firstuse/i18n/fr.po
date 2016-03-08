@@ -20,3 +20,13 @@ msgstr ""
 msgid "First Use"
 msgstr "Première utilisation"
 
+#. module: stock_lock_lot_firstuse
+#: field:product.category,lot_firstuse_locked:0
+msgid "Block new \"First Use\" lots"
+msgstr "Bloquer les lots des articles en \"Première utilisation\""
+
+#. module: stock_lock_lot_firstuse
+#: help:product.category,lot_firstuse_locked:0
+msgid "If checked, future Serial Numbers/lots of products in the state \"First Use\" will be created blocked by default"
+msgstr "Indique si les futurs lots des articles en état \"Première utilisation\" seront bloqués par défaut dès leur création."
+
