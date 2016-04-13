@@ -38,7 +38,7 @@ class sale_order_line(models.Model):
     def _weight_net(self):
         """Compute the net weight of the given Sale Order Lines."""
         result = 0.0
-        if self.product_id and self.product_id.weight > 0.00:
+        if self.product_id and self.product_id.weight_net > 0.00:
             qty = self.product_uom_qty
             # Convert the qty to the right unit of measure
             if self.product_uom <> self.product_id.uom_id:
@@ -46,5 +46,5 @@ class sale_order_line(models.Model):
                     self.product_uom.id,
                     self.product_uom_qty,
                     self.product_id.uom_id.id)
-            result += qty
+            result += qty * self.product_id.weight_net
         self.weight_net = result
