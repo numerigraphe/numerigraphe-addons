@@ -19,15 +19,17 @@
 ##############################################################################
 
 
-from openerp import models
+from openerp import models, fields
 
 
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
+    lock_reason = fields.Selection(
+        selection_add=[('first', "Product in the state 'First Use'.")])
 
-    def _get_product_locked(self, product):
+    def _get_lock_reason(self, product):
         """Lock new lots when the product is in "First Use" state"""
-        return (super(StockProductionLot, self)._get_product_locked(product) or
-                (product.state == 'first' and
-                 product.categ_id and
-                 product.categ_id.lot_firstuse_locked))
+        reason = super(StockProductionLot, self)._get_lock_reason(product)
+        if (product.state == 'first' and product.categ_id.lot_firstuse_locked):
+            reason = 'first'
+        return reason
